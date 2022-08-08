@@ -1,0 +1,11 @@
+name: SurvivalCompetition
+version: '${project.version}'
+main: xiamomc.survivalcompetition.SurvivalCompetition
+api-version: 1.19
+authors: [ XiaMoDevTeam ]
+website: https://www.xiamomc.ink
+
+commands:
+  joinsg:
+    usage: '/joinsg'
+    description: 'Try to join the game'
