@@ -69,6 +69,7 @@ public final class SurvivalCompetition extends JavaPlugin {
     private void tick()
     {
         runnables.forEach(Runnable::run);
+        runnables.clear();
     }
 
     private final List<Runnable> runnables = new ArrayList<Runnable>();
