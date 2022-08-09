@@ -9,22 +9,21 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import xiamomc.survivalcompetition.Managers.*;
 
-public class JoiningGameCommand implements CommandExecutor {
+public class JoiningGameCommand extends PluginObject implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        IPlayerListManager manager;
-        manager = new PlayerListManager();
-        ITeamManager teamManager;
-        teamManager = new TeamManager();
-        IGameManager igm;
-        igm = new GameManager();
         if (!(sender instanceof Player player)) {
             return false;
         }
+
+        IPlayerListManager manager = (IPlayerListManager) Dependencies.Get(IPlayerListManager.class);
+        IGameManager igm = (IGameManager) Dependencies.Get(IGameManager.class);
+
         if(igm.doesGameStart()){
             sender.sendMessage("游戏已经开始，你无法加入！");
             return false;
         }
+
         if (manager.isEmpty()) {
             new BukkitRunnable() {
                 public void run() {
