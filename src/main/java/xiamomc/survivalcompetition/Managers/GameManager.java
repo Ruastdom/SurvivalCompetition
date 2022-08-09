@@ -9,13 +9,14 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
+import xiamomc.survivalcompetition.PluginObject;
 import xiamomc.survivalcompetition.SurvivalCompetition;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
 
-public class GameManager implements IGameManager {
+public class GameManager extends PluginObject implements IGameManager {
     final TextComponent titleDay1Sub = Component.text("今天你们不能互相攻击，请好好发展");
     final TextComponent titleDay2Sub = Component.text("你准备好迎接敌方的进攻了吗？");
     final TextComponent titleDay3Sub = Component.text("希望你能给这次竞赛画上圆满的句号 :)");
@@ -30,14 +31,12 @@ public class GameManager implements IGameManager {
         new BukkitRunnable(){
             @Override
             public void run() {
-                IPlayerListManager manager;
-                manager = new PlayerListManager();
-                ITeamManager teamManager;
-                teamManager = new TeamManager();
-                manager.checkExistence();
-                teamManager.distributeToTeams(manager.getList());
-                teamManager.sendTeammatesMessage();
-                Bukkit.getServer().broadcastMessage("队伍" + teamManager.getPlayerTeam("laozhengali").getName());
+                ITeamManager itm = (ITeamManager) Dependencies.Get(ITeamManager.class);
+                IPlayerListManager igm = (IPlayerListManager) Dependencies.Get(IPlayerListManager.class);
+
+                igm.checkExistence();
+                itm.distributeToTeams(igm.getList());
+                itm.sendTeammatesMessage();
             }
         }.runTask(SurvivalCompetition.instance);
         isGameStarted = true;
@@ -89,10 +88,8 @@ public class GameManager implements IGameManager {
         new BukkitRunnable(){
             @Override
             public void run() {
-                ITeamManager itm;
-                itm = new TeamManager();
-                IPlayerListManager igm;
-                igm = new PlayerListManager();
+                ITeamManager itm = (ITeamManager) Dependencies.Get(ITeamManager.class);
+                IPlayerListManager igm = (IPlayerListManager) Dependencies.Get(IPlayerListManager.class);
 
                 int redScore = itm.getPoints(itm.getTeamRed().getName());
                 int blueScore = itm.getPoints(itm.getTeamBlue().getName());

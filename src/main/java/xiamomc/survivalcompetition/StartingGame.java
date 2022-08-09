@@ -4,7 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import xiamomc.survivalcompetition.Managers.*;
 
-public class StartingGame {
+public class StartingGame extends PluginObject {
     public StartingGame(){
         noticeGameStarting();
         dayTriggers();
@@ -12,17 +12,15 @@ public class StartingGame {
     }
 
     public void noticeGameStarting(){
-        IGameManager igm;
-        igm = new GameManager();
+        IGameManager igm = (IGameManager) Dependencies.Get(IGameManager.class);
         igm.startGame();
         Bukkit.getServer().broadcastMessage("游戏开始!");
     }
 
     public void dayTriggers(){
-        IGameManager igm;
-        igm = new GameManager();
-        IPlayerListManager ipm;
-        ipm = new PlayerListManager();
+        IGameManager igm = (IGameManager) Dependencies.Get(IGameManager.class);
+        IPlayerListManager ipm = (IPlayerListManager) Dependencies.Get(IPlayerListManager.class);
+
         new BukkitRunnable(){
             @Override
             public void run() {
@@ -44,10 +42,9 @@ public class StartingGame {
     }
 
     public void gameEnding(){
-        IGameManager igm;
-        igm = new GameManager();
-        IPlayerListManager ipm;
-        ipm = new PlayerListManager();
+        IGameManager igm = (IGameManager) Dependencies.Get(IGameManager.class);
+        IPlayerListManager ipm = (IPlayerListManager) Dependencies.Get(IPlayerListManager.class);
+
         new BukkitRunnable(){
             @Override
             public void run() {
