@@ -9,3 +9,7 @@ commands:
   joinsg:
     usage: '/joinsg'
     description: 'Try to join the game'
+
+  setcareer:
+    usage: '/setcareer careers'
+    description: 'Set ones career'

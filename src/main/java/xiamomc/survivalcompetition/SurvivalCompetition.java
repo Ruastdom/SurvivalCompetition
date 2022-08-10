@@ -43,6 +43,7 @@ public final class SurvivalCompetition extends JavaPlugin {
             dependencyManager.CacheAs(IGameManager.class, new GameManager());
             dependencyManager.CacheAs(ITeamManager.class, new TeamManager());
             dependencyManager.CacheAs(IPlayerListManager.class, new PlayerListManager());
+            dependencyManager.CacheAs(ICareerManager.class, new CareerManager());
         } catch (DependencyAlreadyRegistedException e) {
             throw new RuntimeException(e);
         }
@@ -52,7 +53,11 @@ public final class SurvivalCompetition extends JavaPlugin {
         if (Bukkit.getPluginCommand("joinsg") != null) {
             Bukkit.getPluginCommand("joinsg").setExecutor(new JoiningGameCommand());
         }
+        if (Bukkit.getPluginCommand("setcareer") != null) {
+            Bukkit.getPluginCommand("setcareer").setExecutor(new CareerCommandProcessor());
+        }
         Bukkit.getPluginManager().registerEvents(new EventProcessor(), this);
+        Bukkit.getPluginManager().registerEvents(new CareerEventProcessor(), this);
 
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, this::tick, 0, 1);
     }

@@ -39,6 +39,10 @@ public class GameManager extends PluginObject implements IGameManager {
                 itm.sendTeammatesMessage();
             }
         }.runTask(SurvivalCompetition.instance);
+        ICareerManager icm = (ICareerManager) Dependencies.Get(ICareerManager.class);
+        icm.initCareersComponents();
+        Bukkit.getServer().broadcastMessage("请选择职业：");
+        icm.getCareerList().forEach(component -> Bukkit.getServer().broadcast(component));
         isGameStarted = true;
         return true;
     }
@@ -113,6 +117,9 @@ public class GameManager extends PluginObject implements IGameManager {
                 itm.removeAllPlayersFromTeams();
             }
         }.runTask(SurvivalCompetition.instance);
+
+        ICareerManager icm = (ICareerManager) Dependencies.Get(ICareerManager.class);
+        icm.clear();
 
         isGameStarted = false;
         return true;
