@@ -19,7 +19,7 @@ public class CareerCommandProcessor extends PluginObject implements CommandExecu
             return true;
         } else {
             sender.sendMessage("选择该职业时出现错误，您是否已经有了一个职业？");
-            return true;
+            return true; //暂时返回true来避免显示"/setcareer career"
         }
     }
 }
