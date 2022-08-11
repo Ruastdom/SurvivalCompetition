@@ -28,8 +28,6 @@ public class CareerManager implements ICareerManager{
                 {
                         new AssassinCareer()
                 });
-
-        Bukkit.getServer().broadcast(Component.text(AssassinCareer.GetInternalNameStatic()));
     }
 
     @Override
@@ -57,6 +55,15 @@ public class CareerManager implements ICareerManager{
         if (optional.isEmpty()) return false;
 
         var career = optional.get();
+        var currentPlayerCareer = playerCareers.get(player);
+
+        //不要重复添加玩家到某一职业，并且在切换职业前先移除现有职业
+        if (currentPlayerCareer == career) return false;
+        else if (currentPlayerCareer != null)
+        {
+            currentPlayerCareer.ResetFor(player);
+            playerCareers.remove(player);
+        };
 
         //career.ApplyToPlayer()可能会抛出异常，所以先把玩家添加到playerCareers
         playerCareers.put(player, career);

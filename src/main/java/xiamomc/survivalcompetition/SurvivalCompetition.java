@@ -10,6 +10,10 @@ import java.util.List;
 
 public final class SurvivalCompetition extends JavaPlugin {
     public static SurvivalCompetition instance;
+    private GameManager gameManager;
+    private PlayerListManager playerListManager;
+    private CareerManager careerManager;
+    private TeamManager teamManager;
 
     public static SurvivalCompetition GetInstance()
     {
@@ -40,10 +44,10 @@ public final class SurvivalCompetition extends JavaPlugin {
         //目前只能再throw一遍:(
         try {
             dependencyManager.Cache(this);
-            dependencyManager.CacheAs(IGameManager.class, new GameManager());
-            dependencyManager.CacheAs(ITeamManager.class, new TeamManager());
-            dependencyManager.CacheAs(IPlayerListManager.class, new PlayerListManager());
-            dependencyManager.CacheAs(ICareerManager.class, new CareerManager());
+            dependencyManager.CacheAs(IGameManager.class, gameManager = new GameManager());
+            dependencyManager.CacheAs(ITeamManager.class, teamManager = new TeamManager());
+            dependencyManager.CacheAs(IPlayerListManager.class, playerListManager = new PlayerListManager());
+            dependencyManager.CacheAs(ICareerManager.class, careerManager = new CareerManager());
         } catch (DependencyAlreadyRegistedException e) {
             throw new RuntimeException(e);
         }
@@ -66,6 +70,9 @@ public final class SurvivalCompetition extends JavaPlugin {
     public void onDisable() {
         // Plugin shutdown logic
         getLogger().info("Disabling SurvivalCompetition");
+
+        //禁用时先结束游戏
+        gameManager.endGame(playerListManager.getList());
 
         //反注册依赖
         dependencyManager.UnCacheAll();

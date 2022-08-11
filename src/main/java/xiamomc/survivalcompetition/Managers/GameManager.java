@@ -88,34 +88,30 @@ public class GameManager extends PluginObject implements IGameManager {
     @Override
     public boolean endGame(List<UUID> playerList) {
         final TextComponent titleMain = Component.text("游戏结束");
-        new BukkitRunnable(){
-            @Override
-            public void run() {
-                ITeamManager itm = (ITeamManager) Dependencies.Get(ITeamManager.class);
-                IPlayerListManager igm = (IPlayerListManager) Dependencies.Get(IPlayerListManager.class);
 
-                int redScore = itm.getPoints(itm.getTeamRed().getName());
-                int blueScore = itm.getPoints(itm.getTeamBlue().getName());
-                if (redScore > blueScore) {
-                    winner = "红队胜利！";
-                } else if (redScore < blueScore) {
-                    winner = "蓝队胜利！";
-                } else {
-                    winner = "两队势均力敌";
-                }
-                final TextComponent titleWinSub = Component.text(winner);
-                for (UUID uuid : playerList) {
-                    Player player = Bukkit.getPlayer(uuid);
-                    if (player != null) {
-                        player.sendTitlePart(TitlePart.TIMES, Title.Times.times(Duration.ofMillis(times[0]), Duration.ofMillis(times[1]), Duration.ofMillis(times[2])));
-                        player.sendTitlePart(TitlePart.TITLE, titleMain);
-                        player.sendTitlePart(TitlePart.SUBTITLE, titleWinSub);
-                    }
-                }
-                igm.clear();
-                itm.removeAllPlayersFromTeams();
+        ITeamManager itm = (ITeamManager) Dependencies.Get(ITeamManager.class);
+        IPlayerListManager igm = (IPlayerListManager) Dependencies.Get(IPlayerListManager.class);
+
+        int redScore = itm.getPoints(itm.getTeamRed().getName());
+        int blueScore = itm.getPoints(itm.getTeamBlue().getName());
+        if (redScore > blueScore) {
+            winner = "红队胜利！";
+        } else if (redScore < blueScore) {
+            winner = "蓝队胜利！";
+        } else {
+            winner = "两队势均力敌";
+        }
+        final TextComponent titleWinSub = Component.text(winner);
+        for (UUID uuid : playerList) {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player != null) {
+                player.sendTitlePart(TitlePart.TIMES, Title.Times.times(Duration.ofMillis(times[0]), Duration.ofMillis(times[1]), Duration.ofMillis(times[2])));
+                player.sendTitlePart(TitlePart.TITLE, titleMain);
+                player.sendTitlePart(TitlePart.SUBTITLE, titleWinSub);
             }
-        }.runTask(SurvivalCompetition.instance);
+        }
+        igm.clear();
+        itm.removeAllPlayersFromTeams();
 
         ICareerManager icm = (ICareerManager) Dependencies.Get(ICareerManager.class);
         icm.clear();
