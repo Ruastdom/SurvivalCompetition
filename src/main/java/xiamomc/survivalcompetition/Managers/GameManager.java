@@ -40,9 +40,8 @@ public class GameManager extends PluginObject implements IGameManager {
             }
         }.runTask(SurvivalCompetition.instance);
         ICareerManager icm = (ICareerManager) Dependencies.Get(ICareerManager.class);
-        icm.initCareersComponents();
         Bukkit.getServer().broadcastMessage("请选择职业：");
-        icm.getCareerList().forEach(component -> Bukkit.getServer().broadcast(component));
+        icm.getCareerList().forEach(career -> Bukkit.getServer().broadcast(career.GetNameAsComponent()));
         isGameStarted = true;
         return true;
     }
