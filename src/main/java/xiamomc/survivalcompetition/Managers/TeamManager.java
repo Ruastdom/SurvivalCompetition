@@ -1,5 +1,6 @@
 package xiamomc.survivalcompetition.Managers;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -13,8 +14,8 @@ public class TeamManager implements ITeamManager {
     ScoreboardManager manager = Bukkit.getScoreboardManager();
     Scoreboard board = manager.getNewScoreboard();
 
-    public static Team blue;
-    public static Team red;
+    public Team blue;
+    public Team red;
     int redScores = 0;
     int blueScores = 0;
 
@@ -22,7 +23,7 @@ public class TeamManager implements ITeamManager {
     Objective obj = board.registerNewObjective(
             "Points",
             "dummy",
-            ChatColor.GOLD + "" + ChatColor.BOLD + "各队得分"
+            Component.text(ChatColor.GOLD + "" + ChatColor.BOLD + "各队得分")
     );
 
     public void addToTeamBlue(String name) {
@@ -160,12 +161,12 @@ public class TeamManager implements ITeamManager {
 
     @Override
     public boolean setPoints(Team team, int point, List<UUID> playerList) {
-        if (team == getTeamRed()) {
+        if (team.equals(getTeamRed())) {
             board.resetScores(ChatColor.RED + "红队");
             redScores = point;
             Score redScore = obj.getScore(ChatColor.RED + "红队");
             redScore.setScore(redScores);
-        } else if (team == getTeamBlue()) {
+        } else if (team.equals(getTeamBlue())) {
             board.resetScores(ChatColor.BLUE + "蓝队");
             blueScores = point;
             Score redScore = obj.getScore(ChatColor.BLUE + "蓝队");
