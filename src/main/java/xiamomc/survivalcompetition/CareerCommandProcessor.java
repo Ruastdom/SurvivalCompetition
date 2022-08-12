@@ -12,12 +12,14 @@ public class CareerCommandProcessor extends PluginObject implements CommandExecu
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         ICareerManager icm = (ICareerManager) Dependencies.Get(ICareerManager.class);
+        if (args.length < 1) return false;
+
         if ( icm.addToCareer(sender.getName(), args[0]) ){
             sender.sendMessage("您已成功选择该职业");
             return true;
         } else {
             sender.sendMessage("选择该职业时出现错误，您是否已经有了一个职业？");
-            return false;
+            return true; //暂时返回true来避免显示"/setcareer career"
         }
     }
 }
