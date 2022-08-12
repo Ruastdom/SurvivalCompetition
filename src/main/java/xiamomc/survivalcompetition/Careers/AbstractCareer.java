@@ -7,25 +7,26 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 
 public abstract class AbstractCareer
 {
     /**
-     * 应用职业效果到玩家
+     * 应用职业到玩家
      * @param playerName 目标玩家名
      * @return 是否成功
      */
-    public Boolean ApplyToPlayer(String playerName)
+    public boolean ApplyToPlayer(String playerName)
     {
         return ApplyToPlayer(Bukkit.getPlayer(playerName));
     }
 
     /**
-     * 应用职业效果到玩家
+     * 应用职业到玩家
      * @param player 目标玩家
      * @return 是否成功
      */
-    public Boolean ApplyToPlayer(Player player)
+    public boolean ApplyToPlayer(Player player)
     {
         return player != null;
     }
@@ -35,14 +36,14 @@ public abstract class AbstractCareer
      * @param playerName 目标玩家名
      * @return 是否成功
      */
-    public Boolean ResetFor(String playerName) { return ResetFor(Bukkit.getPlayer(playerName)); }
+    public boolean ResetFor(String playerName) { return ResetFor(Bukkit.getPlayer(playerName)); }
 
     /**
      * 移除某一玩家的职业效果
      * @param player 目标玩家
      * @return 是否成功
      */
-    public Boolean ResetFor(Player player) { return player != null; }
+    public boolean ResetFor(Player player) { return player != null; }
 
     /**
      * 获取这一职业的显示文本
@@ -68,6 +69,18 @@ public abstract class AbstractCareer
     }
 
     /**
+     * 处理事件
+     * @param player 目标玩家
+     * @param e 事件
+     * @apiNote 一般来说职业实现不会检查玩家是否拥有此职业，因为在职业管理器中已经有一个玩家 -> 职业的ConcurrentHashMap了
+     * @return 处理是否成功
+     */
+    public boolean OnEvent(Player player, Event e)
+    {
+        return true;
+    }
+
+    /**
      * 职业的显示名
      */
     protected String DisplayName = "Dummy";
@@ -82,8 +95,8 @@ public abstract class AbstractCareer
 
     /**
      * 获取职业的内部名<br>
-     * PS: 不要直接调用AbstractCareer.GetInternalNameStatic()，请使用xxx.GetInternalNameStatic()<br>
-     * PSS: 如果可以，请优先使用GetInternalName()
+     * @apiNote 不要直接调用AbstractCareer.GetInternalNameStatic()，请使用xxx.GetInternalNameStatic()<br>
+     *          如果可以，请优先使用GetInternalName()
      * @return 职业的内部名
      */
     public static String GetInternalNameStatic() { return InternalName; }

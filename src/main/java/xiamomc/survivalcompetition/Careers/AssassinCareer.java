@@ -20,7 +20,7 @@ public class AssassinCareer extends AbstractCareer
     private final AttributeModifier attackDamageModifier = new AttributeModifier("xiamoModifier", 0.3, AttributeModifier.Operation.ADD_NUMBER);
 
     @Override
-    public Boolean ApplyToPlayer(Player player)
+    public boolean ApplyToPlayer(Player player)
     {
         if (player == null) return false;
 
@@ -34,7 +34,7 @@ public class AssassinCareer extends AbstractCareer
     }
 
     @Override
-    public Boolean ResetFor(Player player)
+    public boolean ResetFor(Player player)
     {
         if (player == null) return false;
 
