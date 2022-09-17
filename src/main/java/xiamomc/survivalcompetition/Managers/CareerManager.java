@@ -1,20 +1,13 @@
 package xiamomc.survivalcompetition.Managers;
 
-import net.kyori.adventure.text.Component;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import xiamomc.survivalcompetition.Careers.AbstractCareer;
 import xiamomc.survivalcompetition.Careers.AssassinCareer;
+import xiamomc.survivalcompetition.Careers.WarriorCareer;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CareerManager implements ICareerManager{
@@ -26,7 +19,8 @@ public class CareerManager implements ICareerManager{
     {
         careerList = List.of(new AbstractCareer[]
                 {
-                        new AssassinCareer()
+                        new AssassinCareer(),
+                        new WarriorCareer()
                 });
     }
 

@@ -15,9 +15,9 @@ public class AssassinCareer extends AbstractCareer
         Initialize();
     }
 
-    private final AttributeModifier movementModifier = new AttributeModifier("xiamoModifier", 0.1, AttributeModifier.Operation.ADD_NUMBER);
+    private final AttributeModifier movementModifier = new AttributeModifier("xiamoModifier", 0.1, AttributeModifier.Operation.ADD_SCALAR);
 
-    private final AttributeModifier attackDamageModifier = new AttributeModifier("xiamoModifier", 0.3, AttributeModifier.Operation.ADD_NUMBER);
+    private final AttributeModifier attackDamageModifier = new AttributeModifier("xiamoModifier", 0.3, AttributeModifier.Operation.ADD_SCALAR);
 
     @Override
     public boolean ApplyToPlayer(Player player)
