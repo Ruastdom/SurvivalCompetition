@@ -4,6 +4,7 @@ main: xiamomc.survivalcompetition.SurvivalCompetition
 api-version: 1.19
 authors: [ XiaMoDevTeam ]
 website: https://www.xiamomc.ink
+depend: ['Multiverse-Core', 'Multiverse-Inventories', 'Multiverse-NetherPortals']
 
 commands:
   joinsg:

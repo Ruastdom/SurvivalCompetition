@@ -1,5 +1,8 @@
 package xiamomc.survivalcompetition;
 
+import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseNetherPortals.MultiverseNetherPortals;
+import com.onarandombox.multiverseinventories.MultiverseInventories;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import xiamomc.survivalcompetition.Exceptions.DependencyAlreadyRegistedException;
@@ -31,10 +34,33 @@ public final class SurvivalCompetition extends JavaPlugin {
         dependencyManager = new GameDependencyManager();
     }
 
+    public static MultiverseCore getMultiverseCore = null;
+    public static MultiverseInventories getMultiverseInventories = null;
+    public static MultiverseNetherPortals getMultiverseNetherPortals = null;
+
+    public static MultiverseCore getMultiverseCore() {
+        MultiverseCore core = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
+        return core;
+    }
+
+    public static MultiverseInventories getMultiverseInventories() {
+        MultiverseInventories inventories = (MultiverseInventories) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Inventories");
+        return inventories;
+    }
+
+    public static MultiverseNetherPortals getMultiverseNetherPortals() {
+        MultiverseNetherPortals netherportals = (MultiverseNetherPortals) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-NetherPortals");
+        return netherportals;
+    }
     @Override
     public void onEnable() {
         // Plugin startup logic
         getLogger().info("Enabling SurvivalCompetition...");
+
+        // 获取多世界插件
+        MultiverseCore core = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
+        MultiverseInventories inventories = (MultiverseInventories) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Inventories");
+        MultiverseNetherPortals netherportals = (MultiverseNetherPortals) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-NetherPortals");
 
         //region 注册依赖
 
