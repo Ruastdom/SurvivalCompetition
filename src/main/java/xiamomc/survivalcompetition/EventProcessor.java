@@ -1,8 +1,11 @@
 package xiamomc.survivalcompetition;
 
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Team;
@@ -34,6 +37,27 @@ public class EventProcessor extends PluginObject implements Listener {
                 itm.setPoints(killerTeam, itm.getPoints(killerTeam.getName()) + playerMaxHealth, ipm.getList());
                 killer.setMaxHealth((double) killerMaxHealth + 2.0);
             }
+        }
+    }
+
+    @EventHandler
+    public void EnderDragonDeathEvent (EntityDeathEvent e){
+
+    }
+    @EventHandler
+    public void EnderDragonHurtEvent (EntityDamageByEntityEvent e){
+        ITeamManager itm = (ITeamManager) Dependencies.Get(ITeamManager.class);
+        IPlayerListManager ipm = (IPlayerListManager) Dependencies.Get(IPlayerListManager.class);
+        IGameManager igm = (IGameManager) Dependencies.Get(IGameManager.class);
+
+        if (igm.doesGameStart() && e.getDamager().getType() == EntityType.PLAYER) {
+            Player damager = (Player) e.getDamager();
+            int damage = (int) e.getDamage();
+
+            Team playerTeam = itm.getPlayerTeam(damager.getName());
+
+            itm.setPoints(playerTeam, itm.getPoints(playerTeam.getName()) + damage, ipm.getList());
+
         }
     }
 }
