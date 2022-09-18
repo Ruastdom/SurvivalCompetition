@@ -35,10 +35,13 @@ public class GameManager extends PluginObject implements IGameManager {
             public void run() {
                 ITeamManager itm = (ITeamManager) Dependencies.Get(ITeamManager.class);
                 IPlayerListManager igm = (IPlayerListManager) Dependencies.Get(IPlayerListManager.class);
+                IPlayerListManager ipm = (IPlayerListManager) Dependencies.Get(IPlayerListManager.class);
 
                 igm.checkExistence();
                 itm.distributeToTeams(igm.getList());
                 itm.sendTeammatesMessage();
+                itm.setPoints("GAME_RED", 0, ipm.getList());
+                itm.setPoints("GAME_BLUE", 0, ipm.getList());
             }
         }.runTask(SurvivalCompetition.instance);
         ICareerManager icm = (ICareerManager) Dependencies.Get(ICareerManager.class);
@@ -93,6 +96,7 @@ public class GameManager extends PluginObject implements IGameManager {
 
         ITeamManager itm = (ITeamManager) Dependencies.Get(ITeamManager.class);
         IPlayerListManager igm = (IPlayerListManager) Dependencies.Get(IPlayerListManager.class);
+        IMultiverseManager imm = (IMultiverseManager) Dependencies.Get(IMultiverseManager.class);
 
         int redScore = itm.getPoints(itm.getTeamRed().getName());
         int blueScore = itm.getPoints(itm.getTeamBlue().getName());
@@ -110,6 +114,12 @@ public class GameManager extends PluginObject implements IGameManager {
                 player.sendTitlePart(TitlePart.TIMES, Title.Times.times(Duration.ofMillis(times[0]), Duration.ofMillis(times[1]), Duration.ofMillis(times[2])));
                 player.sendTitlePart(TitlePart.TITLE, titleMain);
                 player.sendTitlePart(TitlePart.SUBTITLE, titleWinSub);
+                new BukkitRunnable(){
+                    @Override
+                    public void run() {
+                        imm.tpToWorld(Bukkit.getPlayer(uuid).getName(), SurvivalCompetition.getMultiverseCore().getMVWorldManager().getFirstSpawnWorld().getName());
+                    }
+                }.runTaskLater(SurvivalCompetition.instance, 200);
             }
         }
         igm.clear();
@@ -118,8 +128,12 @@ public class GameManager extends PluginObject implements IGameManager {
         ICareerManager icm = (ICareerManager) Dependencies.Get(ICareerManager.class);
         icm.clear();
 
-        IMultiverseManager imm = (IMultiverseManager) Dependencies.Get(IMultiverseManager.class);
-        imm.deleteWorlds(getNewWorldName());
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                imm.deleteWorlds(time);
+            }
+        }.runTaskLater(SurvivalCompetition.instance, 250);
 
         isGameStarted = false;
         return true;

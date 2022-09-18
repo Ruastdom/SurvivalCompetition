@@ -12,6 +12,9 @@ import org.bukkit.scoreboard.Team;
 import xiamomc.survivalcompetition.Exceptions.NullDependencyException;
 import xiamomc.survivalcompetition.Managers.*;
 
+import static org.bukkit.entity.EntityType.ENDER_DRAGON;
+import static org.bukkit.entity.EntityType.PLAYER;
+
 public class EventProcessor extends PluginObject implements Listener {
     @EventHandler
     public void DeathHandler (PlayerDeathEvent e) {
@@ -19,7 +22,7 @@ public class EventProcessor extends PluginObject implements Listener {
         IPlayerListManager ipm = (IPlayerListManager) Dependencies.Get(IPlayerListManager.class);
         IGameManager igm = (IGameManager) Dependencies.Get(IGameManager.class);
 
-        if (igm.doesGameStart()) {
+        if (igm.doesGameStart() && e.getPlayer().getKiller().getType() == PLAYER) {
             Player player = e.getPlayer();
             Player killer = player.getKiller();
 
@@ -50,7 +53,7 @@ public class EventProcessor extends PluginObject implements Listener {
         IPlayerListManager ipm = (IPlayerListManager) Dependencies.Get(IPlayerListManager.class);
         IGameManager igm = (IGameManager) Dependencies.Get(IGameManager.class);
 
-        if (igm.doesGameStart() && e.getDamager().getType() == EntityType.PLAYER) {
+        if (igm.doesGameStart() && e.getDamager().getType() == EntityType.PLAYER && e.getEntity().getType() == ENDER_DRAGON) {
             Player damager = (Player) e.getDamager();
             int damage = (int) e.getDamage();
 

@@ -21,25 +21,30 @@ public class StartingGame extends PluginObject {
         IPlayerListManager ipm = (IPlayerListManager) Dependencies.Get(IPlayerListManager.class);
 
         String worldName = igm.getNewWorldName();
-        Bukkit.getServer().broadcast(Component.text("正在等待新世界生成......", TextColor.color(255,0,0)));
-        if(imm.createWorlds(worldName)){
-            imm.createSMPWorldGroup(worldName);
-            imm.linkSMPWorlds(worldName);
-            Bukkit.getServer().broadcast(Component.text("新的比赛世界已生成，正在传送玩家到新世界......", TextColor.color(0,255,0)));
-            for (UUID uuid : ipm.getList()) {
-                imm.tpToWorld(Bukkit.getPlayer(uuid).getName(), worldName);
+        final boolean[] createWorldsStats = new boolean[1];
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                Bukkit.getServer().broadcast(Component.text("正在等待新世界生成......", TextColor.color(255,0,0)));
+                createWorldsStats[0] = imm.createWorlds(worldName);
+                if(createWorldsStats[0]){
+                    imm.createSMPWorldGroup(worldName);
+                    imm.linkSMPWorlds(worldName);
+                    Bukkit.getServer().broadcast(Component.text("新的比赛世界已生成，正在传送玩家到新世界......", TextColor.color(0,255,0)));
+                    for (UUID uuid : ipm.getList()) {
+                        imm.tpToWorld(Bukkit.getPlayer(uuid).getName(), worldName);
+                    }
+                    igm.startGame();
+                } else {
+                    Bukkit.getServer().broadcast(Component.text("世界生成出错！请联系管理员检查 log", TextColor.color(255,0,0)));
+                }
             }
-            return true;
-        } else {
-            Bukkit.getServer().broadcast(Component.text("世界生成出错！请联系管理员检查 log", TextColor.color(255,0,0)));
-            return false;
-        }
+        }.runTask(SurvivalCompetition.instance);
+        return true;
     }
     public void noticeGameStarting(){
         IGameManager igm = (IGameManager) Dependencies.Get(IGameManager.class);
-        if ( worldHandler() ){
-            igm.startGame();
-        }
+        worldHandler();
     }
 
     public void dayTriggers(){

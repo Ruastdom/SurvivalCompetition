@@ -54,14 +54,11 @@ public class TeamManager implements ITeamManager {
 
     @Override
     public Team getPlayerTeam(String name) {
-        Bukkit.getServer().broadcastMessage(name);
         if (getTeamBlue().getEntries().contains(name)) {
             return getTeamBlue();
         } else if (getTeamRed().getEntries().contains(name)) {
             return getTeamRed();
         } else {
-            Bukkit.getServer().broadcastMessage("蓝队 getEntries(): " + getTeamBlue().getEntries().toString());
-            Bukkit.getServer().broadcastMessage("无法找到玩家所在队伍");
             return null;
         }
     }
