@@ -15,4 +15,5 @@ public interface IGameManager {
     boolean endGame(List<UUID> playerList);
 
     boolean doesGameStart();
+    String getNewWorldName();
 }

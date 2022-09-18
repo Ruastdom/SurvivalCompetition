@@ -1,8 +1,12 @@
 package xiamomc.survivalcompetition;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import xiamomc.survivalcompetition.Managers.*;
+
+import java.util.UUID;
 
 public class StartingGame extends PluginObject {
     public StartingGame(){
@@ -11,10 +15,31 @@ public class StartingGame extends PluginObject {
         gameEnding();
     }
 
+    public boolean worldHandler(){
+        IMultiverseManager imm = (IMultiverseManager) Dependencies.Get(IMultiverseManager.class);
+        IGameManager igm = (IGameManager) Dependencies.Get(IGameManager.class);
+        IPlayerListManager ipm = (IPlayerListManager) Dependencies.Get(IPlayerListManager.class);
+
+        String worldName = igm.getNewWorldName();
+        Bukkit.getServer().broadcast(Component.text("正在等待新世界生成......", TextColor.color(255,0,0)));
+        if(imm.createWorlds(worldName)){
+            imm.createSMPWorldGroup(worldName);
+            imm.linkSMPWorlds(worldName);
+            Bukkit.getServer().broadcast(Component.text("新的比赛世界已生成，正在传送玩家到新世界......", TextColor.color(0,255,0)));
+            for (UUID uuid : ipm.getList()) {
+                imm.tpToWorld(Bukkit.getPlayer(uuid).getName(), worldName);
+            }
+            return true;
+        } else {
+            Bukkit.getServer().broadcast(Component.text("世界生成出错！请联系管理员检查 log", TextColor.color(255,0,0)));
+            return false;
+        }
+    }
     public void noticeGameStarting(){
         IGameManager igm = (IGameManager) Dependencies.Get(IGameManager.class);
-        igm.startGame();
-        Bukkit.getServer().broadcastMessage("游戏开始!");
+        if ( worldHandler() ){
+            igm.startGame();
+        }
     }
 
     public void dayTriggers(){

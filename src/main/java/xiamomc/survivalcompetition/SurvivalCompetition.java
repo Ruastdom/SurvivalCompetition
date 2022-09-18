@@ -16,6 +16,7 @@ public final class SurvivalCompetition extends JavaPlugin {
     private GameManager gameManager;
     private PlayerListManager playerListManager;
     private CareerManager careerManager;
+    private MultiverseManager multiverseManager;
     private TeamManager teamManager;
 
     public static SurvivalCompetition GetInstance()
@@ -33,10 +34,6 @@ public final class SurvivalCompetition extends JavaPlugin {
         instance = this;
         dependencyManager = new GameDependencyManager();
     }
-
-    public static MultiverseCore getMultiverseCore = null;
-    public static MultiverseInventories getMultiverseInventories = null;
-    public static MultiverseNetherPortals getMultiverseNetherPortals = null;
 
     public static MultiverseCore getMultiverseCore() {
         MultiverseCore core = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
@@ -57,11 +54,6 @@ public final class SurvivalCompetition extends JavaPlugin {
         // Plugin startup logic
         getLogger().info("Enabling SurvivalCompetition...");
 
-        // 获取多世界插件
-        MultiverseCore core = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
-        MultiverseInventories inventories = (MultiverseInventories) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Inventories");
-        MultiverseNetherPortals netherportals = (MultiverseNetherPortals) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-NetherPortals");
-
         //region 注册依赖
 
         //先反注册一遍所有依赖再注册插件
@@ -74,6 +66,7 @@ public final class SurvivalCompetition extends JavaPlugin {
             dependencyManager.CacheAs(ITeamManager.class, teamManager = new TeamManager());
             dependencyManager.CacheAs(IPlayerListManager.class, playerListManager = new PlayerListManager());
             dependencyManager.CacheAs(ICareerManager.class, careerManager = new CareerManager());
+            dependencyManager.CacheAs(IMultiverseManager.class, multiverseManager = new MultiverseManager());
         } catch (DependencyAlreadyRegistedException e) {
             throw new RuntimeException(e);
         }

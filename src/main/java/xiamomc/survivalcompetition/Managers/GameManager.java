@@ -13,6 +13,7 @@ import xiamomc.survivalcompetition.PluginObject;
 import xiamomc.survivalcompetition.SurvivalCompetition;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,6 +27,7 @@ public class GameManager extends PluginObject implements IGameManager {
     @NotNull
     String winner = "";
 
+    String time;
     @Override
     public boolean startGame() {
         new BukkitRunnable(){
@@ -116,6 +118,9 @@ public class GameManager extends PluginObject implements IGameManager {
         ICareerManager icm = (ICareerManager) Dependencies.Get(ICareerManager.class);
         icm.clear();
 
+        IMultiverseManager imm = (IMultiverseManager) Dependencies.Get(IMultiverseManager.class);
+        imm.deleteWorlds(getNewWorldName());
+
         isGameStarted = false;
         return true;
     }
@@ -123,5 +128,13 @@ public class GameManager extends PluginObject implements IGameManager {
     @Override
     public boolean doesGameStart() {
         return isGameStarted;
+    }
+
+    @Override
+    public String getNewWorldName() {
+        if (!isGameStarted){
+            time = String.valueOf(Instant.now().getEpochSecond());
+        }
+        return time;
     }
 }
