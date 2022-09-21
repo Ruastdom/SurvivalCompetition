@@ -16,7 +16,7 @@ public final class SurvivalCompetition extends JavaPlugin {
     private GameManager gameManager;
     private PlayerListManager playerListManager;
     private CareerManager careerManager;
-    private MultiverseManager multiverseManager;
+    private IMultiverseManager multiverseManager;
     private TeamManager teamManager;
 
     public static SurvivalCompetition GetInstance()

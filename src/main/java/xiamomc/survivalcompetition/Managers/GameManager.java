@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import xiamomc.survivalcompetition.Misc.PluginObject;
+import xiamomc.survivalcompetition.Misc.TeamInfo;
 import xiamomc.survivalcompetition.SurvivalCompetition;
 
 import java.time.Duration;
@@ -29,20 +30,14 @@ public class GameManager extends PluginObject implements IGameManager {
     String time;
     @Override
     public boolean startGame() {
-        new BukkitRunnable(){
-            @Override
-            public void run() {
-                ITeamManager itm = (ITeamManager) Dependencies.Get(ITeamManager.class);
-                IPlayerListManager igm = (IPlayerListManager) Dependencies.Get(IPlayerListManager.class);
-                IPlayerListManager ipm = (IPlayerListManager) Dependencies.Get(IPlayerListManager.class);
+        ITeamManager itm = (ITeamManager) Dependencies.Get(ITeamManager.class);
+        IPlayerListManager igm = (IPlayerListManager) Dependencies.Get(IPlayerListManager.class);
+        IPlayerListManager ipm = (IPlayerListManager) Dependencies.Get(IPlayerListManager.class);
 
-                igm.checkExistence();
-                itm.distributeToTeams(igm.getList());
-                itm.sendTeammatesMessage();
-                itm.setPoints("GAME_RED", 0, ipm.getList());
-                itm.setPoints("GAME_BLUE", 0, ipm.getList());
-            }
-        }.runTask(SurvivalCompetition.instance);
+        igm.checkExistence();
+        itm.distributeToTeams(igm.getList());
+        itm.sendTeammatesMessage();
+
         ICareerManager icm = (ICareerManager) Dependencies.Get(ICareerManager.class);
         Bukkit.getServer().broadcastMessage("请选择职业：");
         icm.getCareerList().forEach(career -> Bukkit.getServer().broadcast(career.GetNameAsComponent()));
@@ -89,6 +84,8 @@ public class GameManager extends PluginObject implements IGameManager {
         }
     }
 
+    private TeamInfo drawTeam = new TeamInfo("没有人", "", "DRAW");
+
     @Override
     public boolean endGame(List<UUID> playerList) {
         final TextComponent titleMain = Component.text("游戏结束");
@@ -97,28 +94,29 @@ public class GameManager extends PluginObject implements IGameManager {
         IPlayerListManager igm = (IPlayerListManager) Dependencies.Get(IPlayerListManager.class);
         IMultiverseManager imm = (IMultiverseManager) Dependencies.Get(IMultiverseManager.class);
 
-        int redScore = itm.getPoints(itm.getTeamRed().getName());
-        int blueScore = itm.getPoints(itm.getTeamBlue().getName());
-        if (redScore > blueScore) {
-            winner = "红队胜利！";
-        } else if (redScore < blueScore) {
-            winner = "蓝队胜利！";
-        } else {
-            winner = "两队势均力敌";
+        TeamInfo winnerTeam = drawTeam;
+        int wTScore = 0;
+
+        for (TeamInfo ti : itm.GetTeams())
+        {
+            var score = itm.getPoints(ti.Identifier);
+
+            if (score >= 0 && score > wTScore)
+            {
+                winnerTeam = ti;
+                wTScore = score;
+            }
         }
-        final TextComponent titleWinSub = Component.text(winner);
+
+        final var titleWinSub = Component.text(winnerTeam.Name).append(Component.translatable("胜出！")).asComponent();
         for (UUID uuid : playerList) {
             Player player = Bukkit.getPlayer(uuid);
             if (player != null) {
                 player.sendTitlePart(TitlePart.TIMES, Title.Times.times(Duration.ofMillis(times[0]), Duration.ofMillis(times[1]), Duration.ofMillis(times[2])));
                 player.sendTitlePart(TitlePart.TITLE, titleMain);
                 player.sendTitlePart(TitlePart.SUBTITLE, titleWinSub);
-                new BukkitRunnable(){
-                    @Override
-                    public void run() {
-                        imm.tpToWorld(Bukkit.getPlayer(uuid).getName(), SurvivalCompetition.getMultiverseCore().getMVWorldManager().getFirstSpawnWorld().getName());
-                    }
-                }.runTaskLater(SurvivalCompetition.instance, 200);
+                player.resetMaxHealth();
+                imm.tpToWorld(Bukkit.getPlayer(uuid).getName(), SurvivalCompetition.getMultiverseCore().getMVWorldManager().getFirstSpawnWorld().getName());
             }
         }
         igm.clear();

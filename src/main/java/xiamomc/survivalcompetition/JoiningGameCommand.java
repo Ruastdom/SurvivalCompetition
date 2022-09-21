@@ -43,7 +43,7 @@ public class JoiningGameCommand extends PluginObject implements CommandExecutor 
                         manager.clear();
                     }
                 }
-            }.runTaskLater(SurvivalCompetition.instance, 300);
+            }.runTaskLater(SurvivalCompetition.instance, 100);
         }
         if (manager.addPlayer(player.getUniqueId())) {
             Bukkit.getServer().broadcast(Component.text(sender.getName() + " 成功加入队列！当前队列等待人数 " + manager.listAmount()));

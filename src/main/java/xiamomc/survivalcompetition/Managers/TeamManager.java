@@ -1,188 +1,286 @@
 package xiamomc.survivalcompetition.Managers;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.*;
+import org.jetbrains.annotations.Nullable;
+import xiamomc.survivalcompetition.Misc.TeamInfo;
 
-import java.io.Console;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class TeamManager implements ITeamManager {
     ScoreboardManager manager = Bukkit.getScoreboardManager();
-    Scoreboard board = manager.getNewScoreboard();
+    Scoreboard board = manager.getMainScoreboard();
 
-    public Team blue;
-    public Team red;
-    int redScores = 0;
-    int blueScores = 0;
-
-    //队伍计分板
-    Objective obj = board.registerNewObjective(
-            "Points",
-            "dummy",
-            Component.text(ChatColor.GOLD + "" + ChatColor.BOLD + "各队得分")
+    public final TeamInfo TeamRed = new TeamInfo(
+                "红队", "红队", teamRedIdentifier, NamedTextColor.RED
+    );
+    public final TeamInfo TeamBlue = new TeamInfo(
+            "蓝队", "蓝队", teamBlueIdentifier, NamedTextColor.BLUE
     );
 
-    public void addToTeamBlue(String name) {
-        getTeamBlue().addEntry(name);
+    private static final String teamRedIdentifier = "TEAMRED";
+    private static final String teamBlueIdentifier = "TEAMBLUE";
+
+    public TeamManager()
+    {
+        //todo: 实现从配置文件配置队伍信息
+        initliazeTeams();
     }
 
-    public void addToTeamRed(String name) {
-        getTeamRed().addEntry(name);
+    private void initliazeTeams()
+    {
+        AddTeam(TeamRed);
+        AddTeam(TeamBlue);
     }
 
-    public Team getTeamRed(){
-        if (board.getTeam("GAME_RED") == null) {
-            this.red = board.registerNewTeam("GAME_RED");
-        } else {
-            this.red = board.getTeam("GAME_RED");
+    //队伍计分板
+    Objective obj;
+
+    private void refreshObjective()
+    {
+        if (obj != null)
+        {
+            obj.unregister();
+            obj = null;
         }
-        return this.red;
+
+        obj = board.registerNewObjective
+                (
+                    "Points" + Math.random(),
+                    "dummy",
+                       Component.text(ChatColor.GOLD + "" + ChatColor.BOLD + "各队得分")
+                );
+        obj.setDisplaySlot(DisplaySlot.SIDEBAR);
     }
 
-    public Team getTeamBlue(){
-        if (board.getTeam("GAME_BLUE") == null){
-            this.blue = board.registerNewTeam("GAME_BLUE");
-        } else {
-            this.blue = board.getTeam("GAME_BLUE");
-        }
-        return this.blue;
-    }
+    //region Implementation of ITeamManager
 
-    @Override
-    public Team getPlayerTeam(String name) {
-        if (getTeamBlue().getEntries().contains(name)) {
-            return getTeamBlue();
-        } else if (getTeamRed().getEntries().contains(name)) {
-            return getTeamRed();
-        } else {
-            return null;
-        }
-    }
+    private final ConcurrentHashMap<String, TeamInfo> teamMap = new ConcurrentHashMap<>();
 
-    public void distributeToTeams(List<UUID> list) {
-        for ( int i = 0; i < list.size(); i++) {
-            int a = i % 2;
-            Player player = Bukkit.getPlayer(list.get(i));
-            player.setScoreboard(board);
-            obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-            Score redScore = obj.getScore(ChatColor.RED + "红队");
-            Score blueScore = obj.getScore(ChatColor.BLUE + "蓝队");
-            redScore.setScore(redScores);
-            blueScore.setScore(blueScores);
-            if (a == 0){
-                addToTeamRed(player.getName());
-                player.sendMessage("您已被分配到红队");
-            } else {
-                addToTeamBlue(player.getName());
-                player.sendMessage("您已被分配到蓝队");
-            }
+    private final ConcurrentHashMap<TeamInfo, List<Player>> teamPlayersMap = new ConcurrentHashMap<>();
+
+    public boolean AddTeam(TeamInfo ti)
+    {
+        var prevTeam = board.getTeam(ti.Identifier);
+        if (prevTeam != null)
+        {
+            prevTeam.unregister();
+            prevTeam = null;
         }
+
         // 以下代码来自 https://www.mcbbs.net/thread-897858-1-1.html
         // 感谢他们对 Scoreboard 和 Team 的精细讲解 awa
+        var newTeam = board.registerNewTeam(ti.Identifier);
+        newTeam.setAllowFriendlyFire(false);
+        newTeam.setCanSeeFriendlyInvisibles(true);
+        newTeam.color((NamedTextColor) ti.Color);
+        newTeam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.FOR_OWN_TEAM);
+        newTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.FOR_OTHER_TEAMS);
+        newTeam.displayName(Component.translatable(ti.Name));
+        newTeam.prefix(Component.text(ti.Name).append(Component.text(" - ")));
 
-        // 设置显示名
-        getTeamRed().setDisplayName("红队");
-        getTeamBlue().setDisplayName("蓝队");
-
-        // 设置队伍颜色
-        getTeamRed().setColor(ChatColor.RED);
-        getTeamBlue().setColor(ChatColor.BLUE);
-
-        // 对于自己的队伍进行NameTag显示, 而对其他队伍关闭 -> 制作出类似吃鸡队友的感觉
-        // 这里的FOR_OTHER_TEAM表示的意思是只对其他队伍 关闭
-        getTeamRed().setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.FOR_OTHER_TEAMS);
-        getTeamBlue().setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.FOR_OTHER_TEAMS);
-
-        // 对于自己的队伍开启防碰撞体积, 而对其他队伍开启体积碰撞
-        // 这里的FOR_OWN_TEAM表示的意思是只对本队 关闭
-        getTeamRed().setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.FOR_OWN_TEAM);
-        getTeamBlue().setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.FOR_OWN_TEAM);
-
-        // 设置同队可看见隐身
-        getTeamRed().setCanSeeFriendlyInvisibles(true);
-        getTeamBlue().setCanSeeFriendlyInvisibles(true);
-
-        // 取消队伤
-        getTeamRed().setAllowFriendlyFire(false);
-        getTeamBlue().setAllowFriendlyFire(false);
-
-        // 设置前缀
-        getTeamRed().setPrefix("§c红队 - ");
-        getTeamBlue().setPrefix("§9蓝队 - ");
-    }
-
-    @Override
-    public void sendTeammatesMessage() {
-        Bukkit.getServer().broadcastMessage("§c红队队员：");
-        getTeamRed().getEntries().forEach(player -> Bukkit.getServer().broadcastMessage(ChatColor.RED + " - " + player));
-        Bukkit.getServer().broadcastMessage("§9蓝队队员：");
-        getTeamBlue().getEntries().forEach(player -> Bukkit.getServer().broadcastMessage(ChatColor.BLUE + " - " + player));
-    }
-
-    @Override
-    public int getPoints(String teamName) {
-        if (teamName == "GAME_RED") {
-            return redScores;
-        } else if (teamName == "GAME_BLUE") {
-            return blueScores;
-        } else {
-            return 0;
-        }
-    }
-
-    @Override
-    public boolean setPoints(String teamName, int point, List<UUID> playerList) {
-        if (teamName == "GAME_RED") {
-            board.resetScores(ChatColor.RED + "红队");
-            redScores = point;
-            Score redScore = obj.getScore(ChatColor.RED + "红队");
-            redScore.setScore(redScores);
-        } else if (teamName == "GAME_BLUE") {
-            board.resetScores(ChatColor.BLUE + "蓝队");
-            blueScores = point;
-            Score redScore = obj.getScore(ChatColor.BLUE + "蓝队");
-            redScore.setScore(blueScores);
-        } else {
-            return false;
-        }
-        for (UUID uuid : playerList) {
-            Player player = Bukkit.getPlayer(uuid);
-            player.setScoreboard(board);
-        }
+        ti.Team = newTeam;
+        teamMap.put(ti.Identifier, ti);
         return true;
     }
 
-    @Override
-    public boolean setPoints(Team team, int point, List<UUID> playerList) {
-        if (team.equals(getTeamRed())) {
-            board.resetScores(ChatColor.RED + "红队");
-            redScores = point;
-            Score redScore = obj.getScore(ChatColor.RED + "红队");
-            redScore.setScore(redScores);
-        } else if (team.equals(getTeamBlue())) {
-            board.resetScores(ChatColor.BLUE + "蓝队");
-            blueScores = point;
-            Score redScore = obj.getScore(ChatColor.BLUE + "蓝队");
-            redScore.setScore(blueScores);
-        } else {
-            return false;
+    public boolean AddTeam(String identifier, String name, String desc)
+    {
+        return this.AddTeam(new TeamInfo(name, desc, identifier));
+    }
+
+    public boolean AddTeam(String identifier, String name)
+    {
+        return this.AddTeam(identifier, name, "");
+    }
+
+    public boolean AddTeam(String identifier)
+    {
+        return this.AddTeam(identifier, identifier);
+    }
+
+    @Nullable
+    public TeamInfo GetTeam(String identifier)
+    {
+        return teamMap.get(identifier);
+    }
+
+    public List<TeamInfo> GetTeams()
+    {
+        return teamMap.values().stream().toList();
+    }
+
+    public boolean AddPlayerToTeam(Player player, TeamInfo ti)
+    {
+        if (teamMap.containsValue(ti))
+        {
+            var prevPlayerTeam = GetPlayerTeam(player);
+            var targetTeam = teamMap.get(ti.Identifier);
+
+            if (targetTeam == prevPlayerTeam) return false;
+
+            RemovePlayerFromTeam(player, ti);
+            teamPlayersMap.get(ti).add(player);
+            ti.Team.addEntry(player.getName());
+            return true;
         }
-        for (UUID uuid : playerList) {
+
+        return false;
+    }
+
+    public boolean AddPlayerToTeam(Player player, String identifier)
+    {
+        var targetTeam = this.GetTeam(identifier);
+
+        return AddPlayerToTeam(player, targetTeam);
+    }
+
+    public boolean RemovePlayerFromTeam(Player player, TeamInfo ti)
+    {
+        if (ti == null || player == null) return false;
+
+        ti.Team.removeEntry(player.getName());
+        return teamPlayersMap.get(ti).remove(player);
+    }
+
+    public boolean RemovePlayerFromTeam(Player player, String identifier)
+    {
+        var targetTeam = this.GetTeam(identifier);
+
+        return RemovePlayerFromTeam(player, targetTeam);
+    }
+
+    public boolean RemovePlayerFromTeam(Player player)
+    {
+        var targetTeam = GetPlayerTeam(player);
+
+        return RemovePlayerFromTeam(player, targetTeam);
+    }
+
+    public TeamInfo GetPlayerTeam(Player player)
+    {
+        for (var es : teamPlayersMap.entrySet())
+        {
+            if (es.getValue().contains(player)) return es.getKey();
+        }
+
+        return null;
+    }
+
+    private final ConcurrentHashMap<TeamInfo, Score> teamScoreMap = new ConcurrentHashMap<>();
+
+    public void distributeToTeams(List<UUID> list) {
+        //初始化记分板显示
+        refreshObjective();
+        teamScoreMap.clear();
+        teamPlayersMap.clear();
+
+        for (TeamInfo ti : teamMap.values())
+        {
+            //todo: 在这里显示ti.Name
+            //添加分数显示到teamScoreMap
+            var score = obj.getScore(ti.Name);
+
+            teamScoreMap.put(ti, score);
+
+            score.setScore(0);
+
+            teamPlayersMap.put(ti, new ArrayList<>());
+        }
+
+        //分布玩家
+        for (UUID uuid : list) {
+            var targetIndex = (int) ((Math.random() * 1000) % teamMap.values().size());
+
             Player player = Bukkit.getPlayer(uuid);
-            player.setScoreboard(board);
+            var targetTI = (TeamInfo) teamMap.values().toArray()[targetIndex];
+            this.AddPlayerToTeam(player, targetTI);
+            player.sendMessage(Component.text("您已被分配到" + targetTI.Name));
         }
+    }
+
+    //endregion Implementation of ITeamManager
+
+    @Override
+    public void sendTeammatesMessage()
+    {
+        //列出所有可用队伍信息
+        for (var es : teamPlayersMap.entrySet())
+        {
+            //下一个
+            TeamInfo ti = es.getKey();
+
+            //初始化builder
+            StringBuilder playerListString = new StringBuilder();
+
+            //将玩家名添加到builder
+            for (Player pl : es.getValue())
+            {
+                playerListString.append(pl.getName()).append("\n");
+            }
+
+            //广播成员信息
+            Bukkit.getServer().broadcast(Component.text(ti.Name)
+                    .append(Component.text("成员：")).asComponent());
+
+            Bukkit.getServer().broadcast(Component.text(playerListString.toString()));
+        }
+    }
+
+    @Override
+    public int getPoints(String identifier) {
+        var score = teamScoreMap.get(GetTeam(identifier));
+
+        if (score != null) return score.getScore();
+        return -1;
+    }
+
+    @Override
+    public boolean setPoints(String identifier, int point) {
+        return this.setPoints(GetTeam(identifier), point);
+    }
+
+    @Override
+    public boolean setPoints(TeamInfo ti, int point) {
+        if (ti == null) return false;
+
+        var score = teamScoreMap.get(ti);
+
+        if (score == null) return false;
+
+        score.setScore(point);
+
         return true;
     }
 
     @Override
     public void removeAllPlayersFromTeams() {
-        getTeamBlue().getEntries().forEach(player -> getTeamBlue().removeEntry(player));
-        getTeamRed().getEntries().forEach(player -> getTeamRed().removeEntry(player));
-        getTeamBlue().unregister();
-        getTeamRed().unregister();
+        for (var es : teamPlayersMap.entrySet())
+        {
+            //copy list
+
+            var players = new ArrayList<Player>(es.getValue());
+
+            for (Player player : players)
+            {
+                RemovePlayerFromTeam(player, es.getKey());
+            }
+        }
+
+        //todo: 记分板处理应该放在别的地方执行
+        if (obj != null)
+        {
+            obj.unregister();
+            obj = null;
+        }
     }
 }

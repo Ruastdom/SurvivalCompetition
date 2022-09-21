@@ -11,6 +11,7 @@ import org.bukkit.scoreboard.Team;
 import xiamomc.survivalcompetition.Managers.*;
 import xiamomc.survivalcompetition.Misc.Resolved;
 import xiamomc.survivalcompetition.Misc.PluginObject;
+import xiamomc.survivalcompetition.Misc.TeamInfo;
 
 import static org.bukkit.entity.EntityType.ENDER_DRAGON;
 import static org.bukkit.entity.EntityType.PLAYER;
@@ -34,15 +35,15 @@ public class EventProcessor extends PluginObject implements Listener {
             int playerMaxHealth = (int) player.getMaxHealth();
             int killerMaxHealth = (int) killer.getMaxHealth();
 
-            Team playerTeam = itm.getPlayerTeam(player.getName());
+            TeamInfo playerTeam = itm.GetPlayerTeam(player);
 
-            itm.setPoints(playerTeam, itm.getPoints(playerTeam.getName()) - 20, ipm.getList());
+            itm.setPoints(playerTeam, itm.getPoints(playerTeam.Identifier) - 20);
 
             player.setMaxHealth((double) playerMaxHealth - 2.0);
 
             if (player.getKiller() != null) {
-                Team killerTeam = itm.getPlayerTeam(killer.getName());
-                itm.setPoints(killerTeam, itm.getPoints(killerTeam.getName()) + playerMaxHealth, ipm.getList());
+                TeamInfo killerTeam = itm.GetPlayerTeam(killer);
+                itm.setPoints(killerTeam, itm.getPoints(killerTeam.Identifier) + playerMaxHealth);
                 killer.setMaxHealth((double) killerMaxHealth + 2.0);
             }
         }
@@ -58,9 +59,9 @@ public class EventProcessor extends PluginObject implements Listener {
             Player damager = (Player) e.getDamager();
             int damage = (int) e.getDamage();
 
-            Team playerTeam = itm.getPlayerTeam(damager.getName());
+            TeamInfo playerTeam = itm.GetPlayerTeam(damager);
 
-            itm.setPoints(playerTeam, itm.getPoints(playerTeam.getName()) + damage, ipm.getList());
+            itm.setPoints(playerTeam, itm.getPoints(playerTeam.Identifier) + damage);
 
         }
     }
