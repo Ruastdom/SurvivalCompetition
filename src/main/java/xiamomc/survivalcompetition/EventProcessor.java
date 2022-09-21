@@ -7,21 +7,26 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Team;
-import xiamomc.survivalcompetition.Exceptions.NullDependencyException;
 import xiamomc.survivalcompetition.Managers.*;
+import xiamomc.survivalcompetition.Misc.Resolved;
+import xiamomc.survivalcompetition.Misc.PluginObject;
 
 import static org.bukkit.entity.EntityType.ENDER_DRAGON;
 import static org.bukkit.entity.EntityType.PLAYER;
 
 public class EventProcessor extends PluginObject implements Listener {
+    @Resolved
+    private ITeamManager itm;
+
+    @Resolved
+    private IPlayerListManager ipm;
+
+    @Resolved
+    private IGameManager igm;
+
     @EventHandler
     public void DeathHandler (PlayerDeathEvent e) {
-        ITeamManager itm = (ITeamManager) Dependencies.Get(ITeamManager.class);
-        IPlayerListManager ipm = (IPlayerListManager) Dependencies.Get(IPlayerListManager.class);
-        IGameManager igm = (IGameManager) Dependencies.Get(IGameManager.class);
-
         if (igm.doesGameStart() && e.getPlayer().getKiller().getType() == PLAYER) {
             Player player = e.getPlayer();
             Player killer = player.getKiller();
@@ -49,10 +54,6 @@ public class EventProcessor extends PluginObject implements Listener {
     }
     @EventHandler
     public void EnderDragonHurtEvent (EntityDamageByEntityEvent e){
-        ITeamManager itm = (ITeamManager) Dependencies.Get(ITeamManager.class);
-        IPlayerListManager ipm = (IPlayerListManager) Dependencies.Get(IPlayerListManager.class);
-        IGameManager igm = (IGameManager) Dependencies.Get(IGameManager.class);
-
         if (igm.doesGameStart() && e.getDamager().getType() == EntityType.PLAYER && e.getEntity().getType() == ENDER_DRAGON) {
             Player damager = (Player) e.getDamager();
             int damage = (int) e.getDamage();

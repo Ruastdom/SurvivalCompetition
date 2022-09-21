@@ -5,11 +5,10 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.TitlePart;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
-import xiamomc.survivalcompetition.PluginObject;
+import xiamomc.survivalcompetition.Misc.PluginObject;
 import xiamomc.survivalcompetition.SurvivalCompetition;
 
 import java.time.Duration;
@@ -128,12 +127,8 @@ public class GameManager extends PluginObject implements IGameManager {
         ICareerManager icm = (ICareerManager) Dependencies.Get(ICareerManager.class);
         icm.clear();
 
-        new BukkitRunnable(){
-            @Override
-            public void run() {
-                imm.deleteWorlds(time);
-            }
-        }.runTaskLater(SurvivalCompetition.instance, 250);
+        if (time != null)
+            imm.deleteWorlds(time);
 
         isGameStarted = false;
         return true;

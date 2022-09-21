@@ -3,15 +3,18 @@ package xiamomc.survivalcompetition;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 import xiamomc.survivalcompetition.Managers.ICareerManager;
+import xiamomc.survivalcompetition.Misc.Resolved;
+import xiamomc.survivalcompetition.Misc.PluginObject;
 
 public class CareerCommandProcessor extends PluginObject implements CommandExecutor {
 
+    @Resolved
+    private ICareerManager icm;
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        ICareerManager icm = (ICareerManager) Dependencies.Get(ICareerManager.class);
         if (args.length < 1) return false;
 
         if ( icm.addToCareer(sender.getName(), args[0]) ){

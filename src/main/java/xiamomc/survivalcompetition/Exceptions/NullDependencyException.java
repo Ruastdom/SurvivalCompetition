@@ -1,6 +1,6 @@
 package xiamomc.survivalcompetition.Exceptions;
 
-public class NullDependencyException extends Exception
+public class NullDependencyException extends RuntimeException
 {
     public NullDependencyException(String s)
     {

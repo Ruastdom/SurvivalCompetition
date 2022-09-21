@@ -2,11 +2,13 @@ package xiamomc.survivalcompetition.Managers;
 
 import org.jetbrains.annotations.Nullable;
 import xiamomc.survivalcompetition.Exceptions.DependencyAlreadyRegistedException;
+import xiamomc.survivalcompetition.Exceptions.NullDependencyException;
+import xiamomc.survivalcompetition.Misc.SingleInstanceObject;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class GameDependencyManager
+public class GameDependencyManager extends SingleInstanceObject
 {
     //region 实例相关
     private static GameDependencyManager instance;
@@ -17,9 +19,6 @@ public class GameDependencyManager
 
     public GameDependencyManager()
     {
-        if (instance != null)
-            throw new IllegalStateException("不能创建多个依赖管理器实例");
-
         instance = this;
     }
     //endregion 实例相关
@@ -45,10 +44,13 @@ public class GameDependencyManager
      */
     public void CacheAs(Class<?> classType, Object obj) throws DependencyAlreadyRegistedException
     {
-        if (registers.containsKey(classType))
-            throw new DependencyAlreadyRegistedException("已经注册过一个" + classType + "的依赖了");
+        synchronized (registers)
+        {
+            if (registers.containsKey(classType))
+                throw new DependencyAlreadyRegistedException("已经注册过一个" + classType + "的依赖了");
 
-        registers.put(classType, obj);
+            registers.put(classType, obj);
+        }
     }
 
     /**
@@ -77,14 +79,21 @@ public class GameDependencyManager
      * 从依赖表获取classType所对应的对象
      * @param classType 目标Class类型
      * @return 找到的对象，返回null则未找到
+     * @throws NullDependencyException 依赖未找到时抛出的异常
      */
     //todo: 实现类似于C#中 public T Get<T>(...) where T : object 的用法，这样获取之后就不用再cast一遍了
-    @Nullable
     public Object Get(Class<?> classType)
+    {
+        return this.Get(classType, true);
+    }
+
+    @Nullable
+    public Object Get(Class<?> classType, boolean throwOnNotFound)
     {
         if (registers.containsKey(classType))
             return registers.get(classType);
 
-        return null;
+        if (throwOnNotFound) throw new NullDependencyException("依赖的对象（" + classType + "）未找到");
+        else return null;
     }
 }

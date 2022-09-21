@@ -17,7 +17,6 @@ public class MultiverseManager implements IMultiverseManager{
     WorldGroupManager groupManager = inventories.getGroupManager();
     MVWorldManager worldManager = core.getMVWorldManager();
 
-
     @Override
     public boolean createWorlds(String worldName) {
         boolean createOverworld = worldManager.addWorld(
