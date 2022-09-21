@@ -6,8 +6,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scoreboard.*;
 import org.jetbrains.annotations.Nullable;
+import xiamomc.survivalcompetition.Misc.PluginObject;
 import xiamomc.survivalcompetition.Misc.TeamInfo;
 
 import java.util.ArrayList;
@@ -16,7 +18,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class TeamManager implements ITeamManager {
+public class TeamManager extends PluginObject implements ITeamManager {
     ScoreboardManager manager = Bukkit.getScoreboardManager();
     Scoreboard board = manager.getMainScoreboard();
 
@@ -124,9 +126,9 @@ public class TeamManager implements ITeamManager {
         if (teamMap.containsValue(ti))
         {
             var prevPlayerTeam = GetPlayerTeam(player);
-            var targetTeam = teamMap.get(ti.Identifier);
 
-            if (targetTeam == prevPlayerTeam) return false;
+            if (prevPlayerTeam != null)
+                teamPlayersMap.get(prevPlayerTeam).remove(player);
 
             RemovePlayerFromTeam(player, ti);
             teamPlayersMap.get(ti).add(player);
