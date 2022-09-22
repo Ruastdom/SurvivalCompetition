@@ -7,6 +7,7 @@ import net.kyori.adventure.title.TitlePart;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import xiamomc.survivalcompetition.Misc.PluginObject;
+import xiamomc.survivalcompetition.Misc.Resolved;
 import xiamomc.survivalcompetition.Misc.TeamInfo;
 import xiamomc.survivalcompetition.SurvivalCompetition;
 
@@ -26,17 +27,25 @@ public class GameManager extends PluginObject implements IGameManager
 
     String time;
 
+    @Resolved
+    private ITeamManager itm;
+
+    @Resolved
+    private IPlayerListManager igm;
+
+    @Resolved
+    private ICareerManager icm;
+
+    @Resolved
+    private IMultiverseManager imm;
+
     @Override
     public boolean startGame()
     {
-        ITeamManager itm = (ITeamManager) Dependencies.Get(ITeamManager.class);
-        IPlayerListManager igm = (IPlayerListManager) Dependencies.Get(IPlayerListManager.class);
-
         igm.checkExistence();
         itm.distributeToTeams(igm.getList());
         itm.sendTeammatesMessage();
 
-        ICareerManager icm = (ICareerManager) Dependencies.Get(ICareerManager.class);
         Bukkit.getServer().broadcast(Component.text("请选择职业："));
         icm.getCareerList().forEach(career -> Bukkit.getServer().broadcast(career.GetNameAsComponent()));
         isGameStarted = true;
@@ -98,10 +107,6 @@ public class GameManager extends PluginObject implements IGameManager
     {
         final TextComponent titleMain = Component.text("游戏结束");
 
-        ITeamManager itm = (ITeamManager) Dependencies.Get(ITeamManager.class);
-        IPlayerListManager igm = (IPlayerListManager) Dependencies.Get(IPlayerListManager.class);
-        IMultiverseManager imm = (IMultiverseManager) Dependencies.Get(IMultiverseManager.class);
-
         TeamInfo winnerTeam = drawTeam;
         int wTScore = 0;
 
@@ -132,7 +137,6 @@ public class GameManager extends PluginObject implements IGameManager
         igm.clear();
         itm.removeAllPlayersFromTeams();
 
-        ICareerManager icm = (ICareerManager) Dependencies.Get(ICareerManager.class);
         icm.clear();
 
         if (time != null)

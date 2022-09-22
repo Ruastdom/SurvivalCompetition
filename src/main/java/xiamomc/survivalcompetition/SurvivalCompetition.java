@@ -10,6 +10,7 @@ import xiamomc.survivalcompetition.Managers.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public final class SurvivalCompetition extends JavaPlugin
 {
@@ -111,13 +112,13 @@ public final class SurvivalCompetition extends JavaPlugin
 
     private void tick()
     {
-        runnables.forEach(Runnable::run);
+        runnables.forEach(c -> c.accept(null));
         runnables.clear();
     }
 
-    private final List<Runnable> runnables = new ArrayList<Runnable>();
+    private final List<Consumer<?>> runnables = new ArrayList<>();
 
-    public void Schedule(Runnable runnable)
+    public void Schedule(Consumer<?> runnable)
     {
         synchronized (runnables)
         {
