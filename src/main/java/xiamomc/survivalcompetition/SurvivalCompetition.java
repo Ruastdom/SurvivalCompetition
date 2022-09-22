@@ -4,6 +4,7 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseNetherPortals.MultiverseNetherPortals;
 import com.onarandombox.multiverseinventories.MultiverseInventories;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import xiamomc.survivalcompetition.Command.CommandHelper;
 import xiamomc.survivalcompetition.Managers.*;
@@ -68,6 +69,7 @@ public final class SurvivalCompetition extends JavaPlugin
         dependencyManager.UnCacheAll();
 
         dependencyManager.Cache(this);
+        dependencyManager.CacheAs(FileConfiguration.class, this.getConfig());
         dependencyManager.CacheAs(IGameManager.class, gameManager = new GameManager());
         dependencyManager.CacheAs(ITeamManager.class, teamManager = new TeamManager());
         dependencyManager.CacheAs(IPlayerListManager.class, playerListManager = new PlayerListManager());

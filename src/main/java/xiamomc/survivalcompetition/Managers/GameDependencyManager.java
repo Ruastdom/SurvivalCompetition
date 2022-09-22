@@ -44,13 +44,19 @@ public class GameDependencyManager extends SingleInstanceObject
      * @param classType 要注册的Class类型
      * @param obj       要注册的对象
      * @throws DependencyAlreadyRegistedException 是否已经注册过一个相同的classType了
+     * @throws IllegalArgumentException 传入的对象不能转化为classType的实例
      */
     public void CacheAs(Class<?> classType, Object obj) throws DependencyAlreadyRegistedException
     {
         synchronized (registers)
         {
+            //检查obj是否能cast成classType
+            if (!classType.isInstance(obj))
+                throw new IllegalArgumentException(obj + "不能注册为" + classType);
+
+            //检查是否重复注册
             if (registers.containsKey(classType))
-                throw new DependencyAlreadyRegistedException("已经注册过一个" + classType + "的依赖了");
+                throw new DependencyAlreadyRegistedException("已经注册过一个" + classType.getSimpleName() + "的依赖了");
 
             registers.put(classType, obj);
         }
