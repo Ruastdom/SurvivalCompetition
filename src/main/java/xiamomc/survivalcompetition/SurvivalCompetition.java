@@ -37,6 +37,7 @@ public final class SurvivalCompetition extends JavaPlugin
 
         instance = this;
         dependencyManager = new GameDependencyManager();
+        cmdHelper = new CommandHelper();
     }
 
     public static MultiverseCore getMultiverseCore()
@@ -76,12 +77,13 @@ public final class SurvivalCompetition extends JavaPlugin
         dependencyManager.CacheAs(ICareerManager.class, careerManager = new CareerManager());
         dependencyManager.CacheAs(IMultiverseManager.class, multiverseManager = new MultiverseManager());
 
-        cmdHelper = new CommandHelper();
-
         //endregion
 
-        Bukkit.getPluginManager().registerEvents(new EventProcessor(), this);
-        Bukkit.getPluginManager().registerEvents(new CareerEventProcessor(), this);
+        this.Schedule(c ->
+        {
+            Bukkit.getPluginManager().registerEvents(new EventProcessor(), this);
+            Bukkit.getPluginManager().registerEvents(new CareerEventProcessor(), this);
+        });
 
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, this::tick, 0, 1);
     }

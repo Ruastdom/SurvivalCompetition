@@ -55,7 +55,7 @@ public class GameManager extends PluginObject implements IGameManager
             {
                 for (UUID uuid : iplm.getList())
                 {
-                    imm.tpToWorld(Bukkit.getPlayer(uuid).getName(), worldName);
+                    imm.tpToWorld(Bukkit.getPlayer(uuid), worldName);
                 }
             });
         }
@@ -184,7 +184,7 @@ public class GameManager extends PluginObject implements IGameManager
                 player.sendTitlePart(TitlePart.TITLE, titleMain);
                 player.sendTitlePart(TitlePart.SUBTITLE, titleWinSub);
                 player.resetMaxHealth();
-                imm.tpToWorld(Bukkit.getPlayer(uuid).getName(), SurvivalCompetition.getMultiverseCore().getMVWorldManager().getFirstSpawnWorld().getName());
+                imm.tpToWorld(Bukkit.getPlayer(uuid), SurvivalCompetition.getMultiverseCore().getMVWorldManager().getFirstSpawnWorld().getName());
             }
         }
         iplm.clear();

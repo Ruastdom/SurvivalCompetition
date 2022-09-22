@@ -26,6 +26,13 @@ public abstract class PluginObject
 
     protected PluginObject()
     {
+        initialDependencyResolve();
+    }
+
+    //region 依赖处理
+
+    private void initialDependencyResolve()
+    {
         //region 获取初始化方法
 
         var initializerMethods = Arrays.stream(this.getClass().getDeclaredMethods())
@@ -46,29 +53,18 @@ public abstract class PluginObject
 
         for (Field f : fieldToResolveNow)
         {
-            resolve(f);
+            resolveField(f);
             ftr.remove(f);
         }
 
         fieldsToResolve = ftr;
 
-        this.AddSchedule(d -> this.resolveDependencies());
+        this.AddSchedule(d -> this.resolveRemainingDependencies());
 
         //endregion
     }
 
-    //todo: 使AddSchedule最终由PluginObject自己处理，而不是发给插件
-    protected void AddSchedule(Consumer<?> c)
-    {
-       this.AddSchedule(c, 0);
-    }
-
-    protected void AddSchedule(Consumer<?> c, int ticksLater)
-    {
-        Plugin.Schedule(c, ticksLater);
-    }
-
-    private void resolveDependencies()
+    private void resolveRemainingDependencies()
     {
         //执行初始化方法
         if (initializerMethod != null)
@@ -115,14 +111,14 @@ public abstract class PluginObject
         //自动对有Resolved的字段获取依赖
         for (Field field : fieldsToResolve)
         {
-            resolve(field);
+            resolveField(field);
         }
 
         fieldsToResolve.clear();
         fieldsToResolve = null;
     }
 
-    private void resolve(Field field)
+    private void resolveField(Field field)
     {
         //暂时让Resolved只对private生效
         if (Modifier.isPrivate(field.getModifiers()))
@@ -165,4 +161,21 @@ public abstract class PluginObject
                 + targetClassType.getSimpleName()
                 + ", 但其尚未被注册");
     }
+
+    //endregion
+
+    //region Schedules
+
+    //todo: 使AddSchedule最终由PluginObject自己处理，而不是发给插件
+    protected void AddSchedule(Consumer<?> c)
+    {
+        this.AddSchedule(c, 0);
+    }
+
+    protected void AddSchedule(Consumer<?> c, int delay)
+    {
+        Plugin.Schedule(c, delay);
+    }
+
+    //endregion
 }

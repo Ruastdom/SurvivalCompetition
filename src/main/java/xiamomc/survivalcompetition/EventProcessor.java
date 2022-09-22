@@ -31,6 +31,8 @@ public class EventProcessor extends PluginObject implements Listener
     @EventHandler
     public void DeathHandler(PlayerDeathEvent e)
     {
+        if (e.getPlayer().getKiller() == null) return;
+
         if (igm.doesGameStart() && e.getPlayer().getKiller().getType() == PLAYER)
         {
             Player player = e.getPlayer();

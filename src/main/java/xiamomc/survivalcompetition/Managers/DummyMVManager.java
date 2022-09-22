@@ -1,5 +1,7 @@
 package xiamomc.survivalcompetition.Managers;
 
+import org.bukkit.entity.Player;
+
 public class DummyMVManager implements IMultiverseManager
 {
     @Override
@@ -27,7 +29,7 @@ public class DummyMVManager implements IMultiverseManager
     }
 
     @Override
-    public void tpToWorld(String playerName, String worldName)
+    public void tpToWorld(Player player, String worldName)
     {
 
     }

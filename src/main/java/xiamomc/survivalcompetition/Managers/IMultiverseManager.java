@@ -1,5 +1,7 @@
 package xiamomc.survivalcompetition.Managers;
 
+import org.bukkit.entity.Player;
+
 public interface IMultiverseManager
 {
     boolean createWorlds(String worldName);
@@ -10,5 +12,5 @@ public interface IMultiverseManager
 
     boolean linkSMPWorlds(String worldName);
 
-    void tpToWorld(String playerName, String worldName);
+    void tpToWorld(Player player, String worldName);
 }
