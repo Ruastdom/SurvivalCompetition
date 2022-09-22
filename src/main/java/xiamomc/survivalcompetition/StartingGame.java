@@ -3,15 +3,19 @@ package xiamomc.survivalcompetition;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
-import xiamomc.survivalcompetition.Managers.*;
-import xiamomc.survivalcompetition.Misc.Resolved;
+import xiamomc.survivalcompetition.Managers.IGameManager;
+import xiamomc.survivalcompetition.Managers.IMultiverseManager;
+import xiamomc.survivalcompetition.Managers.IPlayerListManager;
 import xiamomc.survivalcompetition.Misc.Colors;
 import xiamomc.survivalcompetition.Misc.PluginObject;
+import xiamomc.survivalcompetition.Misc.Resolved;
 
 import java.util.UUID;
 
-public class StartingGame extends PluginObject {
-    public StartingGame(){
+public class StartingGame extends PluginObject
+{
+    public StartingGame()
+    {
         noticeGameStarting();
         dayTriggers();
         gameEnding();
@@ -26,56 +30,73 @@ public class StartingGame extends PluginObject {
     @Resolved
     private IPlayerListManager ipm;
 
-    public boolean generateNewWorld(){
+    public boolean generateNewWorld()
+    {
         String worldName = igm.getNewWorldName();
         final boolean[] createWorldsStats = new boolean[1];
 
         Bukkit.getServer().broadcast(Component.translatable("正在等待新世界生成......", Colors.Red));
         createWorldsStats[0] = imm.createWorlds(worldName);
-        if(createWorldsStats[0]){
+        if (createWorldsStats[0])
+        {
             imm.createSMPWorldGroup(worldName);
             imm.linkSMPWorlds(worldName);
             Bukkit.getServer().broadcast(Component.translatable("新的比赛世界已生成，正在传送玩家到新世界......", Colors.Green));
-            for (UUID uuid : ipm.getList()) {
+            for (UUID uuid : ipm.getList())
+            {
                 imm.tpToWorld(Bukkit.getPlayer(uuid).getName(), worldName);
             }
             igm.startGame();
-        } else {
+        }
+        else
+        {
             Bukkit.getServer().broadcast(Component.translatable("世界生成出错！请联系管理员检查 log", Colors.Red));
             return false;
         }
 
         return true;
     }
-    public void noticeGameStarting(){
+
+    public void noticeGameStarting()
+    {
         generateNewWorld();
     }
 
-    public void dayTriggers(){
-        new BukkitRunnable(){
+    public void dayTriggers()
+    {
+        new BukkitRunnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 igm.firstDayTrigger(ipm.getList());
             }
         }.runTaskLater(SurvivalCompetition.instance, 0);
-        new BukkitRunnable(){
+        new BukkitRunnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 igm.secondDayTrigger(ipm.getList());
             }
         }.runTaskLater(SurvivalCompetition.instance, 1500);
-        new BukkitRunnable(){
+        new BukkitRunnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 igm.thirdDayTrigger(ipm.getList());
             }
         }.runTaskLater(SurvivalCompetition.instance, 3000);
     }
 
-    public void gameEnding(){
-        new BukkitRunnable(){
+    public void gameEnding()
+    {
+        new BukkitRunnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 igm.endGame(ipm.getList());
             }
         }.runTaskLater(SurvivalCompetition.instance, 4500);

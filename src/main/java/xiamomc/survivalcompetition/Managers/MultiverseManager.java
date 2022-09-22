@@ -10,7 +10,8 @@ import com.onarandombox.multiverseinventories.share.Sharables;
 import org.bukkit.*;
 import xiamomc.survivalcompetition.SurvivalCompetition;
 
-public class MultiverseManager implements IMultiverseManager{
+public class MultiverseManager implements IMultiverseManager
+{
     MultiverseCore core = SurvivalCompetition.getMultiverseCore();
     MultiverseNetherPortals netherPortals = SurvivalCompetition.getMultiverseNetherPortals();
     MultiverseInventories inventories = SurvivalCompetition.getMultiverseInventories();
@@ -18,7 +19,8 @@ public class MultiverseManager implements IMultiverseManager{
     MVWorldManager worldManager = core.getMVWorldManager();
 
     @Override
-    public boolean createWorlds(String worldName) {
+    public boolean createWorlds(String worldName)
+    {
         boolean createOverworld = worldManager.addWorld(
                 worldName, // The worldname
                 World.Environment.NORMAL, // The overworld environment type.
@@ -54,7 +56,8 @@ public class MultiverseManager implements IMultiverseManager{
     }
 
     @Override
-    public boolean deleteWorlds(String worldName) {
+    public boolean deleteWorlds(String worldName)
+    {
         boolean deleteOverworld = worldManager.deleteWorld(worldName);
         boolean deleteNetherWorld = worldManager.deleteWorld(worldName + "_nether");
         boolean deleteEndWorld = worldManager.deleteWorld(worldName + "_end");
@@ -62,7 +65,8 @@ public class MultiverseManager implements IMultiverseManager{
     }
 
     @Override
-    public void createSMPWorldGroup(String worldName) {
+    public void createSMPWorldGroup(String worldName)
+    {
         // Create new group named after the world.
         // Note this does not add group to Multiverse-Inventories knowledge yet.
         WorldGroup newGroup = groupManager.newEmptyGroup(worldName);
@@ -81,16 +85,18 @@ public class MultiverseManager implements IMultiverseManager{
     }
 
     @Override
-    public boolean linkSMPWorlds(String worldName) {
+    public boolean linkSMPWorlds(String worldName)
+    {
         boolean netherlinkf = netherPortals.addWorldLink(worldName, worldName + "_nether", PortalType.NETHER);
-        boolean netherlinks = netherPortals.addWorldLink(worldName + "_nether", worldName , PortalType.NETHER);
-        boolean endlinkf = netherPortals.addWorldLink(worldName, worldName + "_end" , PortalType.ENDER);
+        boolean netherlinks = netherPortals.addWorldLink(worldName + "_nether", worldName, PortalType.NETHER);
+        boolean endlinkf = netherPortals.addWorldLink(worldName, worldName + "_end", PortalType.ENDER);
         boolean endlinks = netherPortals.addWorldLink(worldName + "_end", worldName, PortalType.ENDER);
         return netherlinkf && netherlinks && endlinkf && endlinks;
     }
 
     @Override
-    public void tpToWorld(String playerName, String worldName) {
+    public void tpToWorld(String playerName, String worldName)
+    {
         core.teleportPlayer(Bukkit.getPlayer(playerName), Bukkit.getPlayer(playerName), Bukkit.getWorld(worldName).getSpawnLocation());
     }
 }

@@ -11,7 +11,8 @@ import xiamomc.survivalcompetition.Managers.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class SurvivalCompetition extends JavaPlugin {
+public final class SurvivalCompetition extends JavaPlugin
+{
     public static SurvivalCompetition instance;
     private GameManager gameManager;
     private PlayerListManager playerListManager;
@@ -35,22 +36,27 @@ public final class SurvivalCompetition extends JavaPlugin {
         dependencyManager = new GameDependencyManager();
     }
 
-    public static MultiverseCore getMultiverseCore() {
+    public static MultiverseCore getMultiverseCore()
+    {
         MultiverseCore core = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
         return core;
     }
 
-    public static MultiverseInventories getMultiverseInventories() {
+    public static MultiverseInventories getMultiverseInventories()
+    {
         MultiverseInventories inventories = (MultiverseInventories) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Inventories");
         return inventories;
     }
 
-    public static MultiverseNetherPortals getMultiverseNetherPortals() {
+    public static MultiverseNetherPortals getMultiverseNetherPortals()
+    {
         MultiverseNetherPortals netherportals = (MultiverseNetherPortals) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-NetherPortals");
         return netherportals;
     }
+
     @Override
-    public void onEnable() {
+    public void onEnable()
+    {
         // Plugin startup logic
         getLogger().info("Enabling SurvivalCompetition...");
 
@@ -60,23 +66,28 @@ public final class SurvivalCompetition extends JavaPlugin {
         dependencyManager.UnCacheAll();
 
         //目前只能再throw一遍:(
-        try {
+        try
+        {
             dependencyManager.Cache(this);
             dependencyManager.CacheAs(IGameManager.class, gameManager = new GameManager());
             dependencyManager.CacheAs(ITeamManager.class, teamManager = new TeamManager());
             dependencyManager.CacheAs(IPlayerListManager.class, playerListManager = new PlayerListManager());
             dependencyManager.CacheAs(ICareerManager.class, careerManager = new CareerManager());
             dependencyManager.CacheAs(IMultiverseManager.class, multiverseManager = new MultiverseManager());
-        } catch (DependencyAlreadyRegistedException e) {
+        }
+        catch (DependencyAlreadyRegistedException e)
+        {
             throw new RuntimeException(e);
         }
 
         //endregion
 
-        if (Bukkit.getPluginCommand("joinsg") != null) {
+        if (Bukkit.getPluginCommand("joinsg") != null)
+        {
             Bukkit.getPluginCommand("joinsg").setExecutor(new JoiningGameCommand());
         }
-        if (Bukkit.getPluginCommand("setcareer") != null) {
+        if (Bukkit.getPluginCommand("setcareer") != null)
+        {
             Bukkit.getPluginCommand("setcareer").setExecutor(new CareerCommandProcessor());
         }
         Bukkit.getPluginManager().registerEvents(new EventProcessor(), this);
@@ -86,7 +97,8 @@ public final class SurvivalCompetition extends JavaPlugin {
     }
 
     @Override
-    public void onDisable() {
+    public void onDisable()
+    {
         // Plugin shutdown logic
         getLogger().info("Disabling SurvivalCompetition");
 

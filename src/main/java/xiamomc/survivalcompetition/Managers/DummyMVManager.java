@@ -1,28 +1,34 @@
 package xiamomc.survivalcompetition.Managers;
 
-public class DummyMVManager implements IMultiverseManager {
+public class DummyMVManager implements IMultiverseManager
+{
     @Override
-    public boolean createWorlds(String worldName) {
+    public boolean createWorlds(String worldName)
+    {
         return true;
     }
 
     @Override
-    public boolean deleteWorlds(String worldName) {
+    public boolean deleteWorlds(String worldName)
+    {
         return true;
     }
 
     @Override
-    public void createSMPWorldGroup(String worldName) {
+    public void createSMPWorldGroup(String worldName)
+    {
 
     }
 
     @Override
-    public boolean linkSMPWorlds(String worldName) {
+    public boolean linkSMPWorlds(String worldName)
+    {
         return true;
     }
 
     @Override
-    public void tpToWorld(String playerName, String worldName) {
+    public void tpToWorld(String playerName, String worldName)
+    {
 
     }
 }

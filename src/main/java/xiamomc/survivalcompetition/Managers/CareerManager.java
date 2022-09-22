@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class CareerManager implements ICareerManager{
+public class CareerManager implements ICareerManager
+{
     private final List<AbstractCareer> careerList;
 
     private static final ConcurrentHashMap<Player, AbstractCareer> playerCareers = new ConcurrentHashMap<>();
@@ -25,26 +26,29 @@ public class CareerManager implements ICareerManager{
     }
 
     @Override
-    public List<AbstractCareer> getCareerList() {
+    public List<AbstractCareer> getCareerList()
+    {
         return careerList;
     }
 
     @Override
-    public void clear() {
+    public void clear()
+    {
         playerCareers.forEach((player, career) -> career.ResetFor(player));
         playerCareers.clear();
     }
 
     @Override
-    public boolean addToCareer(String playerName, String internalName) {
+    public boolean addToCareer(String playerName, String internalName)
+    {
 
         var player = Bukkit.getPlayer(playerName);
 
         if (player == null) return false;
 
         var optional = careerList.stream()
-                                             .filter(c -> Objects.equals(c.GetInternalName(), internalName))
-                                             .findFirst();
+                .filter(c -> Objects.equals(c.GetInternalName(), internalName))
+                .findFirst();
 
         if (optional.isEmpty()) return false;
 
@@ -57,7 +61,8 @@ public class CareerManager implements ICareerManager{
         {
             currentPlayerCareer.ResetFor(player);
             playerCareers.remove(player);
-        };
+        }
+        ;
 
         //career.ApplyToPlayer()可能会抛出异常，所以先把玩家添加到playerCareers
         playerCareers.put(player, career);
@@ -68,7 +73,8 @@ public class CareerManager implements ICareerManager{
     }
 
     @Override
-    public AbstractCareer getPlayerCareer(String playerName) {
+    public AbstractCareer getPlayerCareer(String playerName)
+    {
         var player = Bukkit.getPlayer(playerName);
 
         if (player == null) throw new RuntimeException("未能找到与" + playerName + "对应的玩家");

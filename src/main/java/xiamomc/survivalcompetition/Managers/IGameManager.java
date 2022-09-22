@@ -3,7 +3,8 @@ package xiamomc.survivalcompetition.Managers;
 import java.util.List;
 import java.util.UUID;
 
-public interface IGameManager {
+public interface IGameManager
+{
     boolean startGame();
 
     void firstDayTrigger(List<UUID> playerList);
@@ -15,5 +16,6 @@ public interface IGameManager {
     boolean endGame(List<UUID> playerList);
 
     boolean doesGameStart();
+
     String getNewWorldName();
 }

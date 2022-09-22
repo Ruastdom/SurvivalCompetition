@@ -4,26 +4,24 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.scoreboard.*;
 import org.jetbrains.annotations.Nullable;
 import xiamomc.survivalcompetition.Misc.PluginObject;
 import xiamomc.survivalcompetition.Misc.TeamInfo;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class TeamManager extends PluginObject implements ITeamManager {
+public class TeamManager extends PluginObject implements ITeamManager
+{
     ScoreboardManager manager = Bukkit.getScoreboardManager();
     Scoreboard board = manager.getMainScoreboard();
 
     public final TeamInfo TeamRed = new TeamInfo(
-                "红队", "红队", teamRedIdentifier, NamedTextColor.RED
+            "红队", "红队", teamRedIdentifier, NamedTextColor.RED
     );
     public final TeamInfo TeamBlue = new TeamInfo(
             "蓝队", "蓝队", teamBlueIdentifier, NamedTextColor.BLUE
@@ -57,9 +55,9 @@ public class TeamManager extends PluginObject implements ITeamManager {
 
         obj = board.registerNewObjective
                 (
-                    "Points" + Math.random(),
-                    "dummy",
-                       Component.text(ChatColor.GOLD + "" + ChatColor.BOLD + "各队得分")
+                        "Points" + Math.random(),
+                        "dummy",
+                        Component.text(ChatColor.GOLD + "" + ChatColor.BOLD + "各队得分")
                 );
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
     }
@@ -193,7 +191,8 @@ public class TeamManager extends PluginObject implements ITeamManager {
     private final ConcurrentHashMap<TeamInfo, Score> teamScoreMap = new ConcurrentHashMap<>();
 
     @Override
-    public void distributeToTeams(List<UUID> list) {
+    public void distributeToTeams(List<UUID> list)
+    {
         //初始化记分板显示
         refreshObjective();
         teamScoreMap.clear();
@@ -215,7 +214,8 @@ public class TeamManager extends PluginObject implements ITeamManager {
         var teams = teamMap.values().toArray();
 
         //分布玩家
-        for (UUID uuid : list) {
+        for (UUID uuid : list)
+        {
             var targetIndex = (int) ((Math.random() * 1000) % teamMap.values().size());
 
             Player player = Bukkit.getPlayer(uuid);
@@ -258,7 +258,8 @@ public class TeamManager extends PluginObject implements ITeamManager {
     }
 
     @Override
-    public int getPoints(String identifier) {
+    public int getPoints(String identifier)
+    {
         var score = teamScoreMap.get(GetTeam(identifier));
 
         if (score != null) return score.getScore();
@@ -266,12 +267,14 @@ public class TeamManager extends PluginObject implements ITeamManager {
     }
 
     @Override
-    public boolean setPoints(String identifier, int point) {
+    public boolean setPoints(String identifier, int point)
+    {
         return this.setPoints(GetTeam(identifier), point);
     }
 
     @Override
-    public boolean setPoints(TeamInfo ti, int point) {
+    public boolean setPoints(TeamInfo ti, int point)
+    {
         if (ti == null) return false;
 
         var score = teamScoreMap.get(ti);
@@ -284,7 +287,8 @@ public class TeamManager extends PluginObject implements ITeamManager {
     }
 
     @Override
-    public void removeAllPlayersFromTeams() {
+    public void removeAllPlayersFromTeams()
+    {
         for (var es : teamPlayersMap.entrySet())
         {
             //copy list

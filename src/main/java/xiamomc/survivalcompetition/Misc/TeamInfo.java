@@ -1,9 +1,6 @@
 package xiamomc.survivalcompetition.Misc;
 
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
 import org.bukkit.scoreboard.Team;
 
 public class TeamInfo

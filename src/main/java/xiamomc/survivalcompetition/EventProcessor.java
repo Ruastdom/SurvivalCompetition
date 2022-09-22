@@ -7,16 +7,18 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.scoreboard.Team;
-import xiamomc.survivalcompetition.Managers.*;
-import xiamomc.survivalcompetition.Misc.Resolved;
+import xiamomc.survivalcompetition.Managers.IGameManager;
+import xiamomc.survivalcompetition.Managers.IPlayerListManager;
+import xiamomc.survivalcompetition.Managers.ITeamManager;
 import xiamomc.survivalcompetition.Misc.PluginObject;
+import xiamomc.survivalcompetition.Misc.Resolved;
 import xiamomc.survivalcompetition.Misc.TeamInfo;
 
 import static org.bukkit.entity.EntityType.ENDER_DRAGON;
 import static org.bukkit.entity.EntityType.PLAYER;
 
-public class EventProcessor extends PluginObject implements Listener {
+public class EventProcessor extends PluginObject implements Listener
+{
     @Resolved
     private ITeamManager itm;
 
@@ -27,8 +29,10 @@ public class EventProcessor extends PluginObject implements Listener {
     private IGameManager igm;
 
     @EventHandler
-    public void DeathHandler (PlayerDeathEvent e) {
-        if (igm.doesGameStart() && e.getPlayer().getKiller().getType() == PLAYER) {
+    public void DeathHandler(PlayerDeathEvent e)
+    {
+        if (igm.doesGameStart() && e.getPlayer().getKiller().getType() == PLAYER)
+        {
             Player player = e.getPlayer();
             Player killer = player.getKiller();
 
@@ -41,7 +45,8 @@ public class EventProcessor extends PluginObject implements Listener {
 
             player.setMaxHealth((double) playerMaxHealth - 2.0);
 
-            if (player.getKiller() != null) {
+            if (player.getKiller() != null)
+            {
                 TeamInfo killerTeam = itm.GetPlayerTeam(killer);
                 itm.setPoints(killerTeam, itm.getPoints(killerTeam.Identifier) + playerMaxHealth);
                 killer.setMaxHealth((double) killerMaxHealth + 2.0);
@@ -50,12 +55,16 @@ public class EventProcessor extends PluginObject implements Listener {
     }
 
     @EventHandler
-    public void EnderDragonDeathEvent (EntityDeathEvent e){
+    public void EnderDragonDeathEvent(EntityDeathEvent e)
+    {
 
     }
+
     @EventHandler
-    public void EnderDragonHurtEvent (EntityDamageByEntityEvent e){
-        if (igm.doesGameStart() && e.getDamager().getType() == EntityType.PLAYER && e.getEntity().getType() == ENDER_DRAGON) {
+    public void EnderDragonHurtEvent(EntityDamageByEntityEvent e)
+    {
+        if (igm.doesGameStart() && e.getDamager().getType() == EntityType.PLAYER && e.getEntity().getType() == ENDER_DRAGON)
+        {
             Player damager = (Player) e.getDamager();
             int damage = (int) e.getDamage();
 

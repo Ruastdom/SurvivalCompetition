@@ -4,8 +4,10 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
 
-public class WarriorCareer extends AbstractCareer{
-    public WarriorCareer() {
+public class WarriorCareer extends AbstractCareer
+{
+    public WarriorCareer()
+    {
         DisplayName = "战士";
         InternalName = "warrior";
         Description = "获得防护加成";

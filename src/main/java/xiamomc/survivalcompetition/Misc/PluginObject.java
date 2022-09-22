@@ -38,7 +38,8 @@ public abstract class PluginObject
 
                         //设置值
                         field.set(this, value);
-                    } catch (IllegalAccessException e)
+                    }
+                    catch (IllegalAccessException e)
                     {
                         throw new RuntimeException(e);
                     }

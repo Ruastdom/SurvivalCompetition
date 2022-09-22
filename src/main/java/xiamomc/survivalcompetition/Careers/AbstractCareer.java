@@ -13,6 +13,7 @@ public abstract class AbstractCareer
 {
     /**
      * 应用职业到玩家
+     *
      * @param playerName 目标玩家名
      * @return 是否成功
      */
@@ -23,6 +24,7 @@ public abstract class AbstractCareer
 
     /**
      * 应用职业到玩家
+     *
      * @param player 目标玩家
      * @return 是否成功
      */
@@ -33,20 +35,29 @@ public abstract class AbstractCareer
 
     /**
      * 移除某一玩家的职业效果
+     *
      * @param playerName 目标玩家名
      * @return 是否成功
      */
-    public boolean ResetFor(String playerName) { return ResetFor(Bukkit.getPlayer(playerName)); }
+    public boolean ResetFor(String playerName)
+    {
+        return ResetFor(Bukkit.getPlayer(playerName));
+    }
 
     /**
      * 移除某一玩家的职业效果
+     *
      * @param player 目标玩家
      * @return 是否成功
      */
-    public boolean ResetFor(Player player) { return player != null; }
+    public boolean ResetFor(Player player)
+    {
+        return player != null;
+    }
 
     /**
      * 获取这一职业的显示文本
+     *
      * @return 用来显示的文本
      */
     public Component GetNameAsComponent()
@@ -61,19 +72,20 @@ public abstract class AbstractCareer
     {
         careerNameAsComponent = Component.text(DisplayName).style(b ->
                 b.decorate(TextDecoration.BOLD)
-                 .decorate(TextDecoration.UNDERLINED)
-                 .color(TextColor.color(16755200))
-                 .hoverEvent(HoverEvent.showText(Component.text(Description)))
-                 .clickEvent(ClickEvent.runCommand("/setcareer" + " " + InternalName))
+                        .decorate(TextDecoration.UNDERLINED)
+                        .color(TextColor.color(16755200))
+                        .hoverEvent(HoverEvent.showText(Component.text(Description)))
+                        .clickEvent(ClickEvent.runCommand("/setcareer" + " " + InternalName))
         );
     }
 
     /**
      * 处理事件
+     *
      * @param player 目标玩家
-     * @param e 事件
-     * @apiNote 一般来说职业实现不会检查玩家是否拥有此职业，因为在职业管理器中已经有一个玩家 -> 职业的ConcurrentHashMap了
+     * @param e      事件
      * @return 处理是否成功
+     * @apiNote 一般来说职业实现不会检查玩家是否拥有此职业，因为在职业管理器中已经有一个玩家 -> 职业的ConcurrentHashMap了
      */
     public boolean OnEvent(Player player, Event e)
     {
@@ -95,17 +107,25 @@ public abstract class AbstractCareer
 
     /**
      * 获取职业的内部名<br>
-     * @apiNote 不要直接调用AbstractCareer.GetInternalNameStatic()，请使用xxx.GetInternalNameStatic()<br>
-     *          如果可以，请优先使用GetInternalName()
+     *
      * @return 职业的内部名
+     * @apiNote 不要直接调用AbstractCareer.GetInternalNameStatic()，请使用xxx.GetInternalNameStatic()<br>
+     * 如果可以，请优先使用GetInternalName()
      */
-    public static String GetInternalNameStatic() { return InternalName; }
+    public static String GetInternalNameStatic()
+    {
+        return InternalName;
+    }
 
     /**
      * 获取职业的内部名
+     *
      * @return 职业的内部名
      */
-    public String GetInternalName() { return InternalName; }
+    public String GetInternalName()
+    {
+        return InternalName;
+    }
 
     /**
      * 职业描述

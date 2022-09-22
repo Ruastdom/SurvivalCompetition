@@ -12,6 +12,7 @@ public class GameDependencyManager extends SingleInstanceObject
 {
     //region 实例相关
     private static GameDependencyManager instance;
+
     public static GameDependencyManager GetInstance()
     {
         return instance;
@@ -28,6 +29,7 @@ public class GameDependencyManager extends SingleInstanceObject
 
     /**
      * 注册一个对象到依赖表中
+     *
      * @param obj 要注册的对象
      * @throws DependencyAlreadyRegistedException 该对象所对应的Class是否已被注册
      */
@@ -38,8 +40,9 @@ public class GameDependencyManager extends SingleInstanceObject
 
     /**
      * 将一个对象作为某个Class类型注册到依赖表中
+     *
      * @param classType 要注册的Class类型
-     * @param obj 要注册的对象
+     * @param obj       要注册的对象
      * @throws DependencyAlreadyRegistedException 是否已经注册过一个相同的classType了
      */
     public void CacheAs(Class<?> classType, Object obj) throws DependencyAlreadyRegistedException
@@ -55,6 +58,7 @@ public class GameDependencyManager extends SingleInstanceObject
 
     /**
      * 反注册一个对象
+     *
      * @param obj 要反注册的对象
      * @return 是否成功
      */
@@ -77,6 +81,7 @@ public class GameDependencyManager extends SingleInstanceObject
 
     /**
      * 从依赖表获取classType所对应的对象
+     *
      * @param classType 目标Class类型
      * @return 找到的对象，返回null则未找到
      * @throws NullDependencyException 依赖未找到时抛出的异常
