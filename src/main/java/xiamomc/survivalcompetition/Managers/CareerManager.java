@@ -52,11 +52,11 @@ public class CareerManager extends PluginObject implements ICareerManager
 
         if (optional.isEmpty())
         {
-            Plugin.getLogger().info("找不到职业: " + internalName);
-            for (var c : careerList)
-            {
-                Plugin.getLogger().info(c.GetInternalName());
-            }
+            //Plugin.getLogger().info("找不到职业: " + internalName);
+            //for (var c : careerList)
+            //{
+            //    Plugin.getLogger().info(c.GetInternalName());
+            //}
             return false;
         }
 
@@ -66,7 +66,7 @@ public class CareerManager extends PluginObject implements ICareerManager
         //不要重复添加玩家到某一职业，并且在切换职业前先移除现有职业
         if (currentPlayerCareer == career)
         {
-            Plugin.getLogger().info("重复职业");
+            //Plugin.getLogger().info("重复职业");
             return false;
         }
         else if (currentPlayerCareer != null)
