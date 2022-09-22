@@ -1,12 +1,11 @@
 package xiamomc.survivalcompetition.Command;
 
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import xiamomc.survivalcompetition.Managers.ICareerManager;
 import xiamomc.survivalcompetition.Misc.PluginObject;
-import xiamomc.survivalcompetition.Misc.Resolved;
+import xiamomc.survivalcompetition.Annotations.Resolved;
 
 public class CareerCommand extends PluginObject implements IPluginCommand
 {

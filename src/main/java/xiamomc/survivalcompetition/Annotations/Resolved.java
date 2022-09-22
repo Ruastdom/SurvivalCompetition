@@ -1,4 +1,4 @@
-package xiamomc.survivalcompetition.Misc;
+package xiamomc.survivalcompetition.Annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

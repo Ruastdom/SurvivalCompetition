@@ -3,12 +3,13 @@ package xiamomc.survivalcompetition;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
+import xiamomc.survivalcompetition.Annotations.Initializer;
 import xiamomc.survivalcompetition.Managers.IGameManager;
 import xiamomc.survivalcompetition.Managers.IMultiverseManager;
 import xiamomc.survivalcompetition.Managers.IPlayerListManager;
 import xiamomc.survivalcompetition.Misc.Colors;
 import xiamomc.survivalcompetition.Misc.PluginObject;
-import xiamomc.survivalcompetition.Misc.Resolved;
+import xiamomc.survivalcompetition.Annotations.Resolved;
 
 import java.util.UUID;
 
@@ -16,12 +17,14 @@ public class StartingGame extends PluginObject
 {
     public StartingGame()
     {
-        this.AddSchedule(c ->
-        {
-            noticeGameStarting();
-            dayTriggers();
-            gameEnding();
-        });
+    }
+
+    @Initializer
+    private void init()
+    {
+        noticeGameStarting();
+        dayTriggers();
+        gameEnding();
     }
 
     @Resolved

@@ -11,7 +11,7 @@ import xiamomc.survivalcompetition.Managers.IGameManager;
 import xiamomc.survivalcompetition.Managers.IPlayerListManager;
 import xiamomc.survivalcompetition.Managers.ITeamManager;
 import xiamomc.survivalcompetition.Misc.PluginObject;
-import xiamomc.survivalcompetition.Misc.Resolved;
+import xiamomc.survivalcompetition.Annotations.Resolved;
 import xiamomc.survivalcompetition.Misc.TeamInfo;
 
 import static org.bukkit.entity.EntityType.ENDER_DRAGON;
@@ -19,13 +19,13 @@ import static org.bukkit.entity.EntityType.PLAYER;
 
 public class EventProcessor extends PluginObject implements Listener
 {
-    @Resolved
+    @Resolved(ShouldSolveImmediately = true)
     private ITeamManager itm;
 
-    @Resolved
+    @Resolved(ShouldSolveImmediately = true)
     private IPlayerListManager ipm;
 
-    @Resolved
+    @Resolved(ShouldSolveImmediately = true)
     private IGameManager igm;
 
     @EventHandler
