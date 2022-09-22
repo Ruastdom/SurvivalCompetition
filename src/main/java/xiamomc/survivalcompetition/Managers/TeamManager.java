@@ -271,7 +271,7 @@ public class TeamManager extends PluginObject implements ITeamManager
     {
         var score = teamScoreMap.get(GetTeam(identifier));
 
-        if (score != null) return score.getScore();
+        if (score != null && score.isScoreSet()) return score.getScore();
         return -1;
     }
 

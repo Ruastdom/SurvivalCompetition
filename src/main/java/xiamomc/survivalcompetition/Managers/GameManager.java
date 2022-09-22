@@ -106,6 +106,8 @@ public class GameManager extends PluginObject implements IGameManager
     @Override
     public boolean endGame(List<UUID> playerList)
     {
+        if (!isGameStarted) return false;
+
         final TextComponent titleMain = Component.text("游戏结束");
 
         TeamInfo winnerTeam = drawTeam;
