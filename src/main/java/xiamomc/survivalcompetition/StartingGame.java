@@ -36,20 +36,20 @@ public class StartingGame extends PluginObject
     public boolean generateNewWorld()
     {
         String worldName = igm.getNewWorldName();
-        final boolean[] createWorldsStats = new boolean[1];
 
-        Bukkit.getServer().broadcast(Component.translatable("正在等待新世界生成......", Colors.Red));
-        createWorldsStats[0] = imm.createWorlds(worldName);
-        if (createWorldsStats[0])
+        if (imm.createWorlds(worldName))
         {
             imm.createSMPWorldGroup(worldName);
             imm.linkSMPWorlds(worldName);
             Bukkit.getServer().broadcast(Component.translatable("新的比赛世界已生成，正在传送玩家到新世界......", Colors.Green));
-            for (UUID uuid : ipm.getList())
+            this.AddSchedule(c ->
             {
-                imm.tpToWorld(Bukkit.getPlayer(uuid).getName(), worldName);
-            }
-            igm.startGame();
+                for (UUID uuid : ipm.getList())
+                {
+                    imm.tpToWorld(Bukkit.getPlayer(uuid).getName(), worldName);
+                }
+                igm.startGame();
+            });
         }
         else
         {
@@ -62,7 +62,9 @@ public class StartingGame extends PluginObject
 
     public void noticeGameStarting()
     {
-        generateNewWorld();
+        Bukkit.getServer().broadcast(Component.translatable("正在生成新的世界......", Colors.Red));
+
+        this.AddSchedule(c -> generateNewWorld());
     }
 
     public void dayTriggers()

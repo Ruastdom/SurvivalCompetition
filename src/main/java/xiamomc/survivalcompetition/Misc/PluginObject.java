@@ -38,6 +38,7 @@ public abstract class PluginObject
         this.AddSchedule(d -> this.resolveDependencies());
     }
 
+    //todo: 使AddSchedule最终由PluginObject自己处理，而不是发给插件
     protected void AddSchedule(Consumer<?> c)
     {
         Plugin.Schedule(c);

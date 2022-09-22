@@ -7,12 +7,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.*;
 import org.jetbrains.annotations.Nullable;
+import xiamomc.survivalcompetition.Misc.Colors;
 import xiamomc.survivalcompetition.Misc.PluginObject;
 import xiamomc.survivalcompetition.Misc.TeamInfo;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class TeamManager extends PluginObject implements ITeamManager
@@ -198,6 +197,9 @@ public class TeamManager extends PluginObject implements ITeamManager
         teamScoreMap.clear();
         teamPlayersMap.clear();
 
+        //对列表随机排序
+        Collections.shuffle(list, new Random());
+
         for (TeamInfo ti : teamMap.values())
         {
             //todo: 在这里显示ti.Name
@@ -213,10 +215,12 @@ public class TeamManager extends PluginObject implements ITeamManager
 
         var teams = teamMap.values().toArray();
 
+        var targetIndex = -1; //= (int) ((Math.random() * 1000) % teamMap.values().size());
+
         //分布玩家
         for (UUID uuid : list)
         {
-            var targetIndex = (int) ((Math.random() * 1000) % teamMap.values().size());
+            targetIndex += 1;
 
             Player player = Bukkit.getPlayer(uuid);
             if (player == null)
@@ -225,7 +229,7 @@ public class TeamManager extends PluginObject implements ITeamManager
                 continue;
             }
 
-            var targetTeam = (TeamInfo) teams[targetIndex];
+            var targetTeam = (TeamInfo) teams[targetIndex % teams.length];
             this.AddPlayerToTeam(player, targetTeam);
             player.sendMessage(Component.text("您已被分配到" + targetTeam.Name));
         }
@@ -251,7 +255,7 @@ public class TeamManager extends PluginObject implements ITeamManager
 
             //广播成员信息
             Bukkit.getServer().broadcast(Component.text(ti.Name)
-                    .append(Component.text("成员：")).asComponent());
+                    .append(Component.text("成员：", ti.Color)).asComponent());
 
             Bukkit.getServer().broadcast(Component.text(playerListString.toString()));
         }
