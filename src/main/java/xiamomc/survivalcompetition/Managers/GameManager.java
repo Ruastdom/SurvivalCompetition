@@ -26,7 +26,7 @@ public class GameManager extends PluginObject implements IGameManager
 
     long[] times = new long[]{100, 2000, 100};
 
-    private String currentWorldBaseName;
+    public String CurrentWorldBaseName;
 
     @Resolved
     private ITeamManager itm;
@@ -192,8 +192,8 @@ public class GameManager extends PluginObject implements IGameManager
 
         icm.clear();
 
-        if (currentWorldBaseName != null)
-            this.AddSchedule(c -> imm.deleteWorlds(currentWorldBaseName), 250);
+        if (CurrentWorldBaseName != null)
+            this.AddSchedule(c -> imm.deleteWorlds(CurrentWorldBaseName), 250);
 
         isGameStarted = false;
         return true;
@@ -208,7 +208,7 @@ public class GameManager extends PluginObject implements IGameManager
     @Override
     public String getNewWorldName()
     {
-        return currentWorldBaseName = String.valueOf(Instant.now().getEpochSecond());
+        return CurrentWorldBaseName = String.valueOf(Instant.now().getEpochSecond());
     }
 
     //endregion

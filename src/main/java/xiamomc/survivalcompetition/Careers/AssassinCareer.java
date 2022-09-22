@@ -9,10 +9,15 @@ public class AssassinCareer extends AbstractCareer
     public AssassinCareer()
     {
         DisplayName = "刺客";
-        InternalName = "assassin";
         Description = "使用剑类物品攻击伤害增高 - 移动速度少许加快";
 
         Initialize();
+    }
+
+    @Override
+    public String GetInternalName()
+    {
+        return "assassin";
     }
 
     private final AttributeModifier movementModifier = new AttributeModifier("xiamoModifier", 0.1, AttributeModifier.Operation.ADD_SCALAR);

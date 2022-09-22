@@ -75,7 +75,7 @@ public abstract class AbstractCareer
                         .decorate(TextDecoration.UNDERLINED)
                         .color(TextColor.color(16755200))
                         .hoverEvent(HoverEvent.showText(Component.text(Description)))
-                        .clickEvent(ClickEvent.runCommand("/setcareer" + " " + InternalName))
+                        .clickEvent(ClickEvent.runCommand("/setcareer" + " " + GetInternalName()))
         );
     }
 
@@ -100,32 +100,11 @@ public abstract class AbstractCareer
     private Component careerNameAsComponent;
 
     /**
-     * 职业的内部名<br>
-     * PS: 为方便从其他地方从GetInternalName获取设置为了static
-     */
-    protected static String InternalName = "dummy";
-
-    /**
-     * 获取职业的内部名<br>
-     *
-     * @return 职业的内部名
-     * @apiNote 不要直接调用AbstractCareer.GetInternalNameStatic()，请使用xxx.GetInternalNameStatic()<br>
-     * 如果可以，请优先使用GetInternalName()
-     */
-    public static String GetInternalNameStatic()
-    {
-        return InternalName;
-    }
-
-    /**
      * 获取职业的内部名
      *
      * @return 职业的内部名
      */
-    public String GetInternalName()
-    {
-        return InternalName;
-    }
+    public abstract String GetInternalName();
 
     /**
      * 职业描述

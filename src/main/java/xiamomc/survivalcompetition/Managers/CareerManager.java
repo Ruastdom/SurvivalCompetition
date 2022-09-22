@@ -5,12 +5,13 @@ import org.bukkit.entity.Player;
 import xiamomc.survivalcompetition.Careers.AbstractCareer;
 import xiamomc.survivalcompetition.Careers.AssassinCareer;
 import xiamomc.survivalcompetition.Careers.WarriorCareer;
+import xiamomc.survivalcompetition.Misc.PluginObject;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class CareerManager implements ICareerManager
+public class CareerManager extends PluginObject implements ICareerManager
 {
     private final List<AbstractCareer> careerList;
 
@@ -41,7 +42,6 @@ public class CareerManager implements ICareerManager
     @Override
     public boolean addToCareer(String playerName, String internalName)
     {
-
         var player = Bukkit.getPlayer(playerName);
 
         if (player == null) return false;
@@ -50,13 +50,25 @@ public class CareerManager implements ICareerManager
                 .filter(c -> Objects.equals(c.GetInternalName(), internalName))
                 .findFirst();
 
-        if (optional.isEmpty()) return false;
+        if (optional.isEmpty())
+        {
+            Plugin.getLogger().info("找不到职业: " + internalName);
+            for (var c : careerList)
+            {
+                Plugin.getLogger().info(c.GetInternalName());
+            }
+            return false;
+        }
 
         var career = optional.get();
         var currentPlayerCareer = playerCareers.get(player);
 
         //不要重复添加玩家到某一职业，并且在切换职业前先移除现有职业
-        if (currentPlayerCareer == career) return false;
+        if (currentPlayerCareer == career)
+        {
+            Plugin.getLogger().info("重复职业");
+            return false;
+        }
         else if (currentPlayerCareer != null)
         {
             currentPlayerCareer.ResetFor(player);

@@ -9,10 +9,15 @@ public class WarriorCareer extends AbstractCareer
     public WarriorCareer()
     {
         DisplayName = "战士";
-        InternalName = "warrior";
         Description = "获得防护加成";
 
         Initialize();
+    }
+
+    @Override
+    public String GetInternalName()
+    {
+        return "warrior";
     }
 
     private final AttributeModifier armorModifier = new AttributeModifier("xiamoModifier", 3, AttributeModifier.Operation.ADD_NUMBER);

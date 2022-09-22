@@ -97,6 +97,14 @@ public final class SurvivalCompetition extends JavaPlugin
         //禁用时先结束游戏
         gameManager.endGame(playerListManager.getList());
 
+        //todo: 添加相关方法到multiverseManager或者gameManager里
+        //卸载当前世界
+        if (gameManager.CurrentWorldBaseName != null)
+        {
+            multiverseManager.deleteWorlds(gameManager.CurrentWorldBaseName);
+            gameManager.CurrentWorldBaseName = null;
+        }
+
         //反注册依赖
         dependencyManager.UnCacheAll();
     }
