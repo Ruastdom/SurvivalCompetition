@@ -52,21 +52,18 @@ public class JoinGameCommand extends PluginObject implements IPluginCommand
 
         if (manager.isEmpty())
         {
-            new BukkitRunnable()
+            this.AddSchedule(c ->
             {
-                public void run()
+                if (manager.listAmount() >= 2)
                 {
-                    if (manager.listAmount() >= 2)
-                    {
-                        new StartingGame();
-                    }
-                    else
-                    {
-                        Bukkit.getServer().broadcast(Component.translatable("由于人数不足，本次匹配已停止！"));
-                        manager.clear();
-                    }
+                    new StartingGame();
                 }
-            }.runTaskLater(SurvivalCompetition.instance, 100);
+                else
+                {
+                    Bukkit.getServer().broadcast(Component.translatable("由于人数不足，本次匹配已停止！"));
+                    manager.clear();
+                }
+            }, 100);
         }
         if (manager.addPlayer(player.getUniqueId()))
         {

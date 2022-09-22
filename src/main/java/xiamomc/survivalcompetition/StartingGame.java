@@ -72,41 +72,13 @@ public class StartingGame extends PluginObject
 
     public void dayTriggers()
     {
-        new BukkitRunnable()
-        {
-            @Override
-            public void run()
-            {
-                igm.firstDayTrigger(ipm.getList());
-            }
-        }.runTaskLater(SurvivalCompetition.instance, 0);
-        new BukkitRunnable()
-        {
-            @Override
-            public void run()
-            {
-                igm.secondDayTrigger(ipm.getList());
-            }
-        }.runTaskLater(SurvivalCompetition.instance, 1500);
-        new BukkitRunnable()
-        {
-            @Override
-            public void run()
-            {
-                igm.thirdDayTrigger(ipm.getList());
-            }
-        }.runTaskLater(SurvivalCompetition.instance, 3000);
+        this.AddSchedule(c -> igm.firstDayTrigger(ipm.getList()));
+        this.AddSchedule(c -> igm.secondDayTrigger(ipm.getList()), 1500);
+        this.AddSchedule(c -> igm.thirdDayTrigger(ipm.getList()), 3000);
     }
 
     public void gameEnding()
     {
-        new BukkitRunnable()
-        {
-            @Override
-            public void run()
-            {
-                igm.endGame(ipm.getList());
-            }
-        }.runTaskLater(SurvivalCompetition.instance, 4500);
+        this.AddSchedule(c -> igm.endGame(ipm.getList()), 4500);
     }
 }

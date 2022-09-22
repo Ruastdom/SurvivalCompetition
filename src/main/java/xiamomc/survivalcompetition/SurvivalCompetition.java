@@ -99,20 +99,61 @@ public final class SurvivalCompetition extends JavaPlugin
         dependencyManager.UnCacheAll();
     }
 
+    private long currentTick = 0;
+
     private void tick()
     {
+        currentTick += 1;
+
         var schedules = new ArrayList<>(runnables);
-        runnables.clear();
-        schedules.forEach(c -> c.accept(null));
+        schedules.forEach(c ->
+        {
+            if (currentTick - c.TickScheduled >= c.Delay)
+            {
+                //getLogger().info("执行：" + c + "，当前TICK：" + currentTick);
+                c.Function.accept(null);
+                runnables.remove(c);
+            }
+        });
+        schedules.clear();
     }
 
-    private final List<Consumer<?>> runnables = new ArrayList<>();
+    private final List<ScheduleInfo> runnables = new ArrayList<>();
 
     public void Schedule(Consumer<?> runnable)
     {
+        this.Schedule(runnable, 1);
+    }
+
+    public void Schedule(Consumer<?> function, int delay)
+    {
         synchronized (runnables)
         {
-            runnables.add(runnable);
+            var si = new ScheduleInfo(function, delay, currentTick);
+            //getLogger().info("添加：" + si + "，当前TICK：" + currentTick);
+            runnables.add(si);
+        }
+    }
+
+    private static class ScheduleInfo
+    {
+        public Consumer<?> Function;
+        public int Delay;
+        public long TickScheduled;
+
+        public ScheduleInfo(Consumer<?> function, int delay, long tickScheduled)
+        {
+            this.Function = function;
+            this.Delay = delay;
+            this.TickScheduled = tickScheduled;
+        }
+
+        @Override
+        public String toString()
+        {
+            return "于第" + this.TickScheduled + "刻创建，"
+                    + "并计划于" + this.Delay + "刻后执行的计划任务"
+                    + "（" +this.Function + "）";
         }
     }
 }

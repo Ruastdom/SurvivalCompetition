@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.*;
 import org.jetbrains.annotations.Nullable;
+import xiamomc.survivalcompetition.Annotations.Initializer;
 import xiamomc.survivalcompetition.Misc.PluginObject;
 import xiamomc.survivalcompetition.Misc.TeamInfo;
 
@@ -29,6 +30,11 @@ public class TeamManager extends PluginObject implements ITeamManager
     private static final String teamBlueIdentifier = "TEAMBLUE";
 
     public TeamManager()
+    {
+    }
+
+    @Initializer
+    private void init()
     {
         //todo: 实现从配置文件配置队伍信息
         initliazeTeams();

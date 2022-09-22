@@ -6,6 +6,7 @@ import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.TitlePart;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import xiamomc.survivalcompetition.Annotations.Resolved;
 import xiamomc.survivalcompetition.Misc.PluginObject;
 import xiamomc.survivalcompetition.Misc.TeamInfo;
@@ -140,7 +141,7 @@ public class GameManager extends PluginObject implements IGameManager
         icm.clear();
 
         if (time != null)
-            imm.deleteWorlds(time);
+            this.AddSchedule(c -> imm.deleteWorlds(time), 250);
 
         isGameStarted = false;
         return true;
