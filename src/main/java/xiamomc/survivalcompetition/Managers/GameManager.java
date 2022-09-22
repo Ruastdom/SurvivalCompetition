@@ -6,8 +6,8 @@ import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.TitlePart;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 import xiamomc.survivalcompetition.Annotations.Resolved;
+import xiamomc.survivalcompetition.Misc.Colors;
 import xiamomc.survivalcompetition.Misc.PluginObject;
 import xiamomc.survivalcompetition.Misc.TeamInfo;
 import xiamomc.survivalcompetition.SurvivalCompetition;
@@ -26,13 +26,13 @@ public class GameManager extends PluginObject implements IGameManager
 
     long[] times = new long[]{100, 2000, 100};
 
-    String time;
+    private String currentWorldBaseName;
 
     @Resolved
     private ITeamManager itm;
 
     @Resolved
-    private IPlayerListManager igm;
+    private IPlayerListManager iplm;
 
     @Resolved
     private ICareerManager icm;
@@ -40,11 +40,61 @@ public class GameManager extends PluginObject implements IGameManager
     @Resolved
     private IMultiverseManager imm;
 
+    //region From StartingGame
+
+    public boolean generateNewWorld()
+    {
+        String worldName = this.getNewWorldName();
+
+        if (imm.createWorlds(worldName))
+        {
+            imm.createSMPWorldGroup(worldName);
+            imm.linkSMPWorlds(worldName);
+            Bukkit.getServer().broadcast(Component.translatable("新的比赛世界已生成，正在传送玩家到新世界......", Colors.Green));
+            this.AddSchedule(c ->
+            {
+                for (UUID uuid : iplm.getList())
+                {
+                    imm.tpToWorld(Bukkit.getPlayer(uuid).getName(), worldName);
+                }
+            });
+        }
+        else
+        {
+            Bukkit.getServer().broadcast(Component.translatable("世界生成出错！请联系管理员检查 log", Colors.Red));
+            return false;
+        }
+
+        return true;
+    }
+
+    public void noticeGameStarting()
+    {
+        Bukkit.getServer().broadcast(Component.translatable("正在生成新的世界......", Colors.Red));
+
+        this.AddSchedule(c -> generateNewWorld());
+    }
+
+    public void dayTriggers()
+    {
+        this.AddSchedule(c -> this.firstDayTrigger(iplm.getList()));
+        this.AddSchedule(c -> this.secondDayTrigger(iplm.getList()), 1500);
+        this.AddSchedule(c -> this.thirdDayTrigger(iplm.getList()), 3000);
+        this.AddSchedule(c -> this.endGame(iplm.getList()), 4500);
+    }
+
+    //endregion
+
+    //region Implementation of IGameManager
+
     @Override
     public boolean startGame()
     {
-        igm.checkExistence();
-        itm.distributeToTeams(igm.getList());
+        noticeGameStarting();
+        dayTriggers();
+
+        iplm.checkExistence();
+        itm.distributeToTeams(iplm.getList());
         itm.sendTeammatesMessage();
 
         Bukkit.getServer().broadcast(Component.text("请选择职业："));
@@ -137,13 +187,13 @@ public class GameManager extends PluginObject implements IGameManager
                 imm.tpToWorld(Bukkit.getPlayer(uuid).getName(), SurvivalCompetition.getMultiverseCore().getMVWorldManager().getFirstSpawnWorld().getName());
             }
         }
-        igm.clear();
+        iplm.clear();
         itm.removeAllPlayersFromTeams();
 
         icm.clear();
 
-        if (time != null)
-            this.AddSchedule(c -> imm.deleteWorlds(time), 250);
+        if (currentWorldBaseName != null)
+            this.AddSchedule(c -> imm.deleteWorlds(currentWorldBaseName), 250);
 
         isGameStarted = false;
         return true;
@@ -158,10 +208,8 @@ public class GameManager extends PluginObject implements IGameManager
     @Override
     public String getNewWorldName()
     {
-        if (!isGameStarted)
-        {
-            time = String.valueOf(Instant.now().getEpochSecond());
-        }
-        return time;
+        return currentWorldBaseName = String.valueOf(Instant.now().getEpochSecond());
     }
+
+    //endregion
 }
