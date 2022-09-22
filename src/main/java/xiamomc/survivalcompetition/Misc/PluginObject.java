@@ -9,6 +9,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 public abstract class PluginObject
 {
@@ -34,7 +35,12 @@ public abstract class PluginObject
 
         fieldsToResolve = ftr;
 
-        Plugin.Schedule(d -> this.resolveDependencies());
+        this.AddSchedule(d -> this.resolveDependencies());
+    }
+
+    protected void AddSchedule(Consumer<?> c)
+    {
+        Plugin.Schedule(c);
     }
 
     private void resolveDependencies()

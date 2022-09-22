@@ -1,4 +1,4 @@
-package xiamomc.survivalcompetition;
+package xiamomc.survivalcompetition.Command;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -8,7 +8,7 @@ import xiamomc.survivalcompetition.Managers.ICareerManager;
 import xiamomc.survivalcompetition.Misc.PluginObject;
 import xiamomc.survivalcompetition.Misc.Resolved;
 
-public class CareerCommandProcessor extends PluginObject implements CommandExecutor
+public class CareerCommand extends PluginObject implements IPluginCommand
 {
     @Resolved
     private ICareerManager icm;
@@ -28,5 +28,11 @@ public class CareerCommandProcessor extends PluginObject implements CommandExecu
             sender.sendMessage("选择该职业时出现错误，您是否已经有了一个职业？");
             return true; //暂时返回true来避免显示"/setcareer career"
         }
+    }
+
+    @Override
+    public String GetCommandName()
+    {
+        return "setcareer";
     }
 }

@@ -5,7 +5,7 @@ import com.onarandombox.MultiverseNetherPortals.MultiverseNetherPortals;
 import com.onarandombox.multiverseinventories.MultiverseInventories;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import xiamomc.survivalcompetition.Exceptions.DependencyAlreadyRegistedException;
+import xiamomc.survivalcompetition.Command.CommandHelper;
 import xiamomc.survivalcompetition.Managers.*;
 
 import java.util.ArrayList;
@@ -20,6 +20,7 @@ public final class SurvivalCompetition extends JavaPlugin
     private CareerManager careerManager;
     private IMultiverseManager multiverseManager;
     private TeamManager teamManager;
+    private CommandHelper cmdHelper;
 
     public static SurvivalCompetition GetInstance()
     {
@@ -66,31 +67,17 @@ public final class SurvivalCompetition extends JavaPlugin
         //先反注册一遍所有依赖再注册插件
         dependencyManager.UnCacheAll();
 
-        //目前只能再throw一遍:(
-        try
-        {
-            dependencyManager.Cache(this);
-            dependencyManager.CacheAs(IGameManager.class, gameManager = new GameManager());
-            dependencyManager.CacheAs(ITeamManager.class, teamManager = new TeamManager());
-            dependencyManager.CacheAs(IPlayerListManager.class, playerListManager = new PlayerListManager());
-            dependencyManager.CacheAs(ICareerManager.class, careerManager = new CareerManager());
-            dependencyManager.CacheAs(IMultiverseManager.class, multiverseManager = new MultiverseManager());
-        }
-        catch (DependencyAlreadyRegistedException e)
-        {
-            throw new RuntimeException(e);
-        }
+        dependencyManager.Cache(this);
+        dependencyManager.CacheAs(IGameManager.class, gameManager = new GameManager());
+        dependencyManager.CacheAs(ITeamManager.class, teamManager = new TeamManager());
+        dependencyManager.CacheAs(IPlayerListManager.class, playerListManager = new PlayerListManager());
+        dependencyManager.CacheAs(ICareerManager.class, careerManager = new CareerManager());
+        dependencyManager.CacheAs(IMultiverseManager.class, multiverseManager = new MultiverseManager());
+
+        cmdHelper = new CommandHelper();
 
         //endregion
 
-        if (Bukkit.getPluginCommand("joinsg") != null)
-        {
-            Bukkit.getPluginCommand("joinsg").setExecutor(new JoiningGameCommand());
-        }
-        if (Bukkit.getPluginCommand("setcareer") != null)
-        {
-            Bukkit.getPluginCommand("setcareer").setExecutor(new CareerCommandProcessor());
-        }
         Bukkit.getPluginManager().registerEvents(new EventProcessor(), this);
         Bukkit.getPluginManager().registerEvents(new CareerEventProcessor(), this);
 
@@ -112,8 +99,9 @@ public final class SurvivalCompetition extends JavaPlugin
 
     private void tick()
     {
-        runnables.forEach(c -> c.accept(null));
+        var schedules = new ArrayList<>(runnables);
         runnables.clear();
+        schedules.forEach(c -> c.accept(null));
     }
 
     private final List<Consumer<?>> runnables = new ArrayList<>();

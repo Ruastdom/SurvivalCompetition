@@ -1,9 +1,8 @@
-package xiamomc.survivalcompetition;
+package xiamomc.survivalcompetition.Command;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -13,9 +12,21 @@ import xiamomc.survivalcompetition.Managers.IPlayerListManager;
 import xiamomc.survivalcompetition.Managers.ITeamManager;
 import xiamomc.survivalcompetition.Misc.PluginObject;
 import xiamomc.survivalcompetition.Misc.Resolved;
+import xiamomc.survivalcompetition.StartingGame;
+import xiamomc.survivalcompetition.SurvivalCompetition;
 
-public class JoiningGameCommand extends PluginObject implements CommandExecutor
+public class JoinGameCommand extends PluginObject implements IPluginCommand
 {
+    //region IPluginCommand
+
+    @Override
+    public String GetCommandName()
+    {
+        return "joinsg";
+    }
+
+    //endregion
+
     @Resolved
     private ITeamManager itm;
 

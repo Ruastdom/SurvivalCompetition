@@ -16,9 +16,12 @@ public class StartingGame extends PluginObject
 {
     public StartingGame()
     {
-        noticeGameStarting();
-        dayTriggers();
-        gameEnding();
+        this.AddSchedule(c ->
+        {
+            noticeGameStarting();
+            dayTriggers();
+            gameEnding();
+        });
     }
 
     @Resolved
