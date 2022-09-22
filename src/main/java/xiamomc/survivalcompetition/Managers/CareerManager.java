@@ -2,11 +2,9 @@ package xiamomc.survivalcompetition.Managers;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import xiamomc.survivalcompetition.Annotations.Initializer;
 import xiamomc.survivalcompetition.Careers.AbstractCareer;
 import xiamomc.survivalcompetition.Careers.AssassinCareer;
 import xiamomc.survivalcompetition.Careers.WarriorCareer;
-import xiamomc.survivalcompetition.Misc.PluginObject;
 
 import java.util.List;
 import java.util.Objects;

@@ -135,7 +135,7 @@ public abstract class PluginObject
                 Object value = Dependencies.Get(targetClassType, false);
 
                 //判断是不是null
-                if (value == null && ! field.getAnnotation(Resolved.class).AllowNull())
+                if (value == null && !field.getAnnotation(Resolved.class).AllowNull())
                     throwDependencyNotFound(targetClassType);
 
                 //设置值

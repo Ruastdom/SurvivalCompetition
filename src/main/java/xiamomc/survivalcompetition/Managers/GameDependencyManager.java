@@ -44,7 +44,7 @@ public class GameDependencyManager extends SingleInstanceObject
      * @param classType 要注册的Class类型
      * @param obj       要注册的对象
      * @throws DependencyAlreadyRegistedException 是否已经注册过一个相同的classType了
-     * @throws IllegalArgumentException 传入的对象不能转化为classType的实例
+     * @throws IllegalArgumentException           传入的对象不能转化为classType的实例
      */
     public void CacheAs(Class<?> classType, Object obj) throws DependencyAlreadyRegistedException
     {

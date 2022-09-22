@@ -7,11 +7,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
+import xiamomc.survivalcompetition.Annotations.Resolved;
 import xiamomc.survivalcompetition.Managers.IGameManager;
 import xiamomc.survivalcompetition.Managers.IPlayerListManager;
 import xiamomc.survivalcompetition.Managers.ITeamManager;
 import xiamomc.survivalcompetition.Misc.PluginObject;
-import xiamomc.survivalcompetition.Annotations.Resolved;
 import xiamomc.survivalcompetition.StartingGame;
 import xiamomc.survivalcompetition.SurvivalCompetition;
 

@@ -7,11 +7,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import xiamomc.survivalcompetition.Annotations.Resolved;
 import xiamomc.survivalcompetition.Managers.IGameManager;
 import xiamomc.survivalcompetition.Managers.IPlayerListManager;
 import xiamomc.survivalcompetition.Managers.ITeamManager;
 import xiamomc.survivalcompetition.Misc.PluginObject;
-import xiamomc.survivalcompetition.Annotations.Resolved;
 import xiamomc.survivalcompetition.Misc.TeamInfo;
 
 import static org.bukkit.entity.EntityType.ENDER_DRAGON;

@@ -6,9 +6,8 @@ import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.TitlePart;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import xiamomc.survivalcompetition.Annotations.Initializer;
-import xiamomc.survivalcompetition.Misc.PluginObject;
 import xiamomc.survivalcompetition.Annotations.Resolved;
+import xiamomc.survivalcompetition.Misc.PluginObject;
 import xiamomc.survivalcompetition.Misc.TeamInfo;
 import xiamomc.survivalcompetition.SurvivalCompetition;
 

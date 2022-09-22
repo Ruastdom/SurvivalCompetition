@@ -4,12 +4,12 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import xiamomc.survivalcompetition.Annotations.Initializer;
+import xiamomc.survivalcompetition.Annotations.Resolved;
 import xiamomc.survivalcompetition.Managers.IGameManager;
 import xiamomc.survivalcompetition.Managers.IMultiverseManager;
 import xiamomc.survivalcompetition.Managers.IPlayerListManager;
 import xiamomc.survivalcompetition.Misc.Colors;
 import xiamomc.survivalcompetition.Misc.PluginObject;
-import xiamomc.survivalcompetition.Annotations.Resolved;
 
 import java.util.UUID;
 
