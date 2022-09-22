@@ -59,11 +59,14 @@ public class JoiningGameCommand extends PluginObject implements CommandExecutor
         }
         if (manager.addPlayer(player.getUniqueId()))
         {
-            Bukkit.getServer().broadcast(Component.text(sender.getName() + " 成功加入队列！当前队列等待人数 " + manager.listAmount()));
+            Bukkit.getServer().broadcast(Component.text(sender.getName())
+                    .append(Component.translatable("成功加入队列！当前队列等待人数："))
+                    .append(Component.text(manager.listAmount())));
         }
         else
         {
-            sender.sendMessage(Component.text("加入队列失败，您是否已经在队列中？当前等待人数" + manager.listAmount()));
+            sender.sendMessage(Component.translatable("加入队列失败，您是否已经在队列中？当前等待人数：")
+                    .append(Component.text(manager.listAmount())));
         }
         return true;
     }
