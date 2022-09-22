@@ -70,6 +70,7 @@ public class TeamManager extends PluginObject implements ITeamManager {
 
     private final ConcurrentHashMap<TeamInfo, List<Player>> teamPlayersMap = new ConcurrentHashMap<>();
 
+    @Override
     public boolean AddTeam(TeamInfo ti)
     {
         var prevTeam = board.getTeam(ti.Identifier);
@@ -95,32 +96,38 @@ public class TeamManager extends PluginObject implements ITeamManager {
         return true;
     }
 
+    @Override
     public boolean AddTeam(String identifier, String name, String desc)
     {
         return this.AddTeam(new TeamInfo(name, desc, identifier));
     }
 
+    @Override
     public boolean AddTeam(String identifier, String name)
     {
         return this.AddTeam(identifier, name, "");
     }
 
+    @Override
     public boolean AddTeam(String identifier)
     {
         return this.AddTeam(identifier, identifier);
     }
 
+    @Override
     @Nullable
     public TeamInfo GetTeam(String identifier)
     {
         return teamMap.get(identifier);
     }
 
+    @Override
     public List<TeamInfo> GetTeams()
     {
         return teamMap.values().stream().toList();
     }
 
+    @Override
     public boolean AddPlayerToTeam(Player player, TeamInfo ti)
     {
         if (teamMap.containsValue(ti))
@@ -139,6 +146,7 @@ public class TeamManager extends PluginObject implements ITeamManager {
         return false;
     }
 
+    @Override
     public boolean AddPlayerToTeam(Player player, String identifier)
     {
         var targetTeam = this.GetTeam(identifier);
@@ -146,6 +154,7 @@ public class TeamManager extends PluginObject implements ITeamManager {
         return AddPlayerToTeam(player, targetTeam);
     }
 
+    @Override
     public boolean RemovePlayerFromTeam(Player player, TeamInfo ti)
     {
         if (ti == null || player == null) return false;
@@ -154,6 +163,7 @@ public class TeamManager extends PluginObject implements ITeamManager {
         return teamPlayersMap.get(ti).remove(player);
     }
 
+    @Override
     public boolean RemovePlayerFromTeam(Player player, String identifier)
     {
         var targetTeam = this.GetTeam(identifier);
@@ -161,6 +171,7 @@ public class TeamManager extends PluginObject implements ITeamManager {
         return RemovePlayerFromTeam(player, targetTeam);
     }
 
+    @Override
     public boolean RemovePlayerFromTeam(Player player)
     {
         var targetTeam = GetPlayerTeam(player);
@@ -168,6 +179,7 @@ public class TeamManager extends PluginObject implements ITeamManager {
         return RemovePlayerFromTeam(player, targetTeam);
     }
 
+    @Override
     public TeamInfo GetPlayerTeam(Player player)
     {
         for (var es : teamPlayersMap.entrySet())
@@ -180,6 +192,7 @@ public class TeamManager extends PluginObject implements ITeamManager {
 
     private final ConcurrentHashMap<TeamInfo, Score> teamScoreMap = new ConcurrentHashMap<>();
 
+    @Override
     public void distributeToTeams(List<UUID> list) {
         //初始化记分板显示
         refreshObjective();
@@ -199,18 +212,24 @@ public class TeamManager extends PluginObject implements ITeamManager {
             teamPlayersMap.put(ti, new ArrayList<>());
         }
 
+        var teams = teamMap.values().toArray();
+
         //分布玩家
         for (UUID uuid : list) {
             var targetIndex = (int) ((Math.random() * 1000) % teamMap.values().size());
 
             Player player = Bukkit.getPlayer(uuid);
-            var targetTI = (TeamInfo) teamMap.values().toArray()[targetIndex];
-            this.AddPlayerToTeam(player, targetTI);
-            player.sendMessage(Component.text("您已被分配到" + targetTI.Name));
+            if (player == null)
+            {
+                Plugin.getLogger().warning("未能找到与UUID" + uuid + "对应的玩家");
+                continue;
+            }
+
+            var targetTeam = (TeamInfo) teams[targetIndex];
+            this.AddPlayerToTeam(player, targetTeam);
+            player.sendMessage(Component.text("您已被分配到" + targetTeam.Name));
         }
     }
-
-    //endregion Implementation of ITeamManager
 
     @Override
     public void sendTeammatesMessage()
@@ -285,4 +304,5 @@ public class TeamManager extends PluginObject implements ITeamManager {
             obj = null;
         }
     }
+    //endregion Implementation of ITeamManager
 }
