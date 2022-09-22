@@ -1,5 +1,6 @@
 package xiamomc.survivalcompetition.Misc;
 
+import org.slf4j.Logger;
 import xiamomc.survivalcompetition.Annotations.Initializer;
 import xiamomc.survivalcompetition.Annotations.Resolved;
 import xiamomc.survivalcompetition.Exceptions.NullDependencyException;
@@ -19,6 +20,7 @@ public abstract class PluginObject
 {
     protected final SurvivalCompetition Plugin = SurvivalCompetition.GetInstance();
     protected final GameDependencyManager Dependencies = GameDependencyManager.GetInstance();
+    protected final Logger Logger = Plugin.getSLF4JLogger();
 
     private List<Field> fieldsToResolve;
 
@@ -66,6 +68,15 @@ public abstract class PluginObject
 
     private void resolveRemainingDependencies()
     {
+        //自动对有Resolved的字段获取依赖
+        for (Field field : fieldsToResolve)
+        {
+            resolveField(field);
+        }
+
+        fieldsToResolve.clear();
+        fieldsToResolve = null;
+
         //执行初始化方法
         if (initializerMethod != null)
         {
@@ -107,15 +118,6 @@ public abstract class PluginObject
             else
                 throw new RuntimeException("初始化方法不能是private");
         }
-
-        //自动对有Resolved的字段获取依赖
-        for (Field field : fieldsToResolve)
-        {
-            resolveField(field);
-        }
-
-        fieldsToResolve.clear();
-        fieldsToResolve = null;
     }
 
     private void resolveField(Field field)
@@ -125,7 +127,7 @@ public abstract class PluginObject
         {
             field.setAccessible(true);
 
-            //Plugin.getLogger().info("Resolving " + field.getName() + "(" + field.getType() + ")" + "in " + this);
+            //Logger.info("Resolving " + field.getName() + "(" + field.getType() + ")" + "in " + this);
 
             try
             {

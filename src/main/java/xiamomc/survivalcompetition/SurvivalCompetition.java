@@ -4,9 +4,10 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseNetherPortals.MultiverseNetherPortals;
 import com.onarandombox.multiverseinventories.MultiverseInventories;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.slf4j.Logger;
 import xiamomc.survivalcompetition.Command.CommandHelper;
+import xiamomc.survivalcompetition.Configuration.PluginConfigManager;
 import xiamomc.survivalcompetition.Managers.*;
 
 import java.util.ArrayList;
@@ -22,6 +23,8 @@ public final class SurvivalCompetition extends JavaPlugin
     private IMultiverseManager multiverseManager;
     private TeamManager teamManager;
     private CommandHelper cmdHelper;
+    private PluginConfigManager config;
+    private Logger logger = this.getSLF4JLogger();
 
     public static SurvivalCompetition GetInstance()
     {
@@ -33,7 +36,7 @@ public final class SurvivalCompetition extends JavaPlugin
     public SurvivalCompetition()
     {
         if (instance != null)
-            getLogger().warning("之前似乎已经创建过一个插件实例了...除非你是故意这么做的，不然可能代码又有哪里出bug了！");
+            logger.warn("之前似乎已经创建过一个插件实例了...除非你是故意这么做的，不然可能代码又有哪里出bug了！");
 
         instance = this;
         dependencyManager = new GameDependencyManager();
@@ -62,15 +65,17 @@ public final class SurvivalCompetition extends JavaPlugin
     public void onEnable()
     {
         // Plugin startup logic
-        getLogger().info("Enabling SurvivalCompetition...");
+        logger.info("Enabling SurvivalCompetition...");
 
         //region 注册依赖
 
         //先反注册一遍所有依赖再注册插件
         dependencyManager.UnCacheAll();
 
+        processExceptionCount();
+
         dependencyManager.Cache(this);
-        dependencyManager.CacheAs(FileConfiguration.class, this.getConfig());
+        dependencyManager.Cache(config = new PluginConfigManager(this, this.getConfig()));
         dependencyManager.CacheAs(IGameManager.class, gameManager = new GameManager());
         dependencyManager.CacheAs(ITeamManager.class, teamManager = new TeamManager());
         dependencyManager.CacheAs(IPlayerListManager.class, playerListManager = new PlayerListManager());
@@ -92,7 +97,10 @@ public final class SurvivalCompetition extends JavaPlugin
     public void onDisable()
     {
         // Plugin shutdown logic
-        getLogger().info("Disabling SurvivalCompetition");
+        logger.info("Disabling SurvivalCompetition");
+
+        //禁止tick
+        this.shouldAbortTicking = true;
 
         //禁用时先结束游戏
         gameManager.endGame(playerListManager.getList());
@@ -115,18 +123,70 @@ public final class SurvivalCompetition extends JavaPlugin
     {
         currentTick += 1;
 
+        if (shouldAbortTicking) return;
+
         var schedules = new ArrayList<>(runnables);
         schedules.forEach(c ->
         {
             if (currentTick - c.TickScheduled >= c.Delay)
             {
-                //getLogger().info("执行：" + c + "，当前TICK：" + currentTick);
-                c.Function.accept(null);
                 runnables.remove(c);
+
+                //logger.info("执行：" + c + "，当前TICK：" + currentTick);
+                try
+                {
+                    c.Function.accept(null);
+                }
+                catch (Exception e)
+                {
+                    this.onExceptionCaught(e, c);
+                }
             }
         });
+
         schedules.clear();
     }
+
+    //region tick异常捕捉与处理
+
+    //一秒内最多能接受多少异常
+    //todo: 之后考虑做进配置里让它可调？
+    @SuppressWarnings("FieldCanBeLocal")
+    private final int exceptionLimit = 5;
+
+    //已经捕获的异常
+    private int exceptionCaught = 0;
+
+    //是否应该中断tick
+    private boolean shouldAbortTicking = false;
+
+    private boolean onExceptionCaught(Exception exception, ScheduleInfo scheduleInfo)
+    {
+        if (exception == null) return false;
+
+        exceptionCaught += 1;
+
+        logger.warn("执行" + scheduleInfo + "时捕获到未处理的异常：");
+        exception.printStackTrace();
+
+        if (exceptionCaught >= exceptionLimit)
+        {
+            logger.error("可接受异常已到达最大限制");
+            runnables.clear();
+            this.setEnabled(false);
+            shouldAbortTicking = true;
+        }
+
+        return true;
+    }
+
+    private void processExceptionCount()
+    {
+        exceptionCaught -= 1;
+
+        this.Schedule(c -> processExceptionCount(), 5);
+    }
+    //endregion
 
     private final List<ScheduleInfo> runnables = new ArrayList<>();
 
@@ -140,7 +200,7 @@ public final class SurvivalCompetition extends JavaPlugin
         synchronized (runnables)
         {
             var si = new ScheduleInfo(function, delay, currentTick);
-            //getLogger().info("添加：" + si + "，当前TICK：" + currentTick);
+            //Logger.info("添加：" + si + "，当前TICK：" + currentTick);
             runnables.add(si);
         }
     }

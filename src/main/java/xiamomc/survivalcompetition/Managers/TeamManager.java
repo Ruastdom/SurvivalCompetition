@@ -230,7 +230,7 @@ public class TeamManager extends PluginObject implements ITeamManager
             Player player = Bukkit.getPlayer(uuid);
             if (player == null)
             {
-                Plugin.getLogger().warning("未能找到与UUID" + uuid + "对应的玩家");
+                Logger.warn("未能找到与UUID" + uuid + "对应的玩家");
                 continue;
             }
 
