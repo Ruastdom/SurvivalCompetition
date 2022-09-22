@@ -172,9 +172,7 @@ public final class SurvivalCompetition extends JavaPlugin
         if (exceptionCaught >= exceptionLimit)
         {
             logger.error("可接受异常已到达最大限制");
-            runnables.clear();
             this.setEnabled(false);
-            shouldAbortTicking = true;
         }
 
         return true;
