@@ -5,21 +5,30 @@ import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
+import xiamomc.survivalcompetition.Annotations.NotSerializable;
+import xiamomc.survivalcompetition.Annotations.Serializable;
+import xiamomc.survivalcompetition.Misc.Serialize.ConfigSerializeUtils;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class TeamInfo implements ConfigurationSerializable
 {
+    @NotSerializable
     public Team Team = null;
-    //todo: 将两个String转为Component使用?
+
     public String Name = "队伍名称";
-    public String TeamPrefix = "PFX - ";
+
     public String Description = "队伍描述";
+
     public String Identifier = null;
+
+    @Serializable(target = "Prefix")
+    public String TeamPrefix = "PFX - ";
+
+    @NotSerializable
     public NamedTextColor TeamColor;
 
-    public TeamInfo()
+    private TeamInfo()
     {
     }
 
@@ -37,28 +46,19 @@ public class TeamInfo implements ConfigurationSerializable
         this.TeamColor = teamColor;
     }
 
-    //NamedTextColor不支持序列化，只能先这样了
     @Override
     public @NotNull Map<String, Object> serialize()
     {
-        var result = new LinkedHashMap<String, Object>();
-        result.put("Name", this.Name);
-        result.put("Prefix", this.TeamPrefix);
-        result.put("Description", this.Description);
-        result.put("Identifier", this.Identifier);
-        result.put("TeamColor", this.TeamColor.asHexString());
+        var result = ConfigSerializeUtils.Serialize(this);
+        result.put("TeamColor", this.TeamColor.asHexString()); //NamedTextColor不支持序列化，只能先这样了
 
         return result;
     }
 
     public static TeamInfo deserialize(Map<String, Object> map)
     {
-        return new TeamInfo(
-                (String) map.getOrDefault("Name", "未知队伍"),
-                (String) map.getOrDefault("Prefix", "未知PFX"),
-                (String) map.getOrDefault("Description", "未知描述"),
-                (String) map.getOrDefault("Identifier", "NULL"),
-                NamedTextColor.nearestTo(TextColor.fromHexString((String) map.getOrDefault("TeamColor", "#ffffff")))
-        );
+        var result = ConfigSerializeUtils.DeSerialize(new TeamInfo(), map);
+        result.TeamColor = NamedTextColor.nearestTo(TextColor.fromHexString((String) map.getOrDefault("TeamColor", "#ffffff")));
+        return result;
     }
 }

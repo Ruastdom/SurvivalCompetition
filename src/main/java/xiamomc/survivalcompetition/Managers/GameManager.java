@@ -85,27 +85,12 @@ public class GameManager extends PluginObject implements IGameManager
 
     //region Implementation of IGameManager
 
-    @Override
-    public boolean startGame()
-    {
-        noticeGameStarting();
-        iplm.checkExistence();
-
-        isGameStarted = true;
-
-        stageIndex = -1;
-        ticksRemaining = -1;
-
-        this.AddSchedule(c -> tick());
-        return true;
-    }
-
     private final List<StageInfo> stages = new ArrayList<>();
 
     private final StageInfo endingStage = new StageInfo("胜出", "游戏结束", "", 200, false, false, false);
 
     private int stageIndex = -1;
-    private StageInfo currentStage = endingStage;
+    private StageInfo currentStage = null;
     private int ticksRemaining = -1;
 
     private final ConfigNode baseConfigNode = ConfigNode.New().Append("GameManager");
@@ -118,6 +103,23 @@ public class GameManager extends PluginObject implements IGameManager
     private void init()
     {
         config.OnConfigRefresh(c -> onConfigUpdate(), true);
+    }
+
+    @Override
+    public boolean startGame()
+    {
+        Logger.warn("START");
+        noticeGameStarting();
+        iplm.checkExistence();
+
+        isGameStarted = true;
+
+        stageIndex = -1;
+        ticksRemaining = -1;
+        currentStage = null;
+
+        this.AddSchedule(c -> tick());
+        return true;
     }
 
     private void onConfigUpdate()
@@ -163,6 +165,7 @@ public class GameManager extends PluginObject implements IGameManager
 
     private void switchToNextStage()
     {
+        Logger.warn("SWNEXT");
         stageIndex += 1;
         if (stageIndex >= stages.size())
         {

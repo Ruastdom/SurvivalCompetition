@@ -98,6 +98,8 @@ public class TeamManager extends PluginObject implements ITeamManager
     @Override
     public boolean AddTeam(TeamInfo ti)
     {
+        if (ti == null) throw new IllegalArgumentException("队伍信息不能是null");
+
         Logger.info("添加队伍：" + ti.Name);
 
         var teamId = ti.Identifier;
