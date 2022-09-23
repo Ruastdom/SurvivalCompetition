@@ -92,17 +92,16 @@ public class GameDependencyManager extends SingleInstanceObject
      * @return 找到的对象，返回null则未找到
      * @throws NullDependencyException 依赖未找到时抛出的异常
      */
-    //todo: 实现类似于C#中 public T Get<T>(...) where T : object 的用法，这样获取之后就不用再cast一遍了（但现在有了Resolve annotation，不大需要手动Get了）
-    public Object Get(Class<?> classType)
+    public <T> T Get(Class<T> classType)
     {
         return this.Get(classType, true);
     }
 
     @Nullable
-    public Object Get(Class<?> classType, boolean throwOnNotFound)
+    public <T> T Get(Class<T> classType, boolean throwOnNotFound)
     {
         if (registers.containsKey(classType))
-            return registers.get(classType);
+            return (T) registers.get(classType);
 
         if (throwOnNotFound) throw new NullDependencyException("依赖的对象（" + classType + "）未找到");
         else return null;
