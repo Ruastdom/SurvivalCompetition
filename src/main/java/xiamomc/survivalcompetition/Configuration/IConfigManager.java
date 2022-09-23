@@ -4,10 +4,11 @@ public interface IConfigManager
 {
     /**
      * 从配置获取值
+     * @param type 目标类型
      * @param path 配置中的路径
      * @return 获取到的值
      */
-    public Object Get(String path);
+    public <T> T Get(Class<T> type, ConfigNode path);
 
     /**
      * 向配置路径设置值
@@ -15,7 +16,7 @@ public interface IConfigManager
      * @param value 要设置的值
      * @return 设置是否成功
      */
-    public boolean Set(String path, Object value);
+    public boolean Set(ConfigNode path, Object value);
 
     /**
      * 恢复默认配置

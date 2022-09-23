@@ -8,6 +8,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.*;
 import org.jetbrains.annotations.Nullable;
 import xiamomc.survivalcompetition.Annotations.Initializer;
+import xiamomc.survivalcompetition.Configuration.ConfigNode;
+import xiamomc.survivalcompetition.Configuration.PluginConfigManager;
 import xiamomc.survivalcompetition.Misc.PluginObject;
 import xiamomc.survivalcompetition.Misc.TeamInfo;
 
@@ -19,31 +21,49 @@ public class TeamManager extends PluginObject implements ITeamManager
     ScoreboardManager manager = Bukkit.getScoreboardManager();
     Scoreboard board = manager.getMainScoreboard();
 
-    public final TeamInfo TeamRed = new TeamInfo(
-            "红队", "红队", teamRedIdentifier, NamedTextColor.RED
-    );
-    public final TeamInfo TeamBlue = new TeamInfo(
-            "蓝队", "蓝队", teamBlueIdentifier, NamedTextColor.BLUE
+    public static final TeamInfo FallBackTeam = new TeamInfo(
+            "无效队伍配置", "FIX ME PLEASE", "FALLBACK", NamedTextColor.AQUA
     );
 
-    private static final String teamRedIdentifier = "TEAMRED";
-    private static final String teamBlueIdentifier = "TEAMBLUE";
+    private final ConfigNode baseConfigNode = ConfigNode.New().Append("TeamManager");
 
     public TeamManager()
     {
     }
 
     @Initializer
-    private void init()
+    private void init(PluginConfigManager config)
     {
-        //todo: 实现从配置文件配置队伍信息
-        initliazeTeams();
-    }
+        //配置节点
+        var teamsNode = baseConfigNode.GetCopy().Append("Teams");
 
-    private void initliazeTeams()
-    {
-        AddTeam(TeamRed);
-        AddTeam(TeamBlue);
+        //获取队伍列表
+        var teams = config.Get(ArrayList.class, teamsNode);
+
+        //如果没有队伍，则使用默认配置
+        if (teams == null)
+        {
+            var list = new ArrayList<TeamInfo>();
+
+            list.add(new TeamInfo(
+                    "红队", "红队", "TEAMRED", NamedTextColor.RED
+            ));
+
+            list.add(new TeamInfo(
+                    "蓝队", "蓝队", "TEAMBLUE", NamedTextColor.BLUE
+            ));
+
+            config.Set(teamsNode, list);
+            teams = list;
+        }
+
+        //添加队伍
+        for (var t : teams)
+            AddTeam((TeamInfo) t);
+
+        //如果teamMap是空的
+        if (teamMap.size() == 0)
+            AddTeam(FallBackTeam);
     }
 
     //队伍计分板
@@ -75,19 +95,27 @@ public class TeamManager extends PluginObject implements ITeamManager
     @Override
     public boolean AddTeam(TeamInfo ti)
     {
+        Logger.info("添加队伍：" + ti);
+
+        var teamId = ti.Identifier;
+        if (teamId == null || teamId.isEmpty() || teamId.isBlank() || teamId.equals("NULL"))
+        {
+            Logger.error("无效队伍ID：" + ti.Identifier + "，将不会添加此队伍");
+            return false;
+        }
+
+        if (teamMap.containsValue(ti)) return false;
+
         var prevTeam = board.getTeam(ti.Identifier);
         if (prevTeam != null)
-        {
             prevTeam.unregister();
-            prevTeam = null;
-        }
 
         // 以下代码来自 https://www.mcbbs.net/thread-897858-1-1.html
         // 感谢他们对 Scoreboard 和 Team 的精细讲解 awa
         var newTeam = board.registerNewTeam(ti.Identifier);
         newTeam.setAllowFriendlyFire(false);
         newTeam.setCanSeeFriendlyInvisibles(true);
-        newTeam.color((NamedTextColor) ti.Color);
+        newTeam.color(ti.TeamColor);
         newTeam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.FOR_OWN_TEAM);
         newTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.FOR_OTHER_TEAMS);
         newTeam.displayName(Component.translatable(ti.Name));
@@ -260,7 +288,7 @@ public class TeamManager extends PluginObject implements ITeamManager
 
             //广播成员信息
             Bukkit.getServer().broadcast(Component.text(ti.Name)
-                    .append(Component.text("成员：", ti.Color)).asComponent());
+                    .append(Component.text("成员：", ti.TeamColor)).asComponent());
 
             Bukkit.getServer().broadcast(Component.text(playerListString.toString()));
         }
