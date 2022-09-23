@@ -33,4 +33,10 @@ public class DummyMVManager implements IMultiverseManager
     {
 
     }
+
+    @Override
+    public String GetFirstSpawnWorldName()
+    {
+        return null;
+    }
 }

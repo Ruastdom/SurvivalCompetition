@@ -13,4 +13,7 @@ public interface IMultiverseManager
     boolean linkSMPWorlds(String worldName);
 
     void tpToWorld(Player player, String worldName);
+
+    //临时
+    String GetFirstSpawnWorldName();
 }

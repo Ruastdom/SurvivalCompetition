@@ -9,15 +9,27 @@ import com.onarandombox.multiverseinventories.profile.WorldGroupManager;
 import com.onarandombox.multiverseinventories.share.Sharables;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
-import xiamomc.survivalcompetition.SurvivalCompetition;
+import xiamomc.survivalcompetition.Annotations.Initializer;
+import xiamomc.survivalcompetition.Misc.PluginObject;
 
-public class MultiverseManager implements IMultiverseManager
+public class MultiverseManager extends PluginObject implements IMultiverseManager
 {
-    MultiverseCore core = SurvivalCompetition.getMultiverseCore();
-    MultiverseNetherPortals netherPortals = SurvivalCompetition.getMultiverseNetherPortals();
-    MultiverseInventories inventories = SurvivalCompetition.getMultiverseInventories();
-    WorldGroupManager groupManager = inventories.getGroupManager();
-    MVWorldManager worldManager = core.getMVWorldManager();
+    MultiverseCore core;
+    MultiverseNetherPortals netherPortals;
+    MultiverseInventories inventories;
+    WorldGroupManager groupManager ;
+    MVWorldManager worldManager;
+
+    @Initializer
+    private void init()
+    {
+        core = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
+        netherPortals = (MultiverseNetherPortals) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-NetherPortals");
+        inventories = (MultiverseInventories) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Inventories");
+
+        groupManager = inventories.getGroupManager();
+        worldManager = core.getMVWorldManager();
+    }
 
     @Override
     public boolean createWorlds(String worldName)
@@ -99,5 +111,11 @@ public class MultiverseManager implements IMultiverseManager
     public void tpToWorld(Player player, String worldName)
     {
         core.teleportPlayer(player, player, Bukkit.getWorld(worldName).getSpawnLocation());
+    }
+
+    @Override
+    public String GetFirstSpawnWorldName()
+    {
+        return core.getMVWorldManager().getFirstSpawnWorld().getName();
     }
 }

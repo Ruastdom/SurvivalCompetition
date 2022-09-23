@@ -1,8 +1,5 @@
 package xiamomc.survivalcompetition;
 
-import com.onarandombox.MultiverseCore.MultiverseCore;
-import com.onarandombox.MultiverseNetherPortals.MultiverseNetherPortals;
-import com.onarandombox.multiverseinventories.MultiverseInventories;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.Logger;
@@ -41,24 +38,6 @@ public final class SurvivalCompetition extends JavaPlugin
         instance = this;
         dependencyManager = new GameDependencyManager();
         cmdHelper = new CommandHelper();
-    }
-
-    public static MultiverseCore getMultiverseCore()
-    {
-        MultiverseCore core = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
-        return core;
-    }
-
-    public static MultiverseInventories getMultiverseInventories()
-    {
-        MultiverseInventories inventories = (MultiverseInventories) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Inventories");
-        return inventories;
-    }
-
-    public static MultiverseNetherPortals getMultiverseNetherPortals()
-    {
-        MultiverseNetherPortals netherportals = (MultiverseNetherPortals) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-NetherPortals");
-        return netherportals;
     }
 
     @Override
@@ -116,6 +95,8 @@ public final class SurvivalCompetition extends JavaPlugin
         //反注册依赖
         dependencyManager.UnCacheAll();
     }
+
+    //region tick相关
 
     private long currentTick = 0;
 
@@ -184,7 +165,10 @@ public final class SurvivalCompetition extends JavaPlugin
 
         this.Schedule(c -> processExceptionCount(), 5);
     }
-    //endregion
+
+    //endregion tick异常捕捉与处理
+
+    //endregion tick相关
 
     private final List<ScheduleInfo> runnables = new ArrayList<>();
 

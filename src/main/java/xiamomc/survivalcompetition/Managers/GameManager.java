@@ -1,7 +1,6 @@
 package xiamomc.survivalcompetition.Managers;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.TitlePart;
 import org.bukkit.Bukkit;
@@ -14,7 +13,6 @@ import xiamomc.survivalcompetition.Misc.Colors;
 import xiamomc.survivalcompetition.Misc.StageInfo;
 import xiamomc.survivalcompetition.Misc.PluginObject;
 import xiamomc.survivalcompetition.Misc.TeamInfo;
-import xiamomc.survivalcompetition.SurvivalCompetition;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -27,7 +25,12 @@ public class GameManager extends PluginObject implements IGameManager
 {
     boolean isGameStarted;
 
-    long[] times = new long[]{100, 2000, 100};
+    Duration[] times = new Duration[]
+            {
+                    Duration.ofMillis(100),
+                    Duration.ofMillis(2000),
+                    Duration.ofMillis(100)
+            };
 
     public String CurrentWorldBaseName;
 
@@ -88,8 +91,6 @@ public class GameManager extends PluginObject implements IGameManager
         noticeGameStarting();
         iplm.checkExistence();
 
-        Bukkit.getServer().broadcast(Component.text("请选择职业："));
-        icm.getCareerList().forEach(career -> Bukkit.getServer().broadcast(career.GetNameAsComponent()));
         isGameStarted = true;
 
         stageIndex = -1;
@@ -101,8 +102,10 @@ public class GameManager extends PluginObject implements IGameManager
 
     private final List<StageInfo> stages = new ArrayList<>();
 
+    private final StageInfo endingStage = new StageInfo("胜出", "游戏结束", "", 200, false, false, false);
+
     private int stageIndex = -1;
-    private StageInfo currentStage;
+    private StageInfo currentStage = endingStage;
     private int ticksRemaining = -1;
 
     private final ConfigNode baseConfigNode = ConfigNode.New().Append("GameManager");
@@ -128,13 +131,13 @@ public class GameManager extends PluginObject implements IGameManager
             stages = new ArrayList<>(Arrays.asList(
                     new StageInfo("初始阶段",
                             "第一天", "今天你们不能互相攻击，请好好发展",
-                            1500, true, true),
+                            1500, true, true, true),
                     new StageInfo("第二天",
                             "第二天", "你准备好迎接敌方的进攻了吗？",
-                            1500, false, false),
+                            1500, false, false, false),
                     new StageInfo("最后一天",
                             "第三天", "希望你能给这次竞赛画上圆满的句号 :)",
-                            1500, false, false)
+                            1500, false, false, false)
             ));
 
             config.Set(stagesNode, stages);
@@ -182,7 +185,7 @@ public class GameManager extends PluginObject implements IGameManager
             var player = Bukkit.getPlayer(uuid);
             if (player != null)
             {
-                player.sendTitlePart(TitlePart.TIMES, Title.Times.times(Duration.ofMillis(times[0]), Duration.ofMillis(times[1]), Duration.ofMillis(times[2])));
+                player.sendTitlePart(TitlePart.TIMES, Title.Times.times(times[0], times[1], times[2]));
                 player.sendTitlePart(TitlePart.SUBTITLE, Component.translatable(si.TitleSub));
                 player.sendTitlePart(TitlePart.TITLE, Component.translatable(si.TitleMain));
             }
@@ -195,8 +198,12 @@ public class GameManager extends PluginObject implements IGameManager
         }
 
         if (si.SpreadsPlayer)
-        {
             Logger.warn("未实现扩散玩家！");
+
+        if (si.AllowCareerSelect)
+        {
+            Bukkit.getServer().broadcast(Component.text("请选择职业："));
+            icm.getCareerList().forEach(career -> Bukkit.getServer().broadcast(career.GetNameAsComponent()));
         }
     }
 
@@ -206,8 +213,6 @@ public class GameManager extends PluginObject implements IGameManager
     public boolean endGame(List<UUID> playerList)
     {
         if (!isGameStarted) return false;
-
-        final TextComponent titleMain = Component.text("游戏结束");
 
         TeamInfo winnerTeam = drawTeam;
         int wTScore = 0;
@@ -223,20 +228,17 @@ public class GameManager extends PluginObject implements IGameManager
             }
         }
 
-        final var titleWinSub = Component.text(winnerTeam.Name).append(Component.translatable("胜出！")).asComponent();
+        endingStage.TitleSub = winnerTeam.Name + "胜出！";
+
+        this.switchToStage(endingStage);
+
         for (UUID uuid : playerList)
         {
             Player player = Bukkit.getPlayer(uuid);
             if (player != null)
-            {
-                player.sendTitlePart(TitlePart.TIMES, Title.Times.times(Duration.ofMillis(times[0]), Duration.ofMillis(times[1]), Duration.ofMillis(times[2])));
-                player.sendTitlePart(TitlePart.TITLE, titleMain);
-                player.sendTitlePart(TitlePart.SUBTITLE, titleWinSub);
-                player.resetMaxHealth();
-
-                this.AddSchedule(c -> imm.tpToWorld(player, SurvivalCompetition.getMultiverseCore().getMVWorldManager().getFirstSpawnWorld().getName()), 200);
-            }
+                this.AddSchedule(c -> imm.tpToWorld(player, imm.GetFirstSpawnWorldName()), 200);
         }
+
         iplm.clear();
         itm.removeAllPlayersFromTeams();
 
@@ -259,6 +261,12 @@ public class GameManager extends PluginObject implements IGameManager
     public String getNewWorldName()
     {
         return CurrentWorldBaseName = String.valueOf(Instant.now().getEpochSecond());
+    }
+
+    @Override
+    public boolean DoesAllowCareerSelect()
+    {
+        return currentStage.AllowCareerSelect;
     }
 
     //endregion

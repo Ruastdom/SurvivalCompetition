@@ -75,6 +75,8 @@ public class PluginConfigManager implements IConfigManager
 
         for (var c : onRefresh)
             c.accept(null);
+
+        plugin.saveConfig();
     }
 
     private final ArrayList<Consumer<?>> onRefresh = new ArrayList<>();

@@ -1,7 +1,5 @@
 package xiamomc.survivalcompetition.Misc;
 
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,7 +38,13 @@ public class StageInfo implements ConfigurationSerializable
      */
     public boolean RefreshTeams;
 
-    public StageInfo(String name, String titleMain, String titleSub, int lasts, boolean spreadsPlayer, boolean refreshTeams)
+    /**
+     * 是否允许职业选择
+     */
+    public boolean AllowCareerSelect;
+
+    public StageInfo(String name, String titleMain, String titleSub,
+                     int lasts, boolean spreadsPlayer, boolean refreshTeams, boolean allowCareerSelect)
     {
         Name = name;
         TitleMain = titleMain;
@@ -48,6 +52,7 @@ public class StageInfo implements ConfigurationSerializable
         Lasts = lasts;
         SpreadsPlayer = spreadsPlayer;
         RefreshTeams = refreshTeams;
+        AllowCareerSelect = allowCareerSelect;
     }
 
     @Override
@@ -60,6 +65,7 @@ public class StageInfo implements ConfigurationSerializable
         result.put("Lasts", this.Lasts);
         result.put("SpreadsPlayer", this.SpreadsPlayer);
         result.put("RefreshTeams", this.RefreshTeams);
+        result.put("AllowCareerSelect", this.AllowCareerSelect);
 
         return result;
     }
@@ -72,7 +78,8 @@ public class StageInfo implements ConfigurationSerializable
                 (String) map.getOrDefault("TitleSub", "未知副标题"),
                 (int) map.getOrDefault("Lasts", -1),
                 (boolean) map.getOrDefault("SpreadsPlayer", false),
-                (boolean) map.getOrDefault("RefreshTeams", false)
+                (boolean) map.getOrDefault("RefreshTeams", false),
+                (boolean) map.getOrDefault("AllowCareerSelect", false)
         );
     }
 }

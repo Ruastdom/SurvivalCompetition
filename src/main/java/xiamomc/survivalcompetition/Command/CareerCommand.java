@@ -1,10 +1,12 @@
 package xiamomc.survivalcompetition.Command;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import xiamomc.survivalcompetition.Annotations.Resolved;
 import xiamomc.survivalcompetition.Managers.ICareerManager;
+import xiamomc.survivalcompetition.Managers.IGameManager;
 import xiamomc.survivalcompetition.Misc.PluginObject;
 
 public class CareerCommand extends PluginObject implements IPluginCommand
@@ -12,10 +14,19 @@ public class CareerCommand extends PluginObject implements IPluginCommand
     @Resolved
     private ICareerManager icm;
 
+    @Resolved
+    private IGameManager game;
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args)
     {
         if (args.length < 1) return false;
+
+        if (!game.DoesAllowCareerSelect())
+        {
+            sender.sendMessage(Component.translatable("现在还不能选择职业"));
+            return true;
+        }
 
         if (icm.addToCareer(sender.getName(), args[0]))
         {

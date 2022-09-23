@@ -2,6 +2,7 @@ package xiamomc.survivalcompetition.Managers;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import xiamomc.survivalcompetition.Annotations.Resolved;
 import xiamomc.survivalcompetition.Careers.AbstractCareer;
 import xiamomc.survivalcompetition.Careers.AssassinCareer;
 import xiamomc.survivalcompetition.Careers.WarriorCareer;
@@ -16,6 +17,9 @@ public class CareerManager extends PluginObject implements ICareerManager
     private final List<AbstractCareer> careerList;
 
     private static final ConcurrentHashMap<Player, AbstractCareer> playerCareers = new ConcurrentHashMap<>();
+
+    @Resolved
+    private IGameManager game;
 
     public CareerManager()
     {
@@ -42,6 +46,8 @@ public class CareerManager extends PluginObject implements ICareerManager
     @Override
     public boolean addToCareer(String playerName, String internalName)
     {
+        if (!game.DoesAllowCareerSelect()) return false;
+
         var player = Bukkit.getPlayer(playerName);
 
         if (player == null) return false;

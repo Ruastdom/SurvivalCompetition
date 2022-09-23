@@ -12,4 +12,6 @@ public interface IGameManager
     boolean doesGameStart();
 
     String getNewWorldName();
+
+    boolean DoesAllowCareerSelect();
 }

@@ -291,9 +291,9 @@ public class TeamManager extends PluginObject implements ITeamManager
 
             //广播成员信息
             Bukkit.getServer().broadcast(Component.text(ti.Name)
-                    .append(Component.text("成员：", ti.TeamColor)).asComponent());
+                    .append(Component.text("成员：")).asComponent().color(ti.TeamColor));
 
-            Bukkit.getServer().broadcast(Component.text(playerListString.toString()));
+            Bukkit.getServer().broadcast(Component.text(playerListString.toString(), ti.TeamColor));
         }
     }
 
