@@ -23,7 +23,7 @@ public class TeamManager extends PluginObject implements ITeamManager
     Scoreboard board = manager.getMainScoreboard();
 
     public static final TeamInfo FallBackTeam = new TeamInfo(
-            "无效队伍配置", "FIX ME PLEASE", "FALLBACK", NamedTextColor.AQUA
+            "无效队伍配置", "FIX CONFIG PLEASE", "FIX ME PLEASE", "FALLBACK", NamedTextColor.AQUA
     );
 
     private final ConfigNode baseConfigNode = ConfigNode.New().Append("TeamManager");
@@ -51,8 +51,8 @@ public class TeamManager extends PluginObject implements ITeamManager
         if (teams == null)
         {
             var list = new ArrayList<TeamInfo>(Arrays.asList(
-                    new TeamInfo("红队", "红队", "TEAMRED", NamedTextColor.RED),
-                    new TeamInfo("蓝队", "蓝队", "TEAMBLUE", NamedTextColor.BLUE)
+                    new TeamInfo("红队", "红队 - ", "红队", "TEAMRED", NamedTextColor.RED),
+                    new TeamInfo("蓝队", "蓝队 - ", "蓝队", "TEAMBLUE", NamedTextColor.BLUE)
             ));
 
             config.Set(teamsNode, list);
@@ -122,7 +122,7 @@ public class TeamManager extends PluginObject implements ITeamManager
         newTeam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.FOR_OWN_TEAM);
         newTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.FOR_OTHER_TEAMS);
         newTeam.displayName(Component.translatable(ti.Name));
-        newTeam.prefix(Component.text(ti.Name).append(Component.text(" - ")));
+        newTeam.prefix(Component.text(ti.TeamPrefix).color(ti.TeamColor));
 
         ti.Team = newTeam;
         teamMap.put(ti.Identifier, ti);

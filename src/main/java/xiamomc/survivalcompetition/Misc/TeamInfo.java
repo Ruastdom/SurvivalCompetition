@@ -14,6 +14,7 @@ public class TeamInfo implements ConfigurationSerializable
     public Team Team = null;
     //todo: 将两个String转为Component使用?
     public String Name = "队伍名称";
+    public String TeamPrefix = "PFX - ";
     public String Description = "队伍描述";
     public String Identifier = null;
     public NamedTextColor TeamColor;
@@ -24,12 +25,13 @@ public class TeamInfo implements ConfigurationSerializable
 
     public TeamInfo(String name, String desc, String identifier)
     {
-        this(name, desc, identifier, NamedTextColor.WHITE);
+        this(name, name, desc, identifier, NamedTextColor.WHITE);
     }
 
-    public TeamInfo(String name, String desc, String identifier, NamedTextColor teamColor)
+    public TeamInfo(String name, String pfx, String desc, String identifier, NamedTextColor teamColor)
     {
         this.Name = name;
+        this.TeamPrefix = pfx;
         this.Description = desc;
         this.Identifier = identifier;
         this.TeamColor = teamColor;
@@ -41,6 +43,7 @@ public class TeamInfo implements ConfigurationSerializable
     {
         var result = new LinkedHashMap<String, Object>();
         result.put("Name", this.Name);
+        result.put("Prefix", this.TeamPrefix);
         result.put("Description", this.Description);
         result.put("Identifier", this.Identifier);
         result.put("TeamColor", this.TeamColor.asHexString());
@@ -52,6 +55,7 @@ public class TeamInfo implements ConfigurationSerializable
     {
         return new TeamInfo(
                 (String) map.getOrDefault("Name", "未知队伍"),
+                (String) map.getOrDefault("Prefix", "未知PFX"),
                 (String) map.getOrDefault("Description", "未知描述"),
                 (String) map.getOrDefault("Identifier", "NULL"),
                 NamedTextColor.nearestTo(TextColor.fromHexString((String) map.getOrDefault("TeamColor", "#ffffff")))
