@@ -4,13 +4,11 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseNetherPortals.MultiverseNetherPortals;
 import com.onarandombox.multiverseinventories.MultiverseInventories;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.Logger;
 import xiamomc.survivalcompetition.Command.CommandHelper;
 import xiamomc.survivalcompetition.Configuration.PluginConfigManager;
 import xiamomc.survivalcompetition.Managers.*;
-import xiamomc.survivalcompetition.Misc.TeamInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -223,7 +221,7 @@ public final class SurvivalCompetition extends JavaPlugin
         {
             return "于第" + this.TickScheduled + "刻创建，"
                     + "并计划于" + this.Delay + "刻后执行的计划任务"
-                    + "（" +this.Function + "）";
+                    + "（" + this.Function + "）";
         }
     }
 }
