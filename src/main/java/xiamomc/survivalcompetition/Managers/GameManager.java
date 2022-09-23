@@ -99,23 +99,33 @@ public class GameManager extends PluginObject implements IGameManager
         return true;
     }
 
-    private final List<StageInfo> stages = new ArrayList<StageInfo>();
+    private final List<StageInfo> stages = new ArrayList<>();
 
     private int stageIndex = -1;
     private StageInfo currentStage;
     private int ticksRemaining = -1;
 
     private final ConfigNode baseConfigNode = ConfigNode.New().Append("GameManager");
+    private final ConfigNode stagesNode = baseConfigNode.GetCopy().Append("Stages");
+
+    @Resolved
+    private PluginConfigManager config;
 
     @Initializer
-    private void init(PluginConfigManager config)
+    private void init()
     {
-        var stagesNode = baseConfigNode.GetCopy().Append("Stages");
+        config.OnConfigRefresh(c -> onConfigUpdate(), true);
+    }
+
+    private void onConfigUpdate()
+    {
+        if (this.isGameStarted) endGame(iplm.getList());
+
         var stages = config.Get(ArrayList.class, stagesNode);
 
         if (stages == null)
         {
-            stages = new ArrayList<StageInfo>(Arrays.asList(
+            stages = new ArrayList<>(Arrays.asList(
                     new StageInfo("初始阶段",
                             "第一天", "今天你们不能互相攻击，请好好发展",
                             1500, true, true),
@@ -130,8 +140,13 @@ public class GameManager extends PluginObject implements IGameManager
             config.Set(stagesNode, stages);
         }
 
-        for (var s : stages)
-            this.stages.add((StageInfo) s);
+        for (var o : stages)
+        {
+            var s = (StageInfo) o;
+
+            Logger.info("添加阶段：" + s.Name);
+            this.stages.add(s);
+        }
     }
 
     private void tick()
@@ -150,7 +165,7 @@ public class GameManager extends PluginObject implements IGameManager
         {
             endGame(iplm.getList());
             return;
-        };
+        }
 
         switchToStage(stages.get(stageIndex));
     }

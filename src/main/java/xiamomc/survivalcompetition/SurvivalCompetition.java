@@ -75,7 +75,7 @@ public final class SurvivalCompetition extends JavaPlugin
         processExceptionCount();
 
         dependencyManager.Cache(this);
-        dependencyManager.Cache(config = new PluginConfigManager(this, this.getConfig()));
+        dependencyManager.Cache(config = new PluginConfigManager(this));
         dependencyManager.CacheAs(IGameManager.class, gameManager = new GameManager());
         dependencyManager.CacheAs(ITeamManager.class, teamManager = new TeamManager());
         dependencyManager.CacheAs(IPlayerListManager.class, playerListManager = new PlayerListManager());

@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.*;
 import org.jetbrains.annotations.Nullable;
 import xiamomc.survivalcompetition.Annotations.Initializer;
+import xiamomc.survivalcompetition.Annotations.Resolved;
 import xiamomc.survivalcompetition.Configuration.ConfigNode;
 import xiamomc.survivalcompetition.Configuration.PluginConfigManager;
 import xiamomc.survivalcompetition.Misc.PluginObject;
@@ -26,17 +27,23 @@ public class TeamManager extends PluginObject implements ITeamManager
     );
 
     private final ConfigNode baseConfigNode = ConfigNode.New().Append("TeamManager");
+    private final ConfigNode teamsNode = baseConfigNode.GetCopy().Append("Teams");
 
     public TeamManager()
     {
     }
 
+    @Resolved
+    private PluginConfigManager config;
+
     @Initializer
     private void init(PluginConfigManager config)
     {
-        //配置节点
-        var teamsNode = baseConfigNode.GetCopy().Append("Teams");
+        config.OnConfigRefresh(c -> onConfigUpdate(), true);
+    }
 
+    private void onConfigUpdate()
+    {
         //获取队伍列表
         var teams = config.Get(ArrayList.class, teamsNode);
 
@@ -59,6 +66,7 @@ public class TeamManager extends PluginObject implements ITeamManager
         //如果teamMap是空的
         if (teamMap.size() == 0)
             AddTeam(FallBackTeam);
+
     }
 
     //队伍计分板
@@ -90,7 +98,7 @@ public class TeamManager extends PluginObject implements ITeamManager
     @Override
     public boolean AddTeam(TeamInfo ti)
     {
-        Logger.info("添加队伍：" + ti);
+        Logger.info("添加队伍：" + ti.Name);
 
         var teamId = ti.Identifier;
         if (teamId == null || teamId.isEmpty() || teamId.isBlank() || teamId.equals("NULL"))

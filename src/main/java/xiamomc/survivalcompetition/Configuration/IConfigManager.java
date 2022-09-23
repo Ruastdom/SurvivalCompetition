@@ -1,5 +1,7 @@
 package xiamomc.survivalcompetition.Configuration;
 
+import java.util.function.Consumer;
+
 public interface IConfigManager
 {
     /**
@@ -30,5 +32,22 @@ public interface IConfigManager
     /**
      * 刷新配置
      */
-    public void Refresh();
+    public void Reload();
+
+    /**
+     * 当配置被刷新时要进行的操作
+     *
+     * @param c 要添加的计划任务
+     * @return 添加是否成功
+     */
+    public boolean OnConfigRefresh(Consumer<?> c);
+
+    /**
+     * 当配置被刷新时要进行的操作
+     *
+     * @param c 要添加的计划任务
+     * @param runOnce 是否要立即执行
+     * @return 添加是否成功
+     */
+    public boolean OnConfigRefresh(Consumer<?> c, boolean runOnce);
 }

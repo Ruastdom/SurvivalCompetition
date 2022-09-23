@@ -7,6 +7,9 @@ import xiamomc.survivalcompetition.Misc.StageInfo;
 import xiamomc.survivalcompetition.Misc.TeamInfo;
 import xiamomc.survivalcompetition.SurvivalCompetition;
 
+import java.util.ArrayList;
+import java.util.function.Consumer;
+
 public class PluginConfigManager implements IConfigManager
 {
     static
@@ -15,13 +18,13 @@ public class PluginConfigManager implements IConfigManager
         ConfigurationSerialization.registerClass(StageInfo.class);
     }
 
-    private final FileConfiguration backendConfig;
+    private FileConfiguration backendConfig;
     private final SurvivalCompetition plugin;
 
-    public PluginConfigManager(SurvivalCompetition plugin, FileConfiguration config)
+    public PluginConfigManager(SurvivalCompetition plugin)
     {
-        this.backendConfig = config;
         this.plugin = plugin;
+        this.Reload();
     }
 
     @Override
@@ -65,8 +68,34 @@ public class PluginConfigManager implements IConfigManager
     }
 
     @Override
-    public void Refresh()
+    public void Reload()
     {
         plugin.reloadConfig();
+        backendConfig = plugin.getConfig();
+
+        for (var c : onRefresh)
+            c.accept(null);
+    }
+
+    private final ArrayList<Consumer<?>> onRefresh = new ArrayList<>();
+
+    @Override
+    public boolean OnConfigRefresh(Consumer<?> c)
+    {
+        if (onRefresh.contains(c)) return false;
+        onRefresh.add(c);
+        return true;
+    }
+
+    @Override
+    public boolean OnConfigRefresh(Consumer<?> c, boolean runOnce)
+    {
+        var ocr = this.OnConfigRefresh(c);
+
+        if (!ocr) return false;
+
+        c.accept(null);
+
+        return true;
     }
 }
