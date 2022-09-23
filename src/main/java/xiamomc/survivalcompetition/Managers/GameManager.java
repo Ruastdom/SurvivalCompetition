@@ -233,7 +233,8 @@ public class GameManager extends PluginObject implements IGameManager
                 player.sendTitlePart(TitlePart.TITLE, titleMain);
                 player.sendTitlePart(TitlePart.SUBTITLE, titleWinSub);
                 player.resetMaxHealth();
-                imm.tpToWorld(Bukkit.getPlayer(uuid), SurvivalCompetition.getMultiverseCore().getMVWorldManager().getFirstSpawnWorld().getName());
+
+                this.AddSchedule(c -> imm.tpToWorld(player, SurvivalCompetition.getMultiverseCore().getMVWorldManager().getFirstSpawnWorld().getName()), 200);
             }
         }
         iplm.clear();
