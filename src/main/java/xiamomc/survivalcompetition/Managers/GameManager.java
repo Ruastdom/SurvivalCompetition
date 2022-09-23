@@ -6,22 +6,25 @@ import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.TitlePart;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import xiamomc.survivalcompetition.Annotations.Initializer;
 import xiamomc.survivalcompetition.Annotations.Resolved;
+import xiamomc.survivalcompetition.Configuration.ConfigNode;
+import xiamomc.survivalcompetition.Configuration.PluginConfigManager;
 import xiamomc.survivalcompetition.Misc.Colors;
+import xiamomc.survivalcompetition.Misc.StageInfo;
 import xiamomc.survivalcompetition.Misc.PluginObject;
 import xiamomc.survivalcompetition.Misc.TeamInfo;
 import xiamomc.survivalcompetition.SurvivalCompetition;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
 public class GameManager extends PluginObject implements IGameManager
 {
-    final TextComponent titleDay1Sub = Component.text("今天你们不能互相攻击，请好好发展");
-    final TextComponent titleDay2Sub = Component.text("你准备好迎接敌方的进攻了吗？");
-    final TextComponent titleDay3Sub = Component.text("希望你能给这次竞赛画上圆满的句号 :)");
     boolean isGameStarted;
 
     long[] times = new long[]{100, 2000, 100};
@@ -75,14 +78,6 @@ public class GameManager extends PluginObject implements IGameManager
         this.AddSchedule(c -> generateNewWorld());
     }
 
-    public void dayTriggers()
-    {
-        this.AddSchedule(c -> this.firstDayTrigger(iplm.getList()));
-        this.AddSchedule(c -> this.secondDayTrigger(iplm.getList()), 1500);
-        this.AddSchedule(c -> this.thirdDayTrigger(iplm.getList()), 3000);
-        this.AddSchedule(c -> this.endGame(iplm.getList()), 4500);
-    }
-
     //endregion
 
     //region Implementation of IGameManager
@@ -91,63 +86,102 @@ public class GameManager extends PluginObject implements IGameManager
     public boolean startGame()
     {
         noticeGameStarting();
-        dayTriggers();
-
         iplm.checkExistence();
-        itm.distributeToTeams(iplm.getList());
-        itm.sendTeammatesMessage();
 
         Bukkit.getServer().broadcast(Component.text("请选择职业："));
         icm.getCareerList().forEach(career -> Bukkit.getServer().broadcast(career.GetNameAsComponent()));
         isGameStarted = true;
+
+        stageIndex = -1;
+        ticksRemaining = -1;
+
+        this.AddSchedule(c -> tick());
         return true;
     }
 
-    @Override
-    public void firstDayTrigger(List<UUID> playerList)
+    private final List<StageInfo> stages = new ArrayList<StageInfo>();
+
+    private int stageIndex = -1;
+    private StageInfo currentStage;
+    private int ticksRemaining = -1;
+
+    private final ConfigNode baseConfigNode = ConfigNode.New().Append("GameManager");
+
+    @Initializer
+    private void init(PluginConfigManager config)
     {
-        final TextComponent titleMain = Component.text("第一天");
-        for (UUID uuid : playerList)
+        var stagesNode = baseConfigNode.GetCopy().Append("Stages");
+        var stages = config.Get(ArrayList.class, stagesNode);
+
+        if (stages == null)
         {
-            Player player = Bukkit.getPlayer(uuid);
-            if (player != null)
-            {
-                player.sendTitlePart(TitlePart.TIMES, Title.Times.times(Duration.ofMillis(times[0]), Duration.ofMillis(times[1]), Duration.ofMillis(times[2])));
-                player.sendTitlePart(TitlePart.TITLE, titleMain);
-                player.sendTitlePart(TitlePart.SUBTITLE, titleDay1Sub);
-            }
+            stages = new ArrayList<StageInfo>(Arrays.asList(
+                    new StageInfo("初始阶段",
+                            "第一天", "今天你们不能互相攻击，请好好发展",
+                            1500, true, true),
+                    new StageInfo("第二天",
+                            "第二天", "你准备好迎接敌方的进攻了吗？",
+                            1500, false, false),
+                    new StageInfo("最后一天",
+                            "第三天", "希望你能给这次竞赛画上圆满的句号 :)",
+                            1500, false, false)
+            ));
+
+            config.Set(stagesNode, stages);
         }
+
+        for (var s : stages)
+            this.stages.add((StageInfo) s);
     }
 
-    @Override
-    public void secondDayTrigger(List<UUID> playerList)
+    private void tick()
     {
-        final TextComponent titleMain = Component.text("第二天");
-        for (UUID uuid : playerList)
-        {
-            Player player = Bukkit.getPlayer(uuid);
-            if (player != null)
-            {
-                player.sendTitlePart(TitlePart.TIMES, Title.Times.times(Duration.ofMillis(times[0]), Duration.ofMillis(times[1]), Duration.ofMillis(times[2])));
-                player.sendTitlePart(TitlePart.TITLE, titleMain);
-                player.sendTitlePart(TitlePart.SUBTITLE, titleDay2Sub);
-            }
-        }
+        ticksRemaining -= 1;
+
+        if (ticksRemaining <= 0) switchToNextStage();
+
+        if (isGameStarted) this.AddSchedule(c -> tick());
     }
 
-    @Override
-    public void thirdDayTrigger(List<UUID> playerList)
+    private void switchToNextStage()
     {
-        final TextComponent titleMain = Component.text("第三天");
-        for (UUID uuid : playerList)
+        stageIndex += 1;
+        if (stageIndex >= stages.size())
         {
-            Player player = Bukkit.getPlayer(uuid);
+            endGame(iplm.getList());
+            return;
+        };
+
+        switchToStage(stages.get(stageIndex));
+    }
+
+    private void switchToStage(StageInfo si)
+    {
+        var list = iplm.getList();
+        ticksRemaining = si.Lasts;
+        currentStage = si;
+        Logger.info("切换到" + si.Name);
+
+        for (UUID uuid : list)
+        {
+            var player = Bukkit.getPlayer(uuid);
             if (player != null)
             {
                 player.sendTitlePart(TitlePart.TIMES, Title.Times.times(Duration.ofMillis(times[0]), Duration.ofMillis(times[1]), Duration.ofMillis(times[2])));
-                player.sendTitlePart(TitlePart.TITLE, titleMain);
-                player.sendTitlePart(TitlePart.SUBTITLE, titleDay3Sub);
+                player.sendTitlePart(TitlePart.SUBTITLE, Component.translatable(si.TitleSub));
+                player.sendTitlePart(TitlePart.TITLE, Component.translatable(si.TitleMain));
             }
+        }
+
+        if (si.RefreshTeams)
+        {
+            itm.distributeToTeams(list);
+            itm.sendTeammatesMessage();
+        }
+
+        if (si.SpreadsPlayer)
+        {
+            Logger.warn("未实现扩散玩家！");
         }
     }
 

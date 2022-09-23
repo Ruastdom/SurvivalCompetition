@@ -7,12 +7,6 @@ public interface IGameManager
 {
     boolean startGame();
 
-    void firstDayTrigger(List<UUID> playerList);
-
-    void secondDayTrigger(List<UUID> playerList);
-
-    void thirdDayTrigger(List<UUID> playerList);
-
     boolean endGame(List<UUID> playerList);
 
     boolean doesGameStart();

@@ -3,15 +3,16 @@ package xiamomc.survivalcompetition.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.jetbrains.annotations.Nullable;
+import xiamomc.survivalcompetition.Misc.StageInfo;
 import xiamomc.survivalcompetition.Misc.TeamInfo;
 import xiamomc.survivalcompetition.SurvivalCompetition;
 
 public class PluginConfigManager implements IConfigManager
 {
-
     static
     {
         ConfigurationSerialization.registerClass(TeamInfo.class);
+        ConfigurationSerialization.registerClass(StageInfo.class);
     }
 
     private final FileConfiguration backendConfig;

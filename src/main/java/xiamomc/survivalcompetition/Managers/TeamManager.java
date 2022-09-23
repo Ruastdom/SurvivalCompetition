@@ -43,14 +43,9 @@ public class TeamManager extends PluginObject implements ITeamManager
         //如果没有队伍，则使用默认配置
         if (teams == null)
         {
-            var list = new ArrayList<TeamInfo>();
-
-            list.add(new TeamInfo(
-                    "红队", "红队", "TEAMRED", NamedTextColor.RED
-            ));
-
-            list.add(new TeamInfo(
-                    "蓝队", "蓝队", "TEAMBLUE", NamedTextColor.BLUE
+            var list = new ArrayList<TeamInfo>(Arrays.asList(
+                    new TeamInfo("红队", "红队", "TEAMRED", NamedTextColor.RED),
+                    new TeamInfo("蓝队", "蓝队", "TEAMBLUE", NamedTextColor.BLUE)
             ));
 
             config.Set(teamsNode, list);
