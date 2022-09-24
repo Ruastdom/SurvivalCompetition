@@ -69,6 +69,8 @@ public final class SurvivalCompetition extends JavaPlugin
             Bukkit.getPluginManager().registerEvents(new CareerEventProcessor(), this);
         });
 
+        this.shouldAbortTicking = false;
+
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, this::tick, 0, 1);
     }
 
