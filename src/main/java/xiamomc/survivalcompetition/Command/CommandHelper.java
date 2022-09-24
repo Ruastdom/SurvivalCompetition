@@ -1,6 +1,7 @@
 package xiamomc.survivalcompetition.Command;
 
 import org.bukkit.Bukkit;
+import xiamomc.survivalcompetition.Annotations.Initializer;
 import xiamomc.survivalcompetition.Misc.PluginObject;
 
 import java.util.ArrayList;
@@ -16,12 +17,11 @@ public class CommandHelper extends PluginObject
                 new CareerCommand(),
                 new GMCommand()
         ));
-
-        this.AddSchedule(c -> initializeCommands());
     }
 
     private final ArrayList<IPluginCommand> commands;
 
+    @Initializer
     private void initializeCommands()
     {
         for (var c : commands)
