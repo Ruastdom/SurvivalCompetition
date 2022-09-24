@@ -45,7 +45,7 @@ public class PluginConfigManager implements IConfigManager
             return null;
         }
 
-        return (T) backendConfig.get(node.toString());
+        return (T) value;
     }
 
     @Override
