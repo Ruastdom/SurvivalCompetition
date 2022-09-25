@@ -59,9 +59,18 @@ public class MultiverseManager extends PluginObject implements IMultiverseManage
                 null // Specifies a custom generator. We are not using any so we just pass null.
         );
 
-        worldManager.getMVWorld(worldName).setGameMode(GameMode.SURVIVAL);
-        worldManager.getMVWorld(worldName + "_nether").setGameMode(GameMode.SURVIVAL);
-        worldManager.getMVWorld(worldName + "_end").setGameMode(GameMode.SURVIVAL);
+        var newOverworld = worldManager.getMVWorld(worldName);
+        var newNether = worldManager.getMVWorld(worldName + "_nether");
+        var newEnd = worldManager.getMVWorld(worldName + "_end");
+
+        newOverworld.setGameMode(GameMode.SURVIVAL);
+
+        newNether.setRespawnToWorld(worldName);
+        newNether.setGameMode(GameMode.SURVIVAL);
+
+        newEnd.setRespawnToWorld(worldName);
+        newEnd.setGameMode(GameMode.SURVIVAL);
+
         boolean loadOverworld = worldManager.loadWorld(worldName);
         boolean loadNetherWorld = worldManager.loadWorld(worldName + "_nether");
         boolean loadEndWorld = worldManager.loadWorld(worldName + "_end");
