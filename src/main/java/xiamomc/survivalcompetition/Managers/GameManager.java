@@ -17,10 +17,7 @@ import xiamomc.survivalcompetition.Misc.TeamInfo;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class GameManager extends PluginObject implements IGameManager
 {
@@ -86,7 +83,8 @@ public class GameManager extends PluginObject implements IGameManager
 
     //region Implementation of IGameManager
 
-    private final List<StageInfo> stages = new ArrayList<>();
+    private final List<StageInfo> configuredStages = new ArrayList<>();
+    private final Stack<StageInfo> stageInfoStack = new Stack<>();
 
     private final StageInfo endingStage = new StageInfo("胜出", "游戏结束", "", 200, false, false, false);
 
@@ -118,6 +116,11 @@ public class GameManager extends PluginObject implements IGameManager
         stageIndex = -1;
         ticksRemaining = -1;
         currentStage = null;
+
+        stageInfoStack.clear();
+
+        for (var si : configuredStages)
+            stageInfoStack.add(0, si);
 
         this.AddSchedule(c -> tick());
         return true;
@@ -151,7 +154,7 @@ public class GameManager extends PluginObject implements IGameManager
             var s = (StageInfo) o;
 
             Logger.info("添加阶段：" + s.Name);
-            this.stages.add(s);
+            this.configuredStages.add(s);
         }
     }
 
@@ -166,15 +169,13 @@ public class GameManager extends PluginObject implements IGameManager
 
     private void switchToNextStage()
     {
-        Logger.warn("SWNEXT");
-        stageIndex += 1;
-        if (stageIndex >= stages.size())
+        if (stageInfoStack.isEmpty())
         {
             endGame(iplm.getList());
             return;
         }
 
-        switchToStage(stages.get(stageIndex));
+        switchToStage(stageInfoStack.pop());
     }
 
     private void switchToStage(StageInfo si)
