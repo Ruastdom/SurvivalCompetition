@@ -2,10 +2,8 @@ package xiamomc.survivalcompetition.Misc;
 
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.jetbrains.annotations.NotNull;
-import xiamomc.survivalcompetition.Annotations.Serializable;
 import xiamomc.survivalcompetition.Misc.Serialize.ConfigSerializeUtils;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class StageInfo implements ConfigurationSerializable
@@ -31,6 +29,11 @@ public class StageInfo implements ConfigurationSerializable
     public int Lasts;
 
     /**
+     * 是否允许保留物品栏（死亡不掉落）
+     */
+    public boolean AllowKeepInventory = true;
+
+    /**
      * 是否扩散玩家
      */
     public boolean SpreadsPlayer;
@@ -46,7 +49,8 @@ public class StageInfo implements ConfigurationSerializable
     public boolean AllowCareerSelect;
 
     public StageInfo(String name, String titleMain, String titleSub,
-                     int lasts, boolean spreadsPlayer, boolean refreshTeams, boolean allowCareerSelect)
+                     int lasts, boolean spreadsPlayer,
+                     boolean refreshTeams, boolean allowCareerSelect)
     {
         Name = name;
         TitleMain = titleMain;

@@ -1,6 +1,10 @@
 package xiamomc.survivalcompetition.Managers;
 
+import org.bukkit.World;
 import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public interface IMultiverseManager
 {
@@ -13,6 +17,12 @@ public interface IMultiverseManager
     boolean linkSMPWorlds(String worldName);
 
     void tpToWorld(Player player, String worldName);
+
+    /**
+     * 获取当前的比赛世界
+     * @return
+     */
+    List<World> getCurrentWorlds();
 
     //临时
     String GetFirstSpawnWorldName();

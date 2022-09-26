@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.TitlePart;
 import org.bukkit.Bukkit;
+import org.bukkit.GameRule;
 import org.bukkit.entity.Player;
 import xiamomc.survivalcompetition.Annotations.Initializer;
 import xiamomc.survivalcompetition.Annotations.Resolved;
@@ -208,6 +209,9 @@ public class GameManager extends PluginObject implements IGameManager
             Bukkit.getServer().broadcast(Component.text("请选择职业："));
             icm.getCareerList().forEach(career -> Bukkit.getServer().broadcast(career.GetNameAsComponent()));
         }
+
+        for (var w : imm.getCurrentWorlds())
+            w.setGameRule(GameRule.KEEP_INVENTORY, si.AllowKeepInventory);
     }
 
     private final TeamInfo drawTeam = new TeamInfo("没有人", "", "DRAW");

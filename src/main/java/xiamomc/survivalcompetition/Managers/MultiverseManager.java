@@ -2,6 +2,7 @@ package xiamomc.survivalcompetition.Managers;
 
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseNetherPortals.MultiverseNetherPortals;
 import com.onarandombox.multiverseinventories.MultiverseInventories;
 import com.onarandombox.multiverseinventories.WorldGroup;
@@ -11,6 +12,10 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 import xiamomc.survivalcompetition.Annotations.Initializer;
 import xiamomc.survivalcompetition.Misc.PluginObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class MultiverseManager extends PluginObject implements IMultiverseManager
 {
@@ -63,8 +68,14 @@ public class MultiverseManager extends PluginObject implements IMultiverseManage
         var newNether = worldManager.getMVWorld(worldName + "_nether");
         var newEnd = worldManager.getMVWorld(worldName + "_end");
 
-        newOverworld.setGameMode(GameMode.SURVIVAL);
+        if (currentWorldsAsBukkit != null)
+        {
+            currentWorldsAsBukkit.clear();
+            currentWorldsAsBukkit = null;
+        }
+        currentWorlds = Arrays.asList(newOverworld, newNether, newEnd);
 
+        newOverworld.setGameMode(GameMode.SURVIVAL);
         newNether.setRespawnToWorld(worldName);
         newNether.setGameMode(GameMode.SURVIVAL);
 
@@ -75,6 +86,26 @@ public class MultiverseManager extends PluginObject implements IMultiverseManage
         boolean loadNetherWorld = worldManager.loadWorld(worldName + "_nether");
         boolean loadEndWorld = worldManager.loadWorld(worldName + "_end");
         return createOverworld && createNetherWorld && createEndWorld && loadEndWorld && loadNetherWorld && loadOverworld;
+    }
+
+    private List<MultiverseWorld> currentWorlds;
+    private List<World> currentWorldsAsBukkit;
+
+    @Override
+    public List<World> getCurrentWorlds()
+    {
+        //缓存
+        if (currentWorldsAsBukkit == null && currentWorlds != null)
+        {
+            var newList = new ArrayList<World>();
+
+            for (var mvw : currentWorlds)
+                newList.add(mvw.getCBWorld());
+
+            currentWorldsAsBukkit = newList;
+        }
+
+        return currentWorldsAsBukkit;
     }
 
     @Override

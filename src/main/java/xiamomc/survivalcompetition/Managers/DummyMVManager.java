@@ -1,6 +1,10 @@
 package xiamomc.survivalcompetition.Managers;
 
+import org.bukkit.World;
 import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DummyMVManager implements IMultiverseManager
 {
@@ -32,6 +36,14 @@ public class DummyMVManager implements IMultiverseManager
     public void tpToWorld(Player player, String worldName)
     {
 
+    }
+
+    private ArrayList<World> emptyWorldList = new ArrayList<>();
+
+    @Override
+    public List<World> getCurrentWorlds()
+    {
+        return emptyWorldList;
     }
 
     @Override
