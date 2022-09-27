@@ -228,7 +228,7 @@ public class TeamManager extends PluginObject implements ITeamManager
     private final ConcurrentHashMap<TeamInfo, Score> teamScoreMap = new ConcurrentHashMap<>();
 
     @Override
-    public void distributeToTeams(List<UUID> list)
+    public void distributeToTeams(List<Player> list)
     {
         //初始化记分板显示
         refreshObjective();
@@ -256,16 +256,9 @@ public class TeamManager extends PluginObject implements ITeamManager
         var targetIndex = -1; //= (int) ((Math.random() * 1000) % teamMap.values().size());
 
         //分布玩家
-        for (UUID uuid : list)
+        for (var player : list)
         {
             targetIndex += 1;
-
-            Player player = Bukkit.getPlayer(uuid);
-            if (player == null)
-            {
-                Logger.warn("未能找到与UUID" + uuid + "对应的玩家");
-                continue;
-            }
 
             var targetTeam = (TeamInfo) teams[targetIndex % teams.length];
             this.AddPlayerToTeam(player, targetTeam);

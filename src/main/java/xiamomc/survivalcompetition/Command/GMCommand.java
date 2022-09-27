@@ -40,7 +40,7 @@ public class GMCommand extends PluginObject implements IPluginCommand
                 break;
 
             case "stopcurrent":
-                if (!game.endGame(playerListManager.getList()))
+                if (!game.endGame())
                 {
                     Logger.warn("未能停止游戏");
                     commandSender.sendMessage(Component.translatable("未能停止游戏。游戏尚未开始？"));

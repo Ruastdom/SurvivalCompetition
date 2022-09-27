@@ -5,6 +5,7 @@ import xiamomc.survivalcompetition.Annotations.Initializer;
 import xiamomc.survivalcompetition.Annotations.Resolved;
 import xiamomc.survivalcompetition.Exceptions.NullDependencyException;
 import xiamomc.survivalcompetition.Managers.GameDependencyManager;
+import xiamomc.survivalcompetition.ScheduleInfo;
 import xiamomc.survivalcompetition.SurvivalCompetition;
 
 import java.lang.reflect.Field;
@@ -169,14 +170,14 @@ public abstract class PluginObject
     //region Schedules
 
     //todo: 使AddSchedule最终由PluginObject自己处理，而不是发给插件
-    protected void AddSchedule(Consumer<?> c)
+    protected ScheduleInfo AddSchedule(Consumer<?> c)
     {
-        this.AddSchedule(c, 0);
+        return this.AddSchedule(c, 0);
     }
 
-    protected void AddSchedule(Consumer<?> c, int delay)
+    protected ScheduleInfo AddSchedule(Consumer<?> c, int delay)
     {
-        Plugin.Schedule(c, delay);
+        return Plugin.Schedule(c, delay);
     }
 
     //endregion

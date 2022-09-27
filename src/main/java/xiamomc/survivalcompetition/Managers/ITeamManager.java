@@ -5,7 +5,6 @@ import org.jetbrains.annotations.Nullable;
 import xiamomc.survivalcompetition.Misc.TeamInfo;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface ITeamManager
 {
@@ -116,9 +115,9 @@ public interface ITeamManager
     /**
      * 将玩家分散到队伍中
      *
-     * @param list 用于分散的玩家UUID列表
+     * @param list 用于分散的玩家列表
      */
-    void distributeToTeams(List<UUID> list);
+    void distributeToTeams(List<Player> list);
 
     /**
      * 向玩家发送队伍成员信息

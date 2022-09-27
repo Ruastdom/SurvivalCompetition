@@ -1,15 +1,18 @@
 package xiamomc.survivalcompetition.Managers;
 
+import org.bukkit.entity.Player;
+
 import java.util.List;
-import java.util.UUID;
 
 public interface IPlayerListManager
 {
-    List<UUID> getList();
+    List<Player> getList();
 
-    boolean addPlayer(UUID uuid);
+    boolean Contains(Player player);
 
-    boolean removePlayer(UUID uuid);
+    boolean Add(Player player);
+
+    boolean Remove(Player player);
 
     boolean checkExistence();
 

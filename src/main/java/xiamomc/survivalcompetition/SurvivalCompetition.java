@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.Logger;
 import xiamomc.survivalcompetition.Command.CommandHelper;
+import xiamomc.survivalcompetition.Configuration.ConfigNode;
 import xiamomc.survivalcompetition.Configuration.PluginConfigManager;
 import xiamomc.survivalcompetition.Managers.*;
 
@@ -55,11 +56,19 @@ public final class SurvivalCompetition extends JavaPlugin
 
         dependencyManager.Cache(this);
         dependencyManager.Cache(config = new PluginConfigManager(this));
+
+        var allowDebug = config.Get(Boolean.class, ConfigNode.New().Append("DevelopmentMode"));
+        if (allowDebug == null) allowDebug = false;
+
+        if (allowDebug) logger.warn("将启用调试模式");
+
         dependencyManager.CacheAs(IGameManager.class, gameManager = new GameManager());
         dependencyManager.CacheAs(ITeamManager.class, teamManager = new TeamManager());
         dependencyManager.CacheAs(IPlayerListManager.class, playerListManager = new PlayerListManager());
         dependencyManager.CacheAs(ICareerManager.class, careerManager = new CareerManager());
-        dependencyManager.CacheAs(IMultiverseManager.class, multiverseManager = new MultiverseManager());
+        dependencyManager.CacheAs(IMultiverseManager.class, multiverseManager = allowDebug
+                ? new DummyMVManager()
+                : new MultiverseManager());
 
         //endregion
 
@@ -84,7 +93,7 @@ public final class SurvivalCompetition extends JavaPlugin
         this.shouldAbortTicking = true;
 
         //禁用时先结束游戏
-        gameManager.endGame(playerListManager.getList());
+        gameManager.endGame();
 
         //todo: 添加相关方法到multiverseManager或者gameManager里
         //卸载当前世界
@@ -114,6 +123,8 @@ public final class SurvivalCompetition extends JavaPlugin
             if (currentTick - c.TickScheduled >= c.Delay)
             {
                 runnables.remove(c);
+
+                if (c.IsCanceled()) return;
 
                 //logger.info("执行：" + c + "，当前TICK：" + currentTick);
                 try
@@ -174,40 +185,20 @@ public final class SurvivalCompetition extends JavaPlugin
 
     private final List<ScheduleInfo> runnables = new ArrayList<>();
 
-    public void Schedule(Consumer<?> runnable)
+    public ScheduleInfo Schedule(Consumer<?> runnable)
     {
-        this.Schedule(runnable, 1);
+        return this.Schedule(runnable, 1);
     }
 
-    public void Schedule(Consumer<?> function, int delay)
+    public ScheduleInfo Schedule(Consumer<?> function, int delay)
     {
+        var si = new ScheduleInfo(function, delay, currentTick);
         synchronized (runnables)
         {
-            var si = new ScheduleInfo(function, delay, currentTick);
             //Logger.info("添加：" + si + "，当前TICK：" + currentTick);
             runnables.add(si);
         }
-    }
 
-    private static class ScheduleInfo
-    {
-        public Consumer<?> Function;
-        public int Delay;
-        public long TickScheduled;
-
-        public ScheduleInfo(Consumer<?> function, int delay, long tickScheduled)
-        {
-            this.Function = function;
-            this.Delay = delay;
-            this.TickScheduled = tickScheduled;
-        }
-
-        @Override
-        public String toString()
-        {
-            return "于第" + this.TickScheduled + "刻创建，"
-                    + "并计划于" + this.Delay + "刻后执行的计划任务"
-                    + "（" + this.Function + "）";
-        }
+        return si;
     }
 }

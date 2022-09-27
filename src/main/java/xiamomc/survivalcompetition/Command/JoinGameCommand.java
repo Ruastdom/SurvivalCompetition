@@ -62,7 +62,7 @@ public class JoinGameCommand extends PluginObject implements IPluginCommand
                 }
             }, 100);
         }
-        if (manager.addPlayer(player.getUniqueId()))
+        if (manager.Add(player))
         {
             Bukkit.getServer().broadcast(Component.text(sender.getName())
                     .append(Component.translatable("成功加入队列！当前队列等待人数："))

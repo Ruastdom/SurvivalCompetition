@@ -5,7 +5,6 @@ import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.TitlePart;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
-import org.bukkit.entity.Player;
 import xiamomc.survivalcompetition.Annotations.Initializer;
 import xiamomc.survivalcompetition.Annotations.Resolved;
 import xiamomc.survivalcompetition.Configuration.ConfigNode;
@@ -36,7 +35,7 @@ public class GameManager extends PluginObject implements IGameManager
     private ITeamManager itm;
 
     @Resolved
-    private IPlayerListManager iplm;
+    private IPlayerListManager players;
 
     @Resolved
     private ICareerManager icm;
@@ -57,9 +56,9 @@ public class GameManager extends PluginObject implements IGameManager
             Bukkit.getServer().broadcast(Component.translatable("新的比赛世界已生成，正在传送玩家到新世界......", Colors.Green));
             this.AddSchedule(c ->
             {
-                for (UUID uuid : iplm.getList())
+                for (var player : players.getList())
                 {
-                    imm.tpToWorld(Bukkit.getPlayer(uuid), worldName);
+                    imm.tpToWorld(player, worldName);
                 }
             });
         }
@@ -109,7 +108,7 @@ public class GameManager extends PluginObject implements IGameManager
     {
         Logger.warn("START");
         noticeGameStarting();
-        iplm.checkExistence();
+        players.checkExistence();
 
         isGameStarted = true;
 
@@ -128,7 +127,7 @@ public class GameManager extends PluginObject implements IGameManager
 
     private void onConfigUpdate()
     {
-        if (this.isGameStarted) endGame(iplm.getList());
+        if (this.isGameStarted) endGame();
 
         var stages = config.Get(ArrayList.class, stagesNode);
 
@@ -171,7 +170,7 @@ public class GameManager extends PluginObject implements IGameManager
     {
         if (stageInfoStack.isEmpty())
         {
-            endGame(iplm.getList());
+            endGame();
             return;
         }
 
@@ -180,20 +179,16 @@ public class GameManager extends PluginObject implements IGameManager
 
     private void switchToStage(StageInfo si)
     {
-        var list = iplm.getList();
+        var list = players.getList();
         ticksRemaining = si.Lasts;
         currentStage = si;
         Logger.info("切换到" + si.Name);
 
-        for (UUID uuid : list)
+        for (var player : list)
         {
-            var player = Bukkit.getPlayer(uuid);
-            if (player != null)
-            {
-                player.sendTitlePart(TitlePart.TIMES, Title.Times.times(times[0], times[1], times[2]));
-                player.sendTitlePart(TitlePart.SUBTITLE, Component.translatable(si.TitleSub));
-                player.sendTitlePart(TitlePart.TITLE, Component.translatable(si.TitleMain));
-            }
+            player.sendTitlePart(TitlePart.TIMES, Title.Times.times(times[0], times[1], times[2]));
+            player.sendTitlePart(TitlePart.SUBTITLE, Component.translatable(si.TitleSub));
+            player.sendTitlePart(TitlePart.TITLE, Component.translatable(si.TitleMain));
         }
 
         if (si.RefreshTeams)
@@ -220,6 +215,12 @@ public class GameManager extends PluginObject implements IGameManager
     @Override
     public boolean endGame(List<UUID> playerList)
     {
+        return this.endGame();
+    }
+
+    @Override
+    public boolean endGame()
+    {
         if (!isGameStarted) return false;
 
         TeamInfo winnerTeam = drawTeam;
@@ -240,14 +241,12 @@ public class GameManager extends PluginObject implements IGameManager
 
         this.switchToStage(endingStage);
 
-        for (UUID uuid : playerList)
+        for (var player : players.getList())
         {
-            Player player = Bukkit.getPlayer(uuid);
-            if (player != null)
-                this.AddSchedule(c -> imm.tpToWorld(player, imm.GetFirstSpawnWorldName()), 200);
+            this.AddSchedule(c -> imm.tpToWorld(player, imm.GetFirstSpawnWorldName()), 200);
         }
 
-        iplm.clear();
+        players.clear();
         itm.removeAllPlayersFromTeams();
 
         icm.clear();

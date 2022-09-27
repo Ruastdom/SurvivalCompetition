@@ -1,5 +1,6 @@
 package xiamomc.survivalcompetition.Managers;
 
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 import xiamomc.survivalcompetition.Careers.AbstractCareer;
 
@@ -31,9 +32,9 @@ public interface ICareerManager
     /**
      * 获取某一玩家的职业
      *
-     * @param playerName 目标玩家名
+     * @param player 目标玩家
      * @return 职业信息（可能返回null）
      */
     @Nullable
-    AbstractCareer getPlayerCareer(String playerName);
+    AbstractCareer getPlayerCareer(Player player);
 }

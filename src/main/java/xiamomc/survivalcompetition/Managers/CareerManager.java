@@ -10,13 +10,14 @@ import xiamomc.survivalcompetition.Misc.PluginObject;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CareerManager extends PluginObject implements ICareerManager
 {
     private final List<AbstractCareer> careerList;
 
-    private static final ConcurrentHashMap<Player, AbstractCareer> playerCareers = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<UUID, AbstractCareer> playerCareers = new ConcurrentHashMap<>();
 
     @Resolved
     private IGameManager game;
@@ -39,8 +40,14 @@ public class CareerManager extends PluginObject implements ICareerManager
     @Override
     public void clear()
     {
-        playerCareers.forEach((player, career) -> career.ResetFor(player));
-        playerCareers.clear();
+        for (var uuid : playerCareers.keySet())
+        {
+            var player = Bukkit.getPlayer(uuid);
+            if (player == null) continue;
+
+            this.getPlayerCareer(player).ResetFor(player);
+            playerCareers.remove(uuid);
+        }
     }
 
     @Override
@@ -52,6 +59,8 @@ public class CareerManager extends PluginObject implements ICareerManager
 
         if (player == null) return false;
 
+        var playerUUID = player.getUniqueId();
+
         var optional = careerList.stream()
                 .filter(c -> Objects.equals(c.GetInternalName(), internalName))
                 .findFirst();
@@ -59,7 +68,7 @@ public class CareerManager extends PluginObject implements ICareerManager
         if (optional.isEmpty()) return false;
 
         var career = optional.get();
-        var currentPlayerCareer = playerCareers.get(player);
+        var currentPlayerCareer = playerCareers.get(playerUUID);
 
         //不要重复添加玩家到某一职业，并且在切换职业前先移除现有职业
         if (currentPlayerCareer == career)
@@ -69,11 +78,11 @@ public class CareerManager extends PluginObject implements ICareerManager
         else if (currentPlayerCareer != null)
         {
             currentPlayerCareer.ResetFor(player);
-            playerCareers.remove(player);
+            playerCareers.remove(playerUUID);
         }
 
         //career.ApplyToPlayer()可能会抛出异常，所以先把玩家添加到playerCareers
-        playerCareers.put(player, career);
+        playerCareers.put(playerUUID, career);
 
         career.ApplyToPlayer(player);
 
@@ -81,12 +90,8 @@ public class CareerManager extends PluginObject implements ICareerManager
     }
 
     @Override
-    public AbstractCareer getPlayerCareer(String playerName)
+    public AbstractCareer getPlayerCareer(Player player)
     {
-        var player = Bukkit.getPlayer(playerName);
-
-        if (player == null) throw new RuntimeException("未能找到与" + playerName + "对应的玩家");
-
-        return playerCareers.get(player);
+        return playerCareers.get(player.getUniqueId());
     }
 }

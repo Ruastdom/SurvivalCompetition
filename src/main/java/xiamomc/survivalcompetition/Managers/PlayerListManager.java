@@ -1,64 +1,65 @@
 package xiamomc.survivalcompetition.Managers;
 
-import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class PlayerListManager implements IPlayerListManager
 {
-    private static final List<UUID> PlayerList = new ArrayList<>();
+    private static final List<Player> playerList = new ArrayList<>();
 
     @Override
-    public List<UUID> getList()
+    public List<Player> getList()
     {
-        return PlayerList;
+        return playerList;
     }
 
     @Override
-    public boolean addPlayer(UUID uuid)
+    public boolean Add(Player player)
     {
-        if (!PlayerList.contains(uuid))
-        {
-            PlayerList.add(uuid);
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        if (player == null) return false;
+
+        return playerList.add(player);
     }
 
     @Override
-    public boolean removePlayer(UUID uuid)
+    public boolean Remove(Player player)
     {
-        return PlayerList.remove(uuid);
+        if (player == null) return false;
+
+        return playerList.remove(player);
+    }
+
+    @Override
+    public boolean Contains(Player player)
+    {
+        return playerList.contains(player);
     }
 
     @Override
     public boolean checkExistence()
     {
-        PlayerList.removeIf(uuid -> (Bukkit.getPlayer(uuid) == null));
+        playerList.removeIf(p -> !p.isOnline());
         return true;
     }
 
     @Override
     public boolean isEmpty()
     {
-        return PlayerList.isEmpty();
+        return playerList.isEmpty();
     }
 
     @Override
     public int listAmount()
     {
-        return PlayerList.size();
+        return playerList.size();
     }
 
     @Override
     public boolean clear()
     {
-        PlayerList.clear();
+        playerList.clear();
         return true;
     }
 }
