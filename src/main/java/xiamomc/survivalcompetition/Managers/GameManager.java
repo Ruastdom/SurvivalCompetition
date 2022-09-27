@@ -131,7 +131,9 @@ public class GameManager extends PluginObject implements IGameManager
 
         var stages = config.Get(ArrayList.class, stagesNode);
 
-        if (stages == null)
+        if (stages != null) stages.removeIf(o -> o == null);
+
+        if (stages == null || stages.size() == 0)
         {
             stages = new ArrayList<>(Arrays.asList(
                     new StageInfo("初始阶段",

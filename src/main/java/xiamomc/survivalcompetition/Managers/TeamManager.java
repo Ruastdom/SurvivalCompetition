@@ -47,8 +47,12 @@ public class TeamManager extends PluginObject implements ITeamManager
         //获取队伍列表
         var teams = config.Get(ArrayList.class, teamsNode);
 
+        //移除所有null值
+        //这样和下面搭配可以在Teams节点为'[]'或全是null时重置这段设置
+        if (teams != null) teams.removeIf(o -> o == null);
+
         //如果没有队伍，则使用默认配置
-        if (teams == null)
+        if (teams == null || teams.size() == 0)
         {
             var list = new ArrayList<TeamInfo>(Arrays.asList(
                     new TeamInfo("红队", "红队 - ", "红队", "TEAMRED", NamedTextColor.RED),
@@ -62,11 +66,6 @@ public class TeamManager extends PluginObject implements ITeamManager
         //添加队伍
         for (var t : teams)
             AddTeam((TeamInfo) t);
-
-        //如果teamMap是空的
-        if (teamMap.size() == 0)
-            AddTeam(FallBackTeam);
-
     }
 
     //队伍计分板
