@@ -7,6 +7,7 @@ import xiamomc.survivalcompetition.Command.CommandHelper;
 import xiamomc.survivalcompetition.Configuration.ConfigNode;
 import xiamomc.survivalcompetition.Configuration.PluginConfigManager;
 import xiamomc.survivalcompetition.Managers.*;
+import xiamomc.survivalcompetition.Misc.Permissions.PermissionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +70,7 @@ public final class SurvivalCompetition extends JavaPlugin
         dependencyManager.CacheAs(IMultiverseManager.class, multiverseManager = allowDebug
                 ? new DummyMVManager()
                 : new MultiverseManager());
+        dependencyManager.Cache(new PermissionUtils());
 
         //endregion
 

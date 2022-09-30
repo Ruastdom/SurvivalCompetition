@@ -17,3 +17,13 @@ commands:
 
   game:
     usage: '/game ...'
+
+
+permissions:
+  xiamo.sc.reload:
+    description: Reload config
+    default: false
+
+  xiamo.sc.stopcurrent:
+    description: Stop current
+    default: false

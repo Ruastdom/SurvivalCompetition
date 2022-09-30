@@ -1,6 +1,5 @@
 package xiamomc.survivalcompetition.Misc.Serialize;
 
-import com.sun.jdi.request.DuplicateRequestException;
 import org.slf4j.Logger;
 import xiamomc.survivalcompetition.Annotations.NotSerializable;
 import xiamomc.survivalcompetition.Annotations.Serializable;
