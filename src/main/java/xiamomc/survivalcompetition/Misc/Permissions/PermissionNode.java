@@ -13,7 +13,7 @@ public class PermissionNode
     {
         this.nodes = new ArrayList<>();
         this.nodes.add(rootNode);
-        this.Append(initialNode);
+        this.append(initialNode);
     }
 
     private PermissionNode(List<String> nodes)
@@ -21,7 +21,7 @@ public class PermissionNode
         this.nodes = nodes;
     }
 
-    public PermissionNode Append(String node)
+    public PermissionNode append(String node)
     {
         if (node == null || node.isBlank() || node.isEmpty())
             throw new IllegalArgumentException("节点名称不能为空");
@@ -33,12 +33,12 @@ public class PermissionNode
         return this;
     }
 
-    public PermissionNode GetCopy()
+    public PermissionNode getCopy()
     {
         return new PermissionNode(nodes);
     }
 
-    public static PermissionNode New(String initialNode)
+    public static PermissionNode create(String initialNode)
     {
         return new PermissionNode(initialNode);
     }

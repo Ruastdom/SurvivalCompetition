@@ -13,7 +13,7 @@ commands:
 
   setcareer:
     usage: '/setcareer careers'
-    description: 'Set ones career'
+    description: 'set ones career'
 
   game:
     usage: '/game ...'
@@ -21,7 +21,7 @@ commands:
 
 permissions:
   xiamo.sc.reload:
-    description: Reload config
+    description: reload config
     default: false
 
   xiamo.sc.stopcurrent:

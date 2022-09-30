@@ -8,14 +8,14 @@ public class AssassinCareer extends AbstractCareer
 {
     public AssassinCareer()
     {
-        DisplayName = "刺客";
-        Description = "使用剑类物品攻击伤害增高 - 移动速度少许加快";
+        displayName = "刺客";
+        description = "使用剑类物品攻击伤害增高 - 移动速度少许加快";
 
-        Initialize();
+        initialize();
     }
 
     @Override
-    public String GetInternalName()
+    public String getInternalName()
     {
         return "assassin";
     }
@@ -25,7 +25,7 @@ public class AssassinCareer extends AbstractCareer
     private final AttributeModifier attackDamageModifier = new AttributeModifier("xiamoModifier", 0.3, AttributeModifier.Operation.ADD_SCALAR);
 
     @Override
-    public boolean ApplyToPlayer(Player player)
+    public boolean applyToPlayer(Player player)
     {
         if (player == null) return false;
 
@@ -35,11 +35,11 @@ public class AssassinCareer extends AbstractCareer
         player.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)
                 .addModifier(attackDamageModifier);
 
-        return super.ApplyToPlayer(player);
+        return super.applyToPlayer(player);
     }
 
     @Override
-    public boolean ResetFor(Player player)
+    public boolean resetFor(Player player)
     {
         if (player == null) return false;
 
@@ -49,6 +49,6 @@ public class AssassinCareer extends AbstractCareer
         player.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)
                 .removeModifier(attackDamageModifier);
 
-        return super.ResetFor(player);
+        return super.resetFor(player);
     }
 }

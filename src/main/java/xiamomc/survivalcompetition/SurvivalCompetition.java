@@ -58,7 +58,7 @@ public final class SurvivalCompetition extends JavaPlugin
         dependencyManager.Cache(this);
         dependencyManager.Cache(config = new PluginConfigManager(this));
 
-        var allowDebug = config.Get(Boolean.class, ConfigNode.New().Append("DevelopmentMode"));
+        var allowDebug = config.get(Boolean.class, ConfigNode.create().Append("DevelopmentMode"));
         if (allowDebug == null) allowDebug = false;
 
         if (allowDebug) logger.warn("将启用调试模式");
@@ -74,7 +74,7 @@ public final class SurvivalCompetition extends JavaPlugin
 
         //endregion
 
-        this.Schedule(c ->
+        this.schedule(c ->
         {
             Bukkit.getPluginManager().registerEvents(new EventProcessor(), this);
             Bukkit.getPluginManager().registerEvents(new CareerEventProcessor(), this);
@@ -126,7 +126,7 @@ public final class SurvivalCompetition extends JavaPlugin
             {
                 runnables.remove(c);
 
-                if (c.IsCanceled()) return;
+                if (c.isCanceled()) return;
 
                 //logger.info("执行：" + c + "，当前TICK：" + currentTick);
                 try
@@ -178,7 +178,7 @@ public final class SurvivalCompetition extends JavaPlugin
     {
         exceptionCaught -= 1;
 
-        this.Schedule(c -> processExceptionCount(), 5);
+        this.schedule(c -> processExceptionCount(), 5);
     }
 
     //endregion tick异常捕捉与处理
@@ -187,12 +187,12 @@ public final class SurvivalCompetition extends JavaPlugin
 
     private final List<ScheduleInfo> runnables = new ArrayList<>();
 
-    public ScheduleInfo Schedule(Consumer<?> runnable)
+    public ScheduleInfo schedule(Consumer<?> runnable)
     {
-        return this.Schedule(runnable, 1);
+        return this.schedule(runnable, 1);
     }
 
-    public ScheduleInfo Schedule(Consumer<?> function, int delay)
+    public ScheduleInfo schedule(Consumer<?> function, int delay)
     {
         var si = new ScheduleInfo(function, delay, currentTick);
         synchronized (runnables)

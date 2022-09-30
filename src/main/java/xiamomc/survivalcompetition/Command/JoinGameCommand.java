@@ -17,7 +17,7 @@ public class JoinGameCommand extends PluginObject implements IPluginCommand
     //region IPluginCommand
 
     @Override
-    public String GetCommandName()
+    public String getCommandName()
     {
         return "joinsg";
     }
@@ -49,7 +49,7 @@ public class JoinGameCommand extends PluginObject implements IPluginCommand
 
         if (manager.isEmpty())
         {
-            this.AddSchedule(c ->
+            this.addSchedule(c ->
             {
                 if (manager.listAmount() >= 2)
                 {
@@ -62,7 +62,7 @@ public class JoinGameCommand extends PluginObject implements IPluginCommand
                 }
             }, 100);
         }
-        if (manager.Add(player))
+        if (manager.add(player))
         {
             Bukkit.getServer().broadcast(Component.text(sender.getName())
                     .append(Component.translatable("成功加入队列！当前队列等待人数："))

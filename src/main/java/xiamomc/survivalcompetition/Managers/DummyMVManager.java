@@ -47,7 +47,7 @@ public class DummyMVManager implements IMultiverseManager
     }
 
     @Override
-    public String GetFirstSpawnWorldName()
+    public String getFirstSpawnWorldName()
     {
         return null;
     }

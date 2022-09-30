@@ -16,7 +16,7 @@ public class ConfigSerializeUtils
 {
     private static final Logger Logger = SurvivalCompetition.GetInstance().getSLF4JLogger();
 
-    public static Map<String, Object> Serialize(Object o)
+    public static Map<String, Object> serialize(Object o)
     {
         checkDuplicateNames(o);
 
@@ -39,7 +39,7 @@ public class ConfigSerializeUtils
             try
             {
                 String serializeName;
-                if (f.isAnnotationPresent(Serializable.class)) serializeName = f.getAnnotation(Serializable.class).target();
+                if (f.isAnnotationPresent(Serializable.class)) serializeName = f.getAnnotation(Serializable.class).value();
                 else serializeName = f.getName();
 
                 map.put(serializeName, f.get(o));
@@ -62,13 +62,13 @@ public class ConfigSerializeUtils
 
         for (var fwa : fieldsWithAnnotation)
         {
-            var name = fwa.getAnnotation(Serializable.class).target();
+            var name = fwa.getAnnotation(Serializable.class).value();
             if (fields.stream().anyMatch(f -> f.getName().equals(name)))
                 throw new DuplicateSerializeNameException("在" + o + "中找到了多个叫" + name + "的可反序列化对象");
         }
     }
 
-    public static <T> T DeSerialize(T o, Map<String, Object> map)
+    public static <T> T deSerialize(T o, Map<String, Object> map)
     {
         checkDuplicateNames(o);
 
@@ -97,7 +97,7 @@ public class ConfigSerializeUtils
                     .findFirst();
 
             var fieldWithAnnotationOptional = fieldsWithAnnotation.stream()
-                    .filter(f -> f.getAnnotation(Serializable.class).target().equals(key))
+                    .filter(f -> f.getAnnotation(Serializable.class).value().equals(key))
                     .findFirst();
 
             if (fieldOptional.isPresent())

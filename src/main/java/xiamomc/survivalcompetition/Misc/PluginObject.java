@@ -52,7 +52,7 @@ public abstract class PluginObject
                 .filter(f -> f.isAnnotationPresent(Resolved.class)).toList());
 
         var fieldToResolveNow = ftr.stream()
-                .filter(f -> f.getAnnotation(Resolved.class).ShouldSolveImmediately()).toList();
+                .filter(f -> f.getAnnotation(Resolved.class).shouldSolveImmediately()).toList();
 
         for (Field f : fieldToResolveNow)
         {
@@ -62,7 +62,7 @@ public abstract class PluginObject
 
         fieldsToResolve = ftr;
 
-        this.AddSchedule(d -> this.resolveRemainingDependencies());
+        this.addSchedule(d -> this.resolveRemainingDependencies());
 
         //endregion
     }
@@ -139,7 +139,7 @@ public abstract class PluginObject
                 Object value = Dependencies.Get(targetClassType, false);
 
                 //判断是不是null
-                if (value == null && !field.getAnnotation(Resolved.class).AllowNull())
+                if (value == null && !field.getAnnotation(Resolved.class).allowNull())
                     throwDependencyNotFound(targetClassType);
 
                 //设置值
@@ -170,14 +170,14 @@ public abstract class PluginObject
     //region Schedules
 
     //todo: 使AddSchedule最终由PluginObject自己处理，而不是发给插件
-    protected ScheduleInfo AddSchedule(Consumer<?> c)
+    protected ScheduleInfo addSchedule(Consumer<?> c)
     {
-        return this.AddSchedule(c, 0);
+        return this.addSchedule(c, 0);
     }
 
-    protected ScheduleInfo AddSchedule(Consumer<?> c, int delay)
+    protected ScheduleInfo addSchedule(Consumer<?> c, int delay)
     {
-        return Plugin.Schedule(c, delay);
+        return Plugin.schedule(c, delay);
     }
 
     //endregion

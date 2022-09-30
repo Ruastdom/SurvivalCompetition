@@ -10,12 +10,12 @@ public class ScheduleInfo
 
     private boolean isCanceled = false;
 
-    public void Cancel()
+    public void cancel()
     {
         this.isCanceled = true;
     }
 
-    public boolean IsCanceled()
+    public boolean isCanceled()
     {
         return isCanceled;
     }

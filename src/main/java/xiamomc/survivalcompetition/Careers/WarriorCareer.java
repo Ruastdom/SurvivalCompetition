@@ -8,14 +8,14 @@ public class WarriorCareer extends AbstractCareer
 {
     public WarriorCareer()
     {
-        DisplayName = "战士";
-        Description = "获得防护加成";
+        displayName = "战士";
+        description = "获得防护加成";
 
-        Initialize();
+        initialize();
     }
 
     @Override
-    public String GetInternalName()
+    public String getInternalName()
     {
         return "warrior";
     }
@@ -23,24 +23,24 @@ public class WarriorCareer extends AbstractCareer
     private final AttributeModifier armorModifier = new AttributeModifier("xiamoModifier", 3, AttributeModifier.Operation.ADD_NUMBER);
 
     @Override
-    public boolean ApplyToPlayer(Player player)
+    public boolean applyToPlayer(Player player)
     {
         if (player == null) return false;
 
         player.getAttribute(Attribute.GENERIC_ARMOR)
                 .addModifier(armorModifier);
 
-        return super.ApplyToPlayer(player);
+        return super.applyToPlayer(player);
     }
 
     @Override
-    public boolean ResetFor(Player player)
+    public boolean resetFor(Player player)
     {
         if (player == null) return false;
 
         player.getAttribute(Attribute.GENERIC_ARMOR)
                 .removeModifier(armorModifier);
 
-        return super.ResetFor(player);
+        return super.resetFor(player);
     }
 }

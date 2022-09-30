@@ -24,12 +24,12 @@ public class PluginConfigManager implements IConfigManager
     public PluginConfigManager(SurvivalCompetition plugin)
     {
         this.plugin = plugin;
-        this.Reload();
+        this.reload();
     }
 
     @Override
     @Nullable
-    public <T> T Get(Class<T> type, ConfigNode node)
+    public <T> T get(Class<T> type, ConfigNode node)
     {
         var value = backendConfig.get(node.toString());
 
@@ -49,7 +49,7 @@ public class PluginConfigManager implements IConfigManager
     }
 
     @Override
-    public boolean Set(ConfigNode node, Object value)
+    public boolean set(ConfigNode node, Object value)
     {
         //spigot的配置管理器没有返回值
         backendConfig.set(node.toString(), value);
@@ -58,7 +58,7 @@ public class PluginConfigManager implements IConfigManager
     }
 
     @Override
-    public boolean RestoreDefaults()
+    public boolean restoreDefaults()
     {
         //没有返回值+1
         plugin.saveDefaultConfig();
@@ -68,7 +68,7 @@ public class PluginConfigManager implements IConfigManager
     }
 
     @Override
-    public void Reload()
+    public void reload()
     {
         plugin.reloadConfig();
         backendConfig = plugin.getConfig();
@@ -82,7 +82,7 @@ public class PluginConfigManager implements IConfigManager
     private final ArrayList<Consumer<?>> onRefresh = new ArrayList<>();
 
     @Override
-    public boolean OnConfigRefresh(Consumer<?> c)
+    public boolean onConfigRefresh(Consumer<?> c)
     {
         if (onRefresh.contains(c)) return false;
         onRefresh.add(c);
@@ -90,9 +90,9 @@ public class PluginConfigManager implements IConfigManager
     }
 
     @Override
-    public boolean OnConfigRefresh(Consumer<?> c, boolean runOnce)
+    public boolean onConfigRefresh(Consumer<?> c, boolean runOnce)
     {
-        var ocr = this.OnConfigRefresh(c);
+        var ocr = this.onConfigRefresh(c);
 
         if (!ocr) return false;
 

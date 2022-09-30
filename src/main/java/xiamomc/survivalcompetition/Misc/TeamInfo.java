@@ -16,14 +16,17 @@ public class TeamInfo implements ConfigurationSerializable
     @NotSerializable
     public Team Team = null;
 
-    public String Name = "队伍名称";
+    @Serializable("name")
+    public String name = "队伍名称";
 
-    public String Description = "队伍描述";
+    @Serializable("description")
+    public String description = "队伍描述";
 
-    public String Identifier = null;
+    @Serializable("Identifier")
+    public String identifier = null;
 
-    @Serializable(target = "Prefix")
-    public String TeamPrefix = "PFX - ";
+    @Serializable(value = "Prefix")
+    public String teamPrefix = "PFX - ";
 
     @NotSerializable
     public NamedTextColor TeamColor;
@@ -39,17 +42,17 @@ public class TeamInfo implements ConfigurationSerializable
 
     public TeamInfo(String name, String pfx, String desc, String identifier, NamedTextColor teamColor)
     {
-        this.Name = name;
-        this.TeamPrefix = pfx;
-        this.Description = desc;
-        this.Identifier = identifier;
+        this.name = name;
+        this.teamPrefix = pfx;
+        this.description = desc;
+        this.identifier = identifier;
         this.TeamColor = teamColor;
     }
 
     @Override
     public @NotNull Map<String, Object> serialize()
     {
-        var result = ConfigSerializeUtils.Serialize(this);
+        var result = ConfigSerializeUtils.serialize(this);
         result.put("TeamColor", this.TeamColor.asHexString()); //NamedTextColor不支持序列化，只能先这样了
 
         return result;
@@ -57,7 +60,7 @@ public class TeamInfo implements ConfigurationSerializable
 
     public static TeamInfo deserialize(Map<String, Object> map)
     {
-        var result = ConfigSerializeUtils.DeSerialize(new TeamInfo(), map);
+        var result = ConfigSerializeUtils.deSerialize(new TeamInfo(), map);
         result.TeamColor = NamedTextColor.nearestTo(TextColor.fromHexString((String) map.getOrDefault("TeamColor", "#ffffff")));
         return result;
     }

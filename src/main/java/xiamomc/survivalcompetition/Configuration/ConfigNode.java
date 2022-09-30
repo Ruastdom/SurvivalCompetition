@@ -35,17 +35,17 @@ public class ConfigNode
         return this;
     }
 
-    public ConfigNode GetCopy()
+    public ConfigNode getCopy()
     {
         return new ConfigNode(nodes);
     }
 
-    public static ConfigNode New()
+    public static ConfigNode create()
     {
         return new ConfigNode();
     }
 
-    public static ConfigNode New(String initialNode)
+    public static ConfigNode create(String initialNode)
     {
         return new ConfigNode(initialNode);
     }

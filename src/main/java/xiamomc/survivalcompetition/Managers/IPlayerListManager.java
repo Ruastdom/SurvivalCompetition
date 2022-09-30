@@ -8,11 +8,11 @@ public interface IPlayerListManager
 {
     List<Player> getList();
 
-    boolean Contains(Player player);
+    boolean contains(Player player);
 
-    boolean Add(Player player);
+    boolean add(Player player);
 
-    boolean Remove(Player player);
+    boolean remove(Player player);
 
     boolean checkExistence();
 

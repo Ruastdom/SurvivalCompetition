@@ -3,7 +3,6 @@ package xiamomc.survivalcompetition.Managers;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface IMultiverseManager
@@ -25,5 +24,5 @@ public interface IMultiverseManager
     List<World> getCurrentWorlds();
 
     //临时
-    String GetFirstSpawnWorldName();
+    String getFirstSpawnWorldName();
 }

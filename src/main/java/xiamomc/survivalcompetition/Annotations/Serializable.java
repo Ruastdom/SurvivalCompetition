@@ -12,5 +12,5 @@ import java.lang.annotation.Target;
 public @interface Serializable
 {
     @NotNull
-    String target();
+    String value();
 }

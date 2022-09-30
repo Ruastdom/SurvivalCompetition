@@ -26,17 +26,17 @@ public class CommandHelper extends PluginObject
     {
         for (var c : commands)
         {
-            if (!this.RegisterCommand(c))
-                Logger.error("未能注册指令：" + c.GetCommandName());
+            if (!this.registerCommand(c))
+                Logger.error("未能注册指令：" + c.getCommandName());
         }
     }
 
-    public boolean RegisterCommand(IPluginCommand command)
+    public boolean registerCommand(IPluginCommand command)
     {
-        if (Objects.equals(command.GetCommandName(), ""))
+        if (Objects.equals(command.getCommandName(), ""))
             return false;
 
-        var cmd = Bukkit.getPluginCommand(command.GetCommandName());
+        var cmd = Bukkit.getPluginCommand(command.getCommandName());
         if (cmd != null && cmd.getExecutor() == Plugin)
         {
             cmd.setExecutor(command);

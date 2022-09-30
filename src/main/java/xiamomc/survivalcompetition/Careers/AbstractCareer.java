@@ -17,9 +17,9 @@ public abstract class AbstractCareer
      * @param playerName 目标玩家名
      * @return 是否成功
      */
-    public boolean ApplyToPlayer(String playerName)
+    public boolean applyToPlayer(String playerName)
     {
-        return ApplyToPlayer(Bukkit.getPlayer(playerName));
+        return applyToPlayer(Bukkit.getPlayer(playerName));
     }
 
     /**
@@ -28,7 +28,7 @@ public abstract class AbstractCareer
      * @param player 目标玩家
      * @return 是否成功
      */
-    public boolean ApplyToPlayer(Player player)
+    public boolean applyToPlayer(Player player)
     {
         return player != null;
     }
@@ -39,9 +39,9 @@ public abstract class AbstractCareer
      * @param playerName 目标玩家名
      * @return 是否成功
      */
-    public boolean ResetFor(String playerName)
+    public boolean resetFor(String playerName)
     {
-        return ResetFor(Bukkit.getPlayer(playerName));
+        return resetFor(Bukkit.getPlayer(playerName));
     }
 
     /**
@@ -50,7 +50,7 @@ public abstract class AbstractCareer
      * @param player 目标玩家
      * @return 是否成功
      */
-    public boolean ResetFor(Player player)
+    public boolean resetFor(Player player)
     {
         return player != null;
     }
@@ -60,7 +60,7 @@ public abstract class AbstractCareer
      *
      * @return 用来显示的文本
      */
-    public Component GetNameAsComponent()
+    public Component getNameAsComponent()
     {
         return careerNameAsComponent;
     }
@@ -68,14 +68,14 @@ public abstract class AbstractCareer
     /**
      * 初始化职业
      */
-    protected void Initialize()
+    protected void initialize()
     {
-        careerNameAsComponent = Component.text(DisplayName).style(b ->
+        careerNameAsComponent = Component.text(displayName).style(b ->
                 b.decorate(TextDecoration.BOLD)
                         .decorate(TextDecoration.UNDERLINED)
                         .color(TextColor.color(16755200))
-                        .hoverEvent(HoverEvent.showText(Component.text(Description)))
-                        .clickEvent(ClickEvent.runCommand("/setcareer" + " " + GetInternalName()))
+                        .hoverEvent(HoverEvent.showText(Component.text(description)))
+                        .clickEvent(ClickEvent.runCommand("/setcareer" + " " + getInternalName()))
         );
     }
 
@@ -87,7 +87,7 @@ public abstract class AbstractCareer
      * @return 处理是否成功
      * @apiNote 一般来说职业实现不会检查玩家是否拥有此职业，因为在职业管理器中已经有一个玩家 -> 职业的ConcurrentHashMap了
      */
-    public boolean OnEvent(Player player, Event e)
+    public boolean onEvent(Player player, Event e)
     {
         return true;
     }
@@ -95,7 +95,7 @@ public abstract class AbstractCareer
     /**
      * 职业的显示名
      */
-    protected String DisplayName = "Dummy";
+    protected String displayName = "Dummy";
 
     private Component careerNameAsComponent;
 
@@ -104,10 +104,10 @@ public abstract class AbstractCareer
      *
      * @return 职业的内部名
      */
-    public abstract String GetInternalName();
+    public abstract String getInternalName();
 
     /**
      * 职业描述
      */
-    protected String Description = "虚拟职业";
+    protected String description = "虚拟职业";
 }

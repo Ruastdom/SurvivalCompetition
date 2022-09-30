@@ -45,7 +45,7 @@ public class CareerManager extends PluginObject implements ICareerManager
             var player = Bukkit.getPlayer(uuid);
             if (player == null) continue;
 
-            this.getPlayerCareer(player).ResetFor(player);
+            this.getPlayerCareer(player).resetFor(player);
             playerCareers.remove(uuid);
         }
     }
@@ -62,7 +62,7 @@ public class CareerManager extends PluginObject implements ICareerManager
         var playerUUID = player.getUniqueId();
 
         var optional = careerList.stream()
-                .filter(c -> Objects.equals(c.GetInternalName(), internalName))
+                .filter(c -> Objects.equals(c.getInternalName(), internalName))
                 .findFirst();
 
         if (optional.isEmpty()) return false;
@@ -77,14 +77,14 @@ public class CareerManager extends PluginObject implements ICareerManager
         }
         else if (currentPlayerCareer != null)
         {
-            currentPlayerCareer.ResetFor(player);
+            currentPlayerCareer.resetFor(player);
             playerCareers.remove(playerUUID);
         }
 
-        //career.ApplyToPlayer()可能会抛出异常，所以先把玩家添加到playerCareers
+        //career.applyToPlayer()可能会抛出异常，所以先把玩家添加到playerCareers
         playerCareers.put(playerUUID, career);
 
-        career.ApplyToPlayer(player);
+        career.applyToPlayer(player);
 
         return true;
     }

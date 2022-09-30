@@ -15,7 +15,7 @@ public interface ITeamManager
      * @param ti 队伍信息
      * @return 队伍添加是否成功
      */
-    boolean AddTeam(TeamInfo ti);
+    boolean addTeam(TeamInfo ti);
 
     /**
      * 添加队伍
@@ -25,7 +25,7 @@ public interface ITeamManager
      * @param desc       队伍描述
      * @return 添加是否成功
      */
-    boolean AddTeam(String identifier, String name, String desc);
+    boolean addTeam(String identifier, String name, String desc);
 
     /**
      * 添加队伍
@@ -34,7 +34,7 @@ public interface ITeamManager
      * @param name       队伍名称
      * @return 添加是否成功
      */
-    boolean AddTeam(String identifier, String name);
+    boolean addTeam(String identifier, String name);
 
     /**
      * 添加队伍
@@ -42,7 +42,7 @@ public interface ITeamManager
      * @param identifier 队伍ID
      * @return 添加是否成功
      */
-    boolean AddTeam(String identifier);
+    boolean addTeam(String identifier);
 
     /**
      * 获取队伍
@@ -51,14 +51,14 @@ public interface ITeamManager
      * @return 获取到的队伍信息
      */
     @Nullable
-    TeamInfo GetTeam(String identifier);
+    TeamInfo getTeam(String identifier);
 
     /**
      * 获取所有队伍
      *
      * @return 队伍列表
      */
-    List<TeamInfo> GetTeams();
+    List<TeamInfo> getTeams();
 
     /**
      * 添加玩家到队伍
@@ -67,7 +67,7 @@ public interface ITeamManager
      * @param ti     目标队伍的队伍信息
      * @return 添加是否成功
      */
-    boolean AddPlayerToTeam(Player player, TeamInfo ti);
+    boolean addPlayerToTeam(Player player, TeamInfo ti);
 
     /**
      * 添加玩家到队伍
@@ -76,7 +76,7 @@ public interface ITeamManager
      * @param identifier 目标队伍的ID
      * @return 添加是否成功
      */
-    boolean AddPlayerToTeam(Player player, String identifier);
+    boolean addPlayerToTeam(Player player, String identifier);
 
     /**
      * 从队伍中移除玩家
@@ -85,7 +85,7 @@ public interface ITeamManager
      * @param ti     目标队伍的队伍信息
      * @return 移除是否成功
      */
-    boolean RemovePlayerFromTeam(Player player, TeamInfo ti);
+    boolean removePlayerFromTeam(Player player, TeamInfo ti);
 
     /**
      * 从队伍中移除玩家
@@ -94,7 +94,7 @@ public interface ITeamManager
      * @param identifier 目标队伍的ID
      * @return 移除是否成功
      */
-    boolean RemovePlayerFromTeam(Player player, String identifier);
+    boolean removePlayerFromTeam(Player player, String identifier);
 
     /**
      * 从玩家所在的队伍中移除玩家
@@ -102,7 +102,7 @@ public interface ITeamManager
      * @param player 目标玩家
      * @return 移除是否成功
      */
-    boolean RemovePlayerFromTeam(Player player);
+    boolean removePlayerFromTeam(Player player);
 
     /**
      * 获取玩家的队伍信息
@@ -110,7 +110,7 @@ public interface ITeamManager
      * @param player 目标玩家
      * @return 玩家所处队伍的队伍信息
      */
-    TeamInfo GetPlayerTeam(Player player);
+    TeamInfo getPlayerTeam(Player player);
 
     /**
      * 将玩家分散到队伍中

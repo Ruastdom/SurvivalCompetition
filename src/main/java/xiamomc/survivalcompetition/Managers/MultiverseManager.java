@@ -124,12 +124,12 @@ public class MultiverseManager extends PluginObject implements IMultiverseManage
         // Note this does not add group to Multiverse-Inventories knowledge yet.
         WorldGroup newGroup = groupManager.newEmptyGroup(worldName);
 
-        // Add the 3 usual SMP world dims.
+        // add the 3 usual SMP world dims.
         newGroup.addWorld(worldName);
         newGroup.addWorld(worldName + "_nether");
         newGroup.addWorld(worldName + "_end");
 
-        // Set to shares to all, so player data is consistent in overworld, nether and end.
+        // set to shares to all, so player data is consistent in overworld, nether and end.
         newGroup.getShares().addAll(Sharables.allOf());
 
         // Finally we add it to Multiverse-Inventories knowledge.
@@ -154,7 +154,7 @@ public class MultiverseManager extends PluginObject implements IMultiverseManage
     }
 
     @Override
-    public String GetFirstSpawnWorldName()
+    public String getFirstSpawnWorldName()
     {
         return core.getMVWorldManager().getFirstSpawnWorld().getName();
     }

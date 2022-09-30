@@ -19,10 +19,10 @@ public @interface Resolved
     /**
      * 标记此依赖是否要立即获取
      */
-    boolean ShouldSolveImmediately() default false;
+    boolean shouldSolveImmediately() default false;
 
     /**
      * 标记此依赖是否可以为null
      */
-    boolean AllowNull() default false;
+    boolean allowNull() default false;
 }

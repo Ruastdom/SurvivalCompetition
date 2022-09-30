@@ -4,5 +4,5 @@ import org.bukkit.command.CommandExecutor;
 
 public interface IPluginCommand extends CommandExecutor
 {
-    public String GetCommandName();
+    public String getCommandName();
 }

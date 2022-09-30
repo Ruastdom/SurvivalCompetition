@@ -26,8 +26,8 @@ public class TeamManager extends PluginObject implements ITeamManager
             "无效队伍配置", "FIX CONFIG PLEASE", "FIX ME PLEASE", "FALLBACK", NamedTextColor.AQUA
     );
 
-    private final ConfigNode baseConfigNode = ConfigNode.New().Append("TeamManager");
-    private final ConfigNode teamsNode = baseConfigNode.GetCopy().Append("Teams");
+    private final ConfigNode baseConfigNode = ConfigNode.create().Append("TeamManager");
+    private final ConfigNode teamsNode = baseConfigNode.getCopy().Append("Teams");
 
     public TeamManager()
     {
@@ -39,13 +39,13 @@ public class TeamManager extends PluginObject implements ITeamManager
     @Initializer
     private void init(PluginConfigManager config)
     {
-        config.OnConfigRefresh(c -> onConfigUpdate(), true);
+        config.onConfigRefresh(c -> onConfigUpdate(), true);
     }
 
     private void onConfigUpdate()
     {
         //获取队伍列表
-        var teams = config.Get(ArrayList.class, teamsNode);
+        var teams = config.get(ArrayList.class, teamsNode);
 
         //移除所有null值
         //这样和下面搭配可以在Teams节点为'[]'或全是null时重置这段设置
@@ -59,13 +59,13 @@ public class TeamManager extends PluginObject implements ITeamManager
                     new TeamInfo("蓝队", "蓝队 - ", "蓝队", "TEAMBLUE", NamedTextColor.BLUE)
             ));
 
-            config.Set(teamsNode, list);
+            config.set(teamsNode, list);
             teams = list;
         }
 
         //添加队伍
         for (var t : teams)
-            AddTeam((TeamInfo) t);
+            addTeam((TeamInfo) t);
     }
 
     //队伍计分板
@@ -95,83 +95,83 @@ public class TeamManager extends PluginObject implements ITeamManager
     private final ConcurrentHashMap<TeamInfo, List<Player>> teamPlayersMap = new ConcurrentHashMap<>();
 
     @Override
-    public boolean AddTeam(TeamInfo ti)
+    public boolean addTeam(TeamInfo ti)
     {
         if (ti == null) throw new IllegalArgumentException("队伍信息不能是null");
 
-        Logger.info("添加队伍：" + ti.Name);
+        Logger.info("添加队伍：" + ti.name);
 
-        var teamId = ti.Identifier;
+        var teamId = ti.identifier;
         if (teamId == null || teamId.isEmpty() || teamId.isBlank() || teamId.equals("NULL"))
         {
-            Logger.error("无效队伍ID：" + ti.Identifier + "，将不会添加此队伍");
+            Logger.error("无效队伍ID：" + ti.identifier + "，将不会添加此队伍");
             return false;
         }
 
         if (teamMap.containsValue(ti)) return false;
 
-        var prevTeam = board.getTeam(ti.Identifier);
+        var prevTeam = board.getTeam(ti.identifier);
         if (prevTeam != null)
             prevTeam.unregister();
 
         // 以下代码来自 https://www.mcbbs.net/thread-897858-1-1.html
         // 感谢他们对 Scoreboard 和 Team 的精细讲解 awa
-        var newTeam = board.registerNewTeam(ti.Identifier);
+        var newTeam = board.registerNewTeam(ti.identifier);
         newTeam.setAllowFriendlyFire(false);
         newTeam.setCanSeeFriendlyInvisibles(true);
         newTeam.color(ti.TeamColor);
         newTeam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.FOR_OWN_TEAM);
         newTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.FOR_OTHER_TEAMS);
-        newTeam.displayName(Component.translatable(ti.Name));
-        newTeam.prefix(Component.text(ti.TeamPrefix).color(ti.TeamColor));
+        newTeam.displayName(Component.translatable(ti.name));
+        newTeam.prefix(Component.text(ti.teamPrefix).color(ti.TeamColor));
 
         ti.Team = newTeam;
-        teamMap.put(ti.Identifier, ti);
+        teamMap.put(ti.identifier, ti);
         return true;
     }
 
     @Override
-    public boolean AddTeam(String identifier, String name, String desc)
+    public boolean addTeam(String identifier, String name, String desc)
     {
-        return this.AddTeam(new TeamInfo(name, desc, identifier));
+        return this.addTeam(new TeamInfo(name, desc, identifier));
     }
 
     @Override
-    public boolean AddTeam(String identifier, String name)
+    public boolean addTeam(String identifier, String name)
     {
-        return this.AddTeam(identifier, name, "");
+        return this.addTeam(identifier, name, "");
     }
 
     @Override
-    public boolean AddTeam(String identifier)
+    public boolean addTeam(String identifier)
     {
-        return this.AddTeam(identifier, identifier);
+        return this.addTeam(identifier, identifier);
     }
 
     @Override
     @Nullable
-    public TeamInfo GetTeam(String identifier)
+    public TeamInfo getTeam(String identifier)
     {
         return teamMap.get(identifier);
     }
 
     @Override
-    public List<TeamInfo> GetTeams()
+    public List<TeamInfo> getTeams()
     {
         return teamMap.values().stream().toList();
     }
 
     @Override
-    public boolean AddPlayerToTeam(Player player, TeamInfo ti)
+    public boolean addPlayerToTeam(Player player, TeamInfo ti)
     {
         if (teamMap.containsValue(ti))
         {
-            var prevPlayerTeam = GetPlayerTeam(player);
+            var prevPlayerTeam = getPlayerTeam(player);
 
             if (prevPlayerTeam != null)
                 teamPlayersMap.get(prevPlayerTeam).remove(player);
 
-            RemovePlayerFromTeam(player, ti);
+            removePlayerFromTeam(player, ti);
             teamPlayersMap.get(ti).add(player);
             ti.Team.addEntry(player.getName());
             return true;
@@ -181,15 +181,15 @@ public class TeamManager extends PluginObject implements ITeamManager
     }
 
     @Override
-    public boolean AddPlayerToTeam(Player player, String identifier)
+    public boolean addPlayerToTeam(Player player, String identifier)
     {
-        var targetTeam = this.GetTeam(identifier);
+        var targetTeam = this.getTeam(identifier);
 
-        return AddPlayerToTeam(player, targetTeam);
+        return addPlayerToTeam(player, targetTeam);
     }
 
     @Override
-    public boolean RemovePlayerFromTeam(Player player, TeamInfo ti)
+    public boolean removePlayerFromTeam(Player player, TeamInfo ti)
     {
         if (ti == null || player == null) return false;
 
@@ -198,23 +198,23 @@ public class TeamManager extends PluginObject implements ITeamManager
     }
 
     @Override
-    public boolean RemovePlayerFromTeam(Player player, String identifier)
+    public boolean removePlayerFromTeam(Player player, String identifier)
     {
-        var targetTeam = this.GetTeam(identifier);
+        var targetTeam = this.getTeam(identifier);
 
-        return RemovePlayerFromTeam(player, targetTeam);
+        return removePlayerFromTeam(player, targetTeam);
     }
 
     @Override
-    public boolean RemovePlayerFromTeam(Player player)
+    public boolean removePlayerFromTeam(Player player)
     {
-        var targetTeam = GetPlayerTeam(player);
+        var targetTeam = getPlayerTeam(player);
 
-        return RemovePlayerFromTeam(player, targetTeam);
+        return removePlayerFromTeam(player, targetTeam);
     }
 
     @Override
-    public TeamInfo GetPlayerTeam(Player player)
+    public TeamInfo getPlayerTeam(Player player)
     {
         for (var es : teamPlayersMap.entrySet())
         {
@@ -239,9 +239,9 @@ public class TeamManager extends PluginObject implements ITeamManager
 
         for (TeamInfo ti : teamMap.values())
         {
-            //todo: 在这里显示ti.Name
+            //todo: 在这里显示ti.name
             //添加分数显示到teamScoreMap
-            var score = obj.getScore(ti.Name);
+            var score = obj.getScore(ti.name);
 
             teamScoreMap.put(ti, score);
 
@@ -260,8 +260,8 @@ public class TeamManager extends PluginObject implements ITeamManager
             targetIndex += 1;
 
             var targetTeam = (TeamInfo) teams[targetIndex % teams.length];
-            this.AddPlayerToTeam(player, targetTeam);
-            player.sendMessage(Component.text("您已被分配到" + targetTeam.Name));
+            this.addPlayerToTeam(player, targetTeam);
+            player.sendMessage(Component.text("您已被分配到" + targetTeam.name));
         }
     }
 
@@ -284,7 +284,7 @@ public class TeamManager extends PluginObject implements ITeamManager
             }
 
             //广播成员信息
-            Bukkit.getServer().broadcast(Component.text(ti.Name)
+            Bukkit.getServer().broadcast(Component.text(ti.name)
                     .append(Component.text("成员：")).asComponent().color(ti.TeamColor));
 
             Bukkit.getServer().broadcast(Component.text(playerListString.toString(), ti.TeamColor));
@@ -294,7 +294,7 @@ public class TeamManager extends PluginObject implements ITeamManager
     @Override
     public int getPoints(String identifier)
     {
-        var score = teamScoreMap.get(GetTeam(identifier));
+        var score = teamScoreMap.get(getTeam(identifier));
 
         if (score != null && score.isScoreSet()) return score.getScore();
         return -1;
@@ -303,7 +303,7 @@ public class TeamManager extends PluginObject implements ITeamManager
     @Override
     public boolean setPoints(String identifier, int point)
     {
-        return this.setPoints(GetTeam(identifier), point);
+        return this.setPoints(getTeam(identifier), point);
     }
 
     @Override
@@ -331,7 +331,7 @@ public class TeamManager extends PluginObject implements ITeamManager
 
             for (Player player : players)
             {
-                RemovePlayerFromTeam(player, es.getKey());
+                removePlayerFromTeam(player, es.getKey());
             }
         }
 

@@ -17,7 +17,7 @@ import xiamomc.survivalcompetition.Misc.PluginObject;
 public class GMCommand extends PluginObject implements IPluginCommand
 {
     @Override
-    public String GetCommandName()
+    public String getCommandName()
     {
         return "game";
     }
@@ -47,9 +47,9 @@ public class GMCommand extends PluginObject implements IPluginCommand
         switch (args[0])
         {
             case "reload":
-                if (permissions.HasPermission(sender, PermissionNode.New("reload")))
+                if (permissions.hasPermission(sender, PermissionNode.create("reload")))
                 {
-                    config.Reload();
+                    config.reload();
                     sender.sendMessage(Component.translatable("刷新成功！"));
                 }
                 else
@@ -58,7 +58,7 @@ public class GMCommand extends PluginObject implements IPluginCommand
                 break;
 
             case "stopcurrent":
-                if (permissions.HasPermission(sender, PermissionNode.New("stopcurrent")))
+                if (permissions.hasPermission(sender, PermissionNode.create("stopcurrent")))
                 {
                     if (!game.endGame())
                     {

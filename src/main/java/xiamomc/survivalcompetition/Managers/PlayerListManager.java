@@ -16,7 +16,7 @@ public class PlayerListManager implements IPlayerListManager
     }
 
     @Override
-    public boolean Add(Player player)
+    public boolean add(Player player)
     {
         if (player == null) return false;
 
@@ -24,7 +24,7 @@ public class PlayerListManager implements IPlayerListManager
     }
 
     @Override
-    public boolean Remove(Player player)
+    public boolean remove(Player player)
     {
         if (player == null) return false;
 
@@ -32,7 +32,7 @@ public class PlayerListManager implements IPlayerListManager
     }
 
     @Override
-    public boolean Contains(Player player)
+    public boolean contains(Player player)
     {
         return playerList.contains(player);
     }

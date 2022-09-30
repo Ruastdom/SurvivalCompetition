@@ -41,7 +41,7 @@ public class CareerCommand extends PluginObject implements IPluginCommand
     }
 
     @Override
-    public String GetCommandName()
+    public String getCommandName()
     {
         return "setcareer";
     }

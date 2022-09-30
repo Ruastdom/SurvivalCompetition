@@ -54,7 +54,7 @@ public class GameManager extends PluginObject implements IGameManager
             imm.createSMPWorldGroup(worldName);
             imm.linkSMPWorlds(worldName);
             Bukkit.getServer().broadcast(Component.translatable("新的比赛世界已生成，正在传送玩家到新世界......", Colors.Green));
-            this.AddSchedule(c ->
+            this.addSchedule(c ->
             {
                 for (var player : players.getList())
                 {
@@ -75,7 +75,7 @@ public class GameManager extends PluginObject implements IGameManager
     {
         Bukkit.getServer().broadcast(Component.translatable("正在生成新的世界......", Colors.Red));
 
-        this.AddSchedule(c -> generateNewWorld());
+        this.addSchedule(c -> generateNewWorld());
     }
 
     //endregion
@@ -91,8 +91,8 @@ public class GameManager extends PluginObject implements IGameManager
     private StageInfo currentStage = null;
     private int ticksRemaining = -1;
 
-    private final ConfigNode baseConfigNode = ConfigNode.New().Append("GameManager");
-    private final ConfigNode stagesNode = baseConfigNode.GetCopy().Append("Stages");
+    private final ConfigNode baseConfigNode = ConfigNode.create().Append("GameManager");
+    private final ConfigNode stagesNode = baseConfigNode.getCopy().Append("Stages");
 
     @Resolved
     private PluginConfigManager config;
@@ -100,7 +100,7 @@ public class GameManager extends PluginObject implements IGameManager
     @Initializer
     private void init()
     {
-        config.OnConfigRefresh(c -> onConfigUpdate(), true);
+        config.onConfigRefresh(c -> onConfigUpdate(), true);
     }
 
     @Override
@@ -121,7 +121,7 @@ public class GameManager extends PluginObject implements IGameManager
         for (var si : configuredStages)
             stageInfoStack.add(0, si);
 
-        this.AddSchedule(c -> tick());
+        this.addSchedule(c -> tick());
         return true;
     }
 
@@ -129,7 +129,7 @@ public class GameManager extends PluginObject implements IGameManager
     {
         if (this.isGameStarted) endGame();
 
-        var stages = config.Get(ArrayList.class, stagesNode);
+        var stages = config.get(ArrayList.class, stagesNode);
 
         if (stages != null) stages.removeIf(o -> o == null);
 
@@ -147,14 +147,14 @@ public class GameManager extends PluginObject implements IGameManager
                             1500, false, false, false)
             ));
 
-            config.Set(stagesNode, stages);
+            config.set(stagesNode, stages);
         }
 
         for (var o : stages)
         {
             var s = (StageInfo) o;
 
-            Logger.info("添加阶段：" + s.Name);
+            Logger.info("添加阶段：" + s.name);
             this.configuredStages.add(s);
         }
     }
@@ -165,7 +165,7 @@ public class GameManager extends PluginObject implements IGameManager
 
         if (ticksRemaining <= 0) switchToNextStage();
 
-        if (isGameStarted) this.AddSchedule(c -> tick());
+        if (isGameStarted) this.addSchedule(c -> tick());
     }
 
     private void switchToNextStage()
@@ -182,34 +182,34 @@ public class GameManager extends PluginObject implements IGameManager
     private void switchToStage(StageInfo si)
     {
         var list = players.getList();
-        ticksRemaining = si.Lasts;
+        ticksRemaining = si.lasts;
         currentStage = si;
-        Logger.info("切换到" + si.Name);
+        Logger.info("切换到" + si.name);
 
         for (var player : list)
         {
             player.sendTitlePart(TitlePart.TIMES, Title.Times.times(times[0], times[1], times[2]));
-            player.sendTitlePart(TitlePart.SUBTITLE, Component.translatable(si.TitleSub));
-            player.sendTitlePart(TitlePart.TITLE, Component.translatable(si.TitleMain));
+            player.sendTitlePart(TitlePart.SUBTITLE, Component.translatable(si.titleSub));
+            player.sendTitlePart(TitlePart.TITLE, Component.translatable(si.titleMain));
         }
 
-        if (si.RefreshTeams)
+        if (si.refreshTeams)
         {
             itm.distributeToTeams(list);
             itm.sendTeammatesMessage();
         }
 
-        if (si.SpreadsPlayer)
+        if (si.spreadsPlayer)
             Logger.warn("未实现扩散玩家！");
 
         if (si.AllowCareerSelect)
         {
             Bukkit.getServer().broadcast(Component.text("请选择职业："));
-            icm.getCareerList().forEach(career -> Bukkit.getServer().broadcast(career.GetNameAsComponent()));
+            icm.getCareerList().forEach(career -> Bukkit.getServer().broadcast(career.getNameAsComponent()));
         }
 
         for (var w : imm.getCurrentWorlds())
-            w.setGameRule(GameRule.KEEP_INVENTORY, si.AllowKeepInventory);
+            w.setGameRule(GameRule.KEEP_INVENTORY, si.allowKeepInventory);
     }
 
     private final TeamInfo drawTeam = new TeamInfo("没有人", "", "DRAW");
@@ -228,9 +228,9 @@ public class GameManager extends PluginObject implements IGameManager
         TeamInfo winnerTeam = drawTeam;
         int wTScore = 0;
 
-        for (TeamInfo ti : itm.GetTeams())
+        for (TeamInfo ti : itm.getTeams())
         {
-            var score = itm.getPoints(ti.Identifier);
+            var score = itm.getPoints(ti.identifier);
 
             if (score >= 0 && score > wTScore)
             {
@@ -239,13 +239,13 @@ public class GameManager extends PluginObject implements IGameManager
             }
         }
 
-        endingStage.TitleSub = winnerTeam.Name + "胜出！";
+        endingStage.titleSub = winnerTeam.name + "胜出！";
 
         this.switchToStage(endingStage);
 
         for (var player : players.getList())
         {
-            this.AddSchedule(c -> imm.tpToWorld(player, imm.GetFirstSpawnWorldName()), 200);
+            this.addSchedule(c -> imm.tpToWorld(player, imm.getFirstSpawnWorldName()), 200);
         }
 
         players.clear();
@@ -254,7 +254,7 @@ public class GameManager extends PluginObject implements IGameManager
         icm.clear();
 
         if (CurrentWorldBaseName != null)
-            this.AddSchedule(c -> imm.deleteWorlds(CurrentWorldBaseName), 250);
+            this.addSchedule(c -> imm.deleteWorlds(CurrentWorldBaseName), 250);
 
         isGameStarted = false;
         return true;

@@ -24,16 +24,16 @@ import static org.bukkit.entity.EntityType.PLAYER;
 
 public class EventProcessor extends PluginObject implements Listener
 {
-    @Resolved(ShouldSolveImmediately = true)
+    @Resolved(shouldSolveImmediately = true)
     private ITeamManager teams;
 
-    @Resolved(ShouldSolveImmediately = true)
+    @Resolved(shouldSolveImmediately = true)
     private IPlayerListManager players;
 
-    @Resolved(ShouldSolveImmediately = true)
+    @Resolved(shouldSolveImmediately = true)
     private IGameManager game;
 
-    @Resolved(ShouldSolveImmediately = true)
+    @Resolved(shouldSolveImmediately = true)
     private ICareerManager careerManager;
 
     @EventHandler
@@ -42,14 +42,14 @@ public class EventProcessor extends PluginObject implements Listener
         var player = e.getPlayer();
 
         var career = careerManager.getPlayerCareer(player);
-        if (career != null) career.ResetFor(player);
+        if (career != null) career.resetFor(player);
 
         if (game.doesGameStart())
         {
             var targetOptional = players.getList().stream().findAny();
             targetOptional.ifPresent(target ->
             {
-                this.AddSchedule(c ->
+                this.addSchedule(c ->
                 {
                     player.teleport(target);
 
@@ -70,9 +70,9 @@ public class EventProcessor extends PluginObject implements Listener
         {
             var player = e.getPlayer();
 
-            if (players.Contains(player))
+            if (players.contains(player))
             {
-                players.Remove(player);
+                players.remove(player);
 
                 //如果玩家全部退出，则结束游戏
                 if (players.getList().size() == 0) game.endGame();
@@ -97,16 +97,16 @@ public class EventProcessor extends PluginObject implements Listener
             int playerMaxHealth = (int) player.getMaxHealth();
             int killerMaxHealth = (int) killer.getMaxHealth();
 
-            TeamInfo playerTeam = teams.GetPlayerTeam(player);
+            TeamInfo playerTeam = teams.getPlayerTeam(player);
 
-            teams.setPoints(playerTeam, teams.getPoints(playerTeam.Identifier) - 20);
+            teams.setPoints(playerTeam, teams.getPoints(playerTeam.identifier) - 20);
 
             player.setMaxHealth((double) playerMaxHealth - 2.0);
 
             if (player.getKiller() != null)
             {
-                TeamInfo killerTeam = teams.GetPlayerTeam(killer);
-                teams.setPoints(killerTeam, teams.getPoints(killerTeam.Identifier) + playerMaxHealth);
+                TeamInfo killerTeam = teams.getPlayerTeam(killer);
+                teams.setPoints(killerTeam, teams.getPoints(killerTeam.identifier) + playerMaxHealth);
                 killer.setMaxHealth((double) killerMaxHealth + 2.0);
             }
         }
@@ -126,9 +126,9 @@ public class EventProcessor extends PluginObject implements Listener
             Player damager = (Player) e.getDamager();
             int damage = (int) e.getDamage();
 
-            TeamInfo playerTeam = teams.GetPlayerTeam(damager);
+            TeamInfo playerTeam = teams.getPlayerTeam(damager);
 
-            teams.setPoints(playerTeam, teams.getPoints(playerTeam.Identifier) + damage);
+            teams.setPoints(playerTeam, teams.getPoints(playerTeam.identifier) + damage);
 
         }
     }

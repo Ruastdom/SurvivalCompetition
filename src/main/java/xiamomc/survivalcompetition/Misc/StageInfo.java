@@ -2,6 +2,7 @@ package xiamomc.survivalcompetition.Misc;
 
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.jetbrains.annotations.NotNull;
+import xiamomc.survivalcompetition.Annotations.Serializable;
 import xiamomc.survivalcompetition.Misc.Serialize.ConfigSerializeUtils;
 
 import java.util.Map;
@@ -11,53 +12,61 @@ public class StageInfo implements ConfigurationSerializable
     /**
      * 阶段名
      */
-    public String Name;
+    @Serializable("name")
+    public String name;
 
     /**
      * 标题名称
      */
-    public String TitleMain;
+    @Serializable("titleMain")
+    public String titleMain;
 
     /**
      * 副标题名称
      */
-    public String TitleSub;
+    @Serializable("titleSub")
+    public String titleSub;
 
     /**
      * 持续多久（多少刻）
      */
-    public int Lasts;
+    @Serializable("Lasts")
+    public int lasts;
 
     /**
      * 是否允许保留物品栏（死亡不掉落）
      */
-    public boolean AllowKeepInventory = true;
+    @Serializable("AllowKeepInventory")
+    public boolean allowKeepInventory = true;
 
     /**
      * 是否扩散玩家
      */
-    public boolean SpreadsPlayer;
+    @Serializable("SpreadsPlayer")
+    public boolean spreadsPlayer;
 
     /**
      * 是否重新分队
      */
-    public boolean RefreshTeams;
+    @Serializable("RefreshTeams")
+    public boolean refreshTeams;
 
     /**
      * 是否允许职业选择
      */
+    @Serializable("AllowCareerSelect")
     public boolean AllowCareerSelect;
 
     public StageInfo(String name, String titleMain, String titleSub,
                      int lasts, boolean spreadsPlayer,
                      boolean refreshTeams, boolean allowCareerSelect)
     {
-        Name = name;
-        TitleMain = titleMain;
-        TitleSub = titleSub;
-        Lasts = lasts;
-        SpreadsPlayer = spreadsPlayer;
-        RefreshTeams = refreshTeams;
+        this.name = name;
+        this.titleMain = titleMain;
+        this.titleSub = titleSub;
+        this.lasts = lasts;
+        this.spreadsPlayer = spreadsPlayer;
+        this.refreshTeams = refreshTeams;
         AllowCareerSelect = allowCareerSelect;
     }
 
@@ -68,11 +77,11 @@ public class StageInfo implements ConfigurationSerializable
     @Override
     public @NotNull Map<String, Object> serialize()
     {
-        return ConfigSerializeUtils.Serialize(this);
+        return ConfigSerializeUtils.serialize(this);
     }
 
     public static StageInfo deserialize(Map<String, Object> map)
     {
-        return ConfigSerializeUtils.DeSerialize(new StageInfo(), map);
+        return ConfigSerializeUtils.deSerialize(new StageInfo(), map);
     }
 }
