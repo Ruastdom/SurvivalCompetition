@@ -12,19 +12,19 @@ public class StageInfo implements ConfigurationSerializable
     /**
      * 阶段名
      */
-    @Serializable("name")
+    @Serializable("Name")
     public String name;
 
     /**
      * 标题名称
      */
-    @Serializable("titleMain")
+    @Serializable("TitleMain")
     public String titleMain;
 
     /**
      * 副标题名称
      */
-    @Serializable("titleSub")
+    @Serializable("TitleSub")
     public String titleSub;
 
     /**

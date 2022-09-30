@@ -14,12 +14,12 @@ import java.util.Map;
 public class TeamInfo implements ConfigurationSerializable
 {
     @NotSerializable
-    public Team Team = null;
+    public Team team = null;
 
-    @Serializable("name")
+    @Serializable("Name")
     public String name = "队伍名称";
 
-    @Serializable("description")
+    @Serializable("Description")
     public String description = "队伍描述";
 
     @Serializable("Identifier")
@@ -29,7 +29,7 @@ public class TeamInfo implements ConfigurationSerializable
     public String teamPrefix = "PFX - ";
 
     @NotSerializable
-    public NamedTextColor TeamColor;
+    public NamedTextColor teamColor;
 
     private TeamInfo()
     {
@@ -46,14 +46,14 @@ public class TeamInfo implements ConfigurationSerializable
         this.teamPrefix = pfx;
         this.description = desc;
         this.identifier = identifier;
-        this.TeamColor = teamColor;
+        this.teamColor = teamColor;
     }
 
     @Override
     public @NotNull Map<String, Object> serialize()
     {
         var result = ConfigSerializeUtils.serialize(this);
-        result.put("TeamColor", this.TeamColor.asHexString()); //NamedTextColor不支持序列化，只能先这样了
+        result.put("teamColor", this.teamColor.asHexString()); //NamedTextColor不支持序列化，只能先这样了
 
         return result;
     }
@@ -61,7 +61,7 @@ public class TeamInfo implements ConfigurationSerializable
     public static TeamInfo deserialize(Map<String, Object> map)
     {
         var result = ConfigSerializeUtils.deSerialize(new TeamInfo(), map);
-        result.TeamColor = NamedTextColor.nearestTo(TextColor.fromHexString((String) map.getOrDefault("TeamColor", "#ffffff")));
+        result.teamColor = NamedTextColor.nearestTo(TextColor.fromHexString((String) map.getOrDefault("teamColor", "#ffffff")));
         return result;
     }
 }

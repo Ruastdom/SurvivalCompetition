@@ -119,13 +119,13 @@ public class TeamManager extends PluginObject implements ITeamManager
         var newTeam = board.registerNewTeam(ti.identifier);
         newTeam.setAllowFriendlyFire(false);
         newTeam.setCanSeeFriendlyInvisibles(true);
-        newTeam.color(ti.TeamColor);
+        newTeam.color(ti.teamColor);
         newTeam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.FOR_OWN_TEAM);
         newTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.FOR_OTHER_TEAMS);
         newTeam.displayName(Component.translatable(ti.name));
-        newTeam.prefix(Component.text(ti.teamPrefix).color(ti.TeamColor));
+        newTeam.prefix(Component.text(ti.teamPrefix).color(ti.teamColor));
 
-        ti.Team = newTeam;
+        ti.team = newTeam;
         teamMap.put(ti.identifier, ti);
         return true;
     }
@@ -173,7 +173,7 @@ public class TeamManager extends PluginObject implements ITeamManager
 
             removePlayerFromTeam(player, ti);
             teamPlayersMap.get(ti).add(player);
-            ti.Team.addEntry(player.getName());
+            ti.team.addEntry(player.getName());
             return true;
         }
 
@@ -193,7 +193,7 @@ public class TeamManager extends PluginObject implements ITeamManager
     {
         if (ti == null || player == null) return false;
 
-        ti.Team.removeEntry(player.getName());
+        ti.team.removeEntry(player.getName());
         return teamPlayersMap.get(ti).remove(player);
     }
 
@@ -285,9 +285,9 @@ public class TeamManager extends PluginObject implements ITeamManager
 
             //广播成员信息
             Bukkit.getServer().broadcast(Component.text(ti.name)
-                    .append(Component.text("成员：")).asComponent().color(ti.TeamColor));
+                    .append(Component.text("成员：")).asComponent().color(ti.teamColor));
 
-            Bukkit.getServer().broadcast(Component.text(playerListString.toString(), ti.TeamColor));
+            Bukkit.getServer().broadcast(Component.text(playerListString.toString(), ti.teamColor));
         }
     }
 
