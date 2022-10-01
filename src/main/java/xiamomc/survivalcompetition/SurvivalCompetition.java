@@ -23,7 +23,7 @@ public final class SurvivalCompetition extends XiaMoJavaPlugin
     private CareerManager careerManager;
     private IMultiverseManager multiverseManager;
     private TeamManager teamManager;
-    private CommandHelper cmdHelper;
+    private SCCommandHelper cmdHelper;
     private PluginConfigManager config;
     private Logger logger = this.getSLF4JLogger();
 
@@ -76,6 +76,7 @@ public final class SurvivalCompetition extends XiaMoJavaPlugin
                 ? new DummyMVManager()
                 : new MultiverseManager());
         dependencyManager.Cache(new PermissionUtils());
+        dependencyManager.Cache(cmdHelper);
 
         //endregion
 

@@ -24,10 +24,12 @@ public class GMCommand extends SCPluginObject implements IPluginCommand
         return "game";
     }
 
+    private final List<String> avaliableSubCommands = List.of("reload", "stopcurrent");
+
     @Override
     public List<String> onTabComplete(String baseName, String[] args, CommandSender source)
     {
-        return null;
+        return avaliableSubCommands;
     }
 
     @Resolved

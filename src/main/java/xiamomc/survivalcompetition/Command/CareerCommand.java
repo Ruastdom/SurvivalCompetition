@@ -4,12 +4,14 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import xiamomc.pluginbase.Annotations.Initializer;
 import xiamomc.pluginbase.Annotations.Resolved;
 import xiamomc.pluginbase.Command.IPluginCommand;
 import xiamomc.survivalcompetition.Managers.ICareerManager;
 import xiamomc.survivalcompetition.Managers.IGameManager;
 import xiamomc.survivalcompetition.SCPluginObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CareerCommand extends SCPluginObject implements IPluginCommand
@@ -19,6 +21,17 @@ public class CareerCommand extends SCPluginObject implements IPluginCommand
 
     @Resolved
     private IGameManager game;
+
+    private final List<String> avaliableCareers = new ArrayList<>();
+
+    @Initializer
+    private void load()
+    {
+        var list = new ArrayList<String>();
+        icm.getCareerList().forEach(c -> list.add(c.getInternalName()));
+
+        avaliableCareers.addAll(list);
+    }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args)
@@ -52,6 +65,6 @@ public class CareerCommand extends SCPluginObject implements IPluginCommand
     @Override
     public List<String> onTabComplete(String baseName, String[] args, CommandSender source)
     {
-        return null;
+        return avaliableCareers;
     }
 }

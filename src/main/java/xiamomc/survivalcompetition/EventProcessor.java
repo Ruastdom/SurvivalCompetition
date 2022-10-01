@@ -11,7 +11,9 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.server.TabCompleteEvent;
 import xiamomc.pluginbase.Annotations.Resolved;
+import xiamomc.survivalcompetition.Command.SCCommandHelper;
 import xiamomc.survivalcompetition.Managers.ICareerManager;
 import xiamomc.survivalcompetition.Managers.IGameManager;
 import xiamomc.survivalcompetition.Managers.IPlayerListManager;
@@ -60,6 +62,16 @@ public class EventProcessor extends SCPluginObject implements Listener
         else
         {
         }
+    }
+
+    @Resolved
+    private SCCommandHelper commandHelper;
+
+    @EventHandler
+    public void onTabComplete(TabCompleteEvent e)
+    {
+        var result = commandHelper.onTabComplete(e.getBuffer().split(" "), e.getSender());
+        if (result != null) e.setCompletions(result);
     }
 
     @EventHandler
