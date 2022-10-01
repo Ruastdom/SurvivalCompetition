@@ -67,6 +67,10 @@
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
         <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+        <repository>
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
@@ -103,10 +107,9 @@
             <version>3.12.0</version>
         </dependency>
         <dependency>
-            <groupId>xiamomc</groupId>
-            <artifactId>pluginbase</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
+            <groupId>com.github.XiaMoZhiShi</groupId>
+            <artifactId>PluginBase</artifactId>
+            <version>0.0.1-alpha</version>
         </dependency>
     </dependencies>
 </project>
