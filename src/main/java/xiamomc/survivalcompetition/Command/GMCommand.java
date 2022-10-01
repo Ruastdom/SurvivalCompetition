@@ -4,22 +4,30 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
-import xiamomc.survivalcompetition.Annotations.Initializer;
-import xiamomc.survivalcompetition.Annotations.Resolved;
-import xiamomc.survivalcompetition.Configuration.PluginConfigManager;
+import xiamomc.pluginbase.Annotations.Resolved;
+import xiamomc.pluginbase.Command.IPluginCommand;
+import xiamomc.pluginbase.Configuration.PluginConfigManager;
 import xiamomc.survivalcompetition.Managers.IGameManager;
 import xiamomc.survivalcompetition.Managers.IPlayerListManager;
 import xiamomc.survivalcompetition.Misc.Colors;
 import xiamomc.survivalcompetition.Misc.Permissions.PermissionNode;
 import xiamomc.survivalcompetition.Misc.Permissions.PermissionUtils;
-import xiamomc.survivalcompetition.Misc.PluginObject;
+import xiamomc.survivalcompetition.SCPluginObject;
 
-public class GMCommand extends PluginObject implements IPluginCommand
+import java.util.List;
+
+public class GMCommand extends SCPluginObject implements IPluginCommand
 {
     @Override
     public String getCommandName()
     {
         return "game";
+    }
+
+    @Override
+    public List<String> onTabComplete(String baseName, String[] args, CommandSender source)
+    {
+        return null;
     }
 
     @Resolved
@@ -33,11 +41,6 @@ public class GMCommand extends PluginObject implements IPluginCommand
 
     @Resolved
     private PermissionUtils permissions;
-
-    @Initializer
-    private void load()
-    {
-    }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args)

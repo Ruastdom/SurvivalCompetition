@@ -10,14 +10,14 @@ import com.onarandombox.multiverseinventories.profile.WorldGroupManager;
 import com.onarandombox.multiverseinventories.share.Sharables;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
-import xiamomc.survivalcompetition.Annotations.Initializer;
-import xiamomc.survivalcompetition.Misc.PluginObject;
+import xiamomc.pluginbase.Annotations.Initializer;
+import xiamomc.survivalcompetition.SCPluginObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MultiverseManager extends PluginObject implements IMultiverseManager
+public class MultiverseManager extends SCPluginObject implements IMultiverseManager
 {
     MultiverseCore core;
     MultiverseNetherPortals netherPortals;

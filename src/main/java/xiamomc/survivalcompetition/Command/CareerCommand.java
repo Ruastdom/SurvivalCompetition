@@ -4,12 +4,15 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
-import xiamomc.survivalcompetition.Annotations.Resolved;
+import xiamomc.pluginbase.Annotations.Resolved;
+import xiamomc.pluginbase.Command.IPluginCommand;
 import xiamomc.survivalcompetition.Managers.ICareerManager;
 import xiamomc.survivalcompetition.Managers.IGameManager;
-import xiamomc.survivalcompetition.Misc.PluginObject;
+import xiamomc.survivalcompetition.SCPluginObject;
 
-public class CareerCommand extends PluginObject implements IPluginCommand
+import java.util.List;
+
+public class CareerCommand extends SCPluginObject implements IPluginCommand
 {
     @Resolved
     private ICareerManager icm;
@@ -44,5 +47,11 @@ public class CareerCommand extends PluginObject implements IPluginCommand
     public String getCommandName()
     {
         return "setcareer";
+    }
+
+    @Override
+    public List<String> onTabComplete(String baseName, String[] args, CommandSender source)
+    {
+        return null;
     }
 }

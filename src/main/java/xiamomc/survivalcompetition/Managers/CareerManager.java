@@ -2,18 +2,18 @@ package xiamomc.survivalcompetition.Managers;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import xiamomc.survivalcompetition.Annotations.Resolved;
+import xiamomc.pluginbase.Annotations.Resolved;
 import xiamomc.survivalcompetition.Careers.AbstractCareer;
 import xiamomc.survivalcompetition.Careers.AssassinCareer;
 import xiamomc.survivalcompetition.Careers.WarriorCareer;
-import xiamomc.survivalcompetition.Misc.PluginObject;
+import xiamomc.survivalcompetition.SCPluginObject;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class CareerManager extends PluginObject implements ICareerManager
+public class CareerManager extends SCPluginObject implements ICareerManager
 {
     private final List<AbstractCareer> careerList;
 

@@ -5,20 +5,20 @@ import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.TitlePart;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
-import xiamomc.survivalcompetition.Annotations.Initializer;
-import xiamomc.survivalcompetition.Annotations.Resolved;
-import xiamomc.survivalcompetition.Configuration.ConfigNode;
-import xiamomc.survivalcompetition.Configuration.PluginConfigManager;
+import xiamomc.pluginbase.Annotations.Initializer;
+import xiamomc.pluginbase.Annotations.Resolved;
+import xiamomc.pluginbase.Configuration.ConfigNode;
+import xiamomc.pluginbase.Configuration.PluginConfigManager;
 import xiamomc.survivalcompetition.Misc.Colors;
 import xiamomc.survivalcompetition.Misc.StageInfo;
-import xiamomc.survivalcompetition.Misc.PluginObject;
 import xiamomc.survivalcompetition.Misc.TeamInfo;
+import xiamomc.survivalcompetition.SCPluginObject;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
-public class GameManager extends PluginObject implements IGameManager
+public class GameManager extends SCPluginObject implements IGameManager
 {
     boolean isGameStarted;
 

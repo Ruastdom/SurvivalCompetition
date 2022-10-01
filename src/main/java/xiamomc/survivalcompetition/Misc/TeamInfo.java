@@ -5,9 +5,9 @@ import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
-import xiamomc.survivalcompetition.Annotations.NotSerializable;
-import xiamomc.survivalcompetition.Annotations.Serializable;
-import xiamomc.survivalcompetition.Misc.Serialize.ConfigSerializeUtils;
+import xiamomc.pluginbase.Annotations.NotSerializable;
+import xiamomc.pluginbase.Annotations.Serializable;
+import xiamomc.pluginbase.Serialize.ConfigSerializeUtils;
 
 import java.util.Map;
 

@@ -1,11 +1,13 @@
 package xiamomc.survivalcompetition;
 
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.Logger;
-import xiamomc.survivalcompetition.Command.CommandHelper;
-import xiamomc.survivalcompetition.Configuration.ConfigNode;
-import xiamomc.survivalcompetition.Configuration.PluginConfigManager;
+import xiamomc.pluginbase.Command.CommandHelper;
+import xiamomc.pluginbase.Configuration.ConfigNode;
+import xiamomc.pluginbase.Configuration.PluginConfigManager;
+import xiamomc.pluginbase.ScheduleInfo;
+import xiamomc.pluginbase.XiaMoJavaPlugin;
+import xiamomc.survivalcompetition.Command.SCCommandHelper;
 import xiamomc.survivalcompetition.Managers.*;
 import xiamomc.survivalcompetition.Misc.Permissions.PermissionUtils;
 
@@ -13,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public final class SurvivalCompetition extends JavaPlugin
+public final class SurvivalCompetition extends XiaMoJavaPlugin
 {
     public static SurvivalCompetition instance;
     private GameManager gameManager;
@@ -30,7 +32,11 @@ public final class SurvivalCompetition extends JavaPlugin
         return instance;
     }
 
-    private final GameDependencyManager dependencyManager;
+    @Override
+    public String getNameSpace()
+    {
+        return "survivalcompetition";
+    }
 
     public SurvivalCompetition()
     {
@@ -38,8 +44,7 @@ public final class SurvivalCompetition extends JavaPlugin
             logger.warn("之前似乎已经创建过一个插件实例了...除非你是故意这么做的，不然可能代码又有哪里出bug了！");
 
         instance = this;
-        dependencyManager = new GameDependencyManager();
-        cmdHelper = new CommandHelper();
+        cmdHelper = new SCCommandHelper();
     }
 
     @Override
@@ -56,7 +61,7 @@ public final class SurvivalCompetition extends JavaPlugin
         processExceptionCount();
 
         dependencyManager.Cache(this);
-        dependencyManager.Cache(config = new PluginConfigManager(this));
+        dependencyManager.CacheAs(PluginConfigManager.class, config = new SCPluginConfigManager(this));
 
         var allowDebug = config.get(Boolean.class, ConfigNode.create().Append("DevelopmentMode"));
         if (allowDebug == null) allowDebug = false;

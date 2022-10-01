@@ -2,8 +2,8 @@ package xiamomc.survivalcompetition.Misc;
 
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.jetbrains.annotations.NotNull;
-import xiamomc.survivalcompetition.Annotations.Serializable;
-import xiamomc.survivalcompetition.Misc.Serialize.ConfigSerializeUtils;
+import xiamomc.pluginbase.Annotations.Serializable;
+import xiamomc.pluginbase.Serialize.ConfigSerializeUtils;
 
 import java.util.Map;
 

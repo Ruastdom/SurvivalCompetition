@@ -11,18 +11,17 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import xiamomc.survivalcompetition.Annotations.Resolved;
+import xiamomc.pluginbase.Annotations.Resolved;
 import xiamomc.survivalcompetition.Managers.ICareerManager;
 import xiamomc.survivalcompetition.Managers.IGameManager;
 import xiamomc.survivalcompetition.Managers.IPlayerListManager;
 import xiamomc.survivalcompetition.Managers.ITeamManager;
-import xiamomc.survivalcompetition.Misc.PluginObject;
 import xiamomc.survivalcompetition.Misc.TeamInfo;
 
 import static org.bukkit.entity.EntityType.ENDER_DRAGON;
 import static org.bukkit.entity.EntityType.PLAYER;
 
-public class EventProcessor extends PluginObject implements Listener
+public class EventProcessor extends SCPluginObject implements Listener
 {
     @Resolved(shouldSolveImmediately = true)
     private ITeamManager teams;

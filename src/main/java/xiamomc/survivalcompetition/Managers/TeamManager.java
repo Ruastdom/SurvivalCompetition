@@ -7,17 +7,17 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.*;
 import org.jetbrains.annotations.Nullable;
-import xiamomc.survivalcompetition.Annotations.Initializer;
-import xiamomc.survivalcompetition.Annotations.Resolved;
-import xiamomc.survivalcompetition.Configuration.ConfigNode;
-import xiamomc.survivalcompetition.Configuration.PluginConfigManager;
-import xiamomc.survivalcompetition.Misc.PluginObject;
+import xiamomc.pluginbase.Annotations.Initializer;
+import xiamomc.pluginbase.Annotations.Resolved;
+import xiamomc.pluginbase.Configuration.ConfigNode;
+import xiamomc.pluginbase.Configuration.PluginConfigManager;
 import xiamomc.survivalcompetition.Misc.TeamInfo;
+import xiamomc.survivalcompetition.SCPluginObject;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class TeamManager extends PluginObject implements ITeamManager
+public class TeamManager extends SCPluginObject implements ITeamManager
 {
     ScoreboardManager manager = Bukkit.getScoreboardManager();
     Scoreboard board = manager.getMainScoreboard();

@@ -6,13 +6,16 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import xiamomc.survivalcompetition.Annotations.Resolved;
+import xiamomc.pluginbase.Annotations.Resolved;
+import xiamomc.pluginbase.Command.IPluginCommand;
 import xiamomc.survivalcompetition.Managers.IGameManager;
 import xiamomc.survivalcompetition.Managers.IPlayerListManager;
 import xiamomc.survivalcompetition.Managers.ITeamManager;
-import xiamomc.survivalcompetition.Misc.PluginObject;
+import xiamomc.survivalcompetition.SCPluginObject;
 
-public class JoinGameCommand extends PluginObject implements IPluginCommand
+import java.util.List;
+
+public class JoinGameCommand extends SCPluginObject implements IPluginCommand
 {
     //region IPluginCommand
 
@@ -20,6 +23,12 @@ public class JoinGameCommand extends PluginObject implements IPluginCommand
     public String getCommandName()
     {
         return "joinsg";
+    }
+
+    @Override
+    public List<String> onTabComplete(String baseName, String[] args, CommandSender source)
+    {
+        return null;
     }
 
     //endregion
