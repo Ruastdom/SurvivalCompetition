@@ -20,10 +20,10 @@ commands:
 
 
 permissions:
-  xiamo.sc.reload:
+  xiamomc.sc.reload:
     description: reload config
-    default: false
+    default: op
 
-  xiamo.sc.stopcurrent:
+  xiamomc.sc.stopcurrent:
     description: Stop current
-    default: false
+    default: op

@@ -1,22 +1,12 @@
 package xiamomc.survivalcompetition.Command;
 
-import net.kyori.adventure.text.Component;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.NotNull;
-import xiamomc.pluginbase.Annotations.Resolved;
-import xiamomc.pluginbase.Command.IPluginCommand;
-import xiamomc.pluginbase.Configuration.PluginConfigManager;
-import xiamomc.survivalcompetition.Managers.IGameManager;
-import xiamomc.survivalcompetition.Managers.IPlayerListManager;
-import xiamomc.survivalcompetition.Misc.Colors;
-import xiamomc.survivalcompetition.Misc.Permissions.PermissionNode;
-import xiamomc.survivalcompetition.Misc.Permissions.PermissionUtils;
-import xiamomc.survivalcompetition.SCPluginObject;
+import xiamomc.pluginbase.Command.ISubCommand;
+import xiamomc.survivalcompetition.Command.subcommands.game.ReloadSubCommand;
+import xiamomc.survivalcompetition.Command.subcommands.game.StopCurrentSubCommand;
 
 import java.util.List;
 
-public class GMCommand extends SCPluginObject implements IPluginCommand
+public class GMCommand extends SCSubCommandHandler
 {
     @Override
     public String getCommandName()
@@ -24,61 +14,34 @@ public class GMCommand extends SCPluginObject implements IPluginCommand
         return "game";
     }
 
-    private final List<String> avaliableSubCommands = List.of("reload", "stopcurrent");
+    private final List<ISubCommand> subCommands = List.of(
+            new ReloadSubCommand(),
+            new StopCurrentSubCommand()
+    );
 
     @Override
-    public List<String> onTabComplete(String baseName, String[] args, CommandSender source)
+    public List<ISubCommand> getSubCommands()
     {
-        return avaliableSubCommands;
+        return subCommands;
     }
 
-    @Resolved
-    private PluginConfigManager config;
-
-    @Resolved
-    private IGameManager game;
-
-    @Resolved
-    private IPlayerListManager playerListManager;
-
-    @Resolved
-    private PermissionUtils permissions;
+    private final List<String> notes = List.of("");
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args)
+    public List<String> getNotes()
     {
-        if (args.length <= 0) return false;
+        return notes;
+    }
 
-        switch (args[0])
-        {
-            case "reload":
-                if (permissions.hasPermission(sender, PermissionNode.create("reload")))
-                {
-                    config.reload();
-                    sender.sendMessage(Component.translatable("刷新成功！"));
-                }
-                else
-                    sender.sendMessage(Component.translatable("禁止接触", Colors.Red));
+    @Override
+    public String getPermissionRequirement()
+    {
+        return null;
+    }
 
-                break;
-
-            case "stopcurrent":
-                if (permissions.hasPermission(sender, PermissionNode.create("stopcurrent")))
-                {
-                    if (!game.endGame())
-                    {
-                        Logger.warn("未能停止游戏");
-                        sender.sendMessage(Component.translatable("未能停止游戏。游戏尚未开始？"));
-                    }
-                }
-                else
-                    sender.sendMessage(Component.translatable("禁止接触", Colors.Red));
-
-                break;
-            default:
-                return false;
-        }
-
-        return true;
+    @Override
+    public String getHelpMessage()
+    {
+        return "游戏指令";
     }
 }

@@ -7,7 +7,7 @@ public class PermissionNode
 {
     private final List<String> nodes;
 
-    private final String rootNode = "xiamo.sc";
+    private final String rootNode = "xiamomc.sc";
 
     public PermissionNode(String initialNode)
     {

@@ -275,7 +275,7 @@ public class GameManager extends SCPluginObject implements IGameManager
     @Override
     public boolean DoesAllowCareerSelect()
     {
-        return currentStage.AllowCareerSelect;
+        return isGameStarted ? currentStage.AllowCareerSelect : false;
     }
 
     //endregion

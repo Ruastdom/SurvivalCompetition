@@ -26,9 +26,21 @@ public class JoinGameCommand extends SCPluginObject implements IPluginCommand
     }
 
     @Override
-    public List<String> onTabComplete(String baseName, String[] args, CommandSender source)
+    public List<String> onTabComplete(List<String> args, CommandSender source)
     {
         return null;
+    }
+
+    @Override
+    public String getPermissionRequirement()
+    {
+        return null;
+    }
+
+    @Override
+    public String getHelpMessage()
+    {
+        return "加入游戏";
     }
 
     //endregion
