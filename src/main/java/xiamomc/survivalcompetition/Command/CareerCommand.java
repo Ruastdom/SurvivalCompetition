@@ -4,12 +4,14 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import xiamomc.pluginbase.Annotations.Initializer;
 import xiamomc.pluginbase.Annotations.Resolved;
 import xiamomc.pluginbase.Command.ISubCommand;
-import xiamomc.survivalcompetition.Command.subcommands.career.AssassinSubCommand;
-import xiamomc.survivalcompetition.Command.subcommands.career.WarriorSubCommand;
+import xiamomc.survivalcompetition.Command.subcommands.career.GenericCareerSubCommand;
+import xiamomc.survivalcompetition.Managers.ICareerManager;
 import xiamomc.survivalcompetition.Managers.IGameManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CareerCommand extends SCSubCommandHandler
@@ -35,10 +37,14 @@ public class CareerCommand extends SCSubCommandHandler
         return "setcareer";
     }
 
-    private final List<ISubCommand> subCommands = List.of(
-            new AssassinSubCommand(),
-            new WarriorSubCommand()
-    );
+    private final List<ISubCommand> subCommands = new ArrayList<>();
+
+    @Initializer
+    private void load(ICareerManager careerManager)
+    {
+        for (var c : careerManager.getCareerList())
+            subCommands.add(new GenericCareerSubCommand(c));
+    }
 
     @Override
     public List<ISubCommand> getSubCommands()

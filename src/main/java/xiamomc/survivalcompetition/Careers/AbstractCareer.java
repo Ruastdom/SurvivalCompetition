@@ -106,6 +106,11 @@ public abstract class AbstractCareer
      */
     public abstract String getInternalName();
 
+    public String getDescription()
+    {
+        return description;
+    }
+
     /**
      * 职业描述
      */
