@@ -7,20 +7,12 @@ import xiamomc.pluginbase.Command.ISubCommand;
 import xiamomc.survivalcompetition.Managers.ICareerManager;
 import xiamomc.survivalcompetition.SCPluginObject;
 
-import java.util.List;
-
 public class AssassinSubCommand extends SCPluginObject implements ISubCommand
 {
     @Override
     public String getCommandName()
     {
         return "assassin";
-    }
-
-    @Override
-    public List<String> onTabComplete(List<String> list, CommandSender commandSender)
-    {
-        return null;
     }
 
     @Override

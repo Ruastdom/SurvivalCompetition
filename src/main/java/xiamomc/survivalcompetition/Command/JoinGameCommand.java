@@ -13,8 +13,6 @@ import xiamomc.survivalcompetition.Managers.IPlayerListManager;
 import xiamomc.survivalcompetition.Managers.ITeamManager;
 import xiamomc.survivalcompetition.SCPluginObject;
 
-import java.util.List;
-
 public class JoinGameCommand extends SCPluginObject implements IPluginCommand
 {
     //region IPluginCommand
@@ -23,12 +21,6 @@ public class JoinGameCommand extends SCPluginObject implements IPluginCommand
     public String getCommandName()
     {
         return "joinsg";
-    }
-
-    @Override
-    public List<String> onTabComplete(List<String> args, CommandSender source)
-    {
-        return null;
     }
 
     @Override

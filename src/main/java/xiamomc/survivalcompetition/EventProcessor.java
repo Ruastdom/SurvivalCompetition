@@ -20,8 +20,6 @@ import xiamomc.survivalcompetition.Managers.IPlayerListManager;
 import xiamomc.survivalcompetition.Managers.ITeamManager;
 import xiamomc.survivalcompetition.Misc.TeamInfo;
 
-import java.util.Arrays;
-
 import static org.bukkit.entity.EntityType.ENDER_DRAGON;
 import static org.bukkit.entity.EntityType.PLAYER;
 
@@ -72,7 +70,7 @@ public class EventProcessor extends SCPluginObject implements Listener
     @EventHandler
     public void onTabComplete(TabCompleteEvent e)
     {
-        var result = commandHelper.onTabComplete(Arrays.stream(e.getBuffer().split(" ")).toList(), e.getSender());
+        var result = commandHelper.onTabComplete(e.getBuffer(), e.getSender());
         if (result != null) e.setCompletions(result);
     }
 

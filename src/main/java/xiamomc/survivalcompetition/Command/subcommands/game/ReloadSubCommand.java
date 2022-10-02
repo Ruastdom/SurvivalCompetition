@@ -10,20 +10,12 @@ import xiamomc.pluginbase.Configuration.PluginConfigManager;
 import xiamomc.survivalcompetition.Misc.Permissions.PermissionNode;
 import xiamomc.survivalcompetition.SCPluginObject;
 
-import java.util.List;
-
 public class ReloadSubCommand extends SCPluginObject implements ISubCommand
 {
     @Override
     public String getCommandName()
     {
         return "reload";
-    }
-
-    @Override
-    public List<String> onTabComplete(List<String> args, CommandSender source)
-    {
-        return null;
     }
 
     private final String permNode = PermissionNode.create("reload").toString();

@@ -10,20 +10,12 @@ import xiamomc.survivalcompetition.Managers.IGameManager;
 import xiamomc.survivalcompetition.Misc.Permissions.PermissionNode;
 import xiamomc.survivalcompetition.SCPluginObject;
 
-import java.util.List;
-
 public class StopCurrentSubCommand extends SCPluginObject implements ISubCommand
 {
     @Override
     public String getCommandName()
     {
         return "stopcurrent";
-    }
-
-    @Override
-    public List<String> onTabComplete(List<String> args, CommandSender source)
-    {
-        return null;
     }
 
     private final String permNode = PermissionNode.create("stopcurrent").toString();

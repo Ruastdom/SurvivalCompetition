@@ -2,7 +2,6 @@ package xiamomc.survivalcompetition;
 
 import org.bukkit.Bukkit;
 import org.slf4j.Logger;
-import xiamomc.pluginbase.Command.CommandHelper;
 import xiamomc.pluginbase.Configuration.ConfigNode;
 import xiamomc.pluginbase.Configuration.PluginConfigManager;
 import xiamomc.pluginbase.ScheduleInfo;
@@ -53,10 +52,9 @@ public final class SurvivalCompetition extends XiaMoJavaPlugin
         // Plugin startup logic
         logger.info("Enabling SurvivalCompetition...");
 
-        //region 注册依赖
+        super.onEnable();
 
-        //先反注册一遍所有依赖再注册插件
-        dependencyManager.UnCacheAll();
+        //region 注册依赖
 
         processExceptionCount();
 
@@ -111,8 +109,7 @@ public final class SurvivalCompetition extends XiaMoJavaPlugin
             gameManager.CurrentWorldBaseName = null;
         }
 
-        //反注册依赖
-        dependencyManager.UnCacheAll();
+        super.onDisable();
     }
 
     //region tick相关
