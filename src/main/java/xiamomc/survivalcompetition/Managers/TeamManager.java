@@ -296,7 +296,15 @@ public class TeamManager extends SCPluginObject implements ITeamManager
     {
         var score = teamScoreMap.get(getTeam(identifier));
 
-        if (score != null && score.isScoreSet()) return score.getScore();
+        try
+        {
+            if (score != null) return score.getScore();
+        }
+        catch (Exception e)
+        {
+            Logger.warn("无法获取" + identifier + "的分数：" + e.getMessage());
+            e.printStackTrace();
+        }
         return -1;
     }
 

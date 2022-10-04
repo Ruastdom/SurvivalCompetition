@@ -106,6 +106,8 @@ public class GameManager extends SCPluginObject implements IGameManager
     @Override
     public boolean startGame()
     {
+        if (isGameStarted) return false;
+
         Logger.warn("START");
         noticeGameStarting();
         players.checkExistence();
@@ -131,7 +133,7 @@ public class GameManager extends SCPluginObject implements IGameManager
 
         var stages = config.get(ArrayList.class, stagesNode);
 
-        if (stages != null) stages.removeIf(o -> o == null);
+        if (stages != null) stages.removeIf(Objects::isNull);
 
         if (stages == null || stages.size() == 0)
         {
@@ -155,7 +157,8 @@ public class GameManager extends SCPluginObject implements IGameManager
             var s = (StageInfo) o;
 
             Logger.info("添加阶段：" + s.name);
-            this.configuredStages.add(s);
+            if (!configuredStages.contains(s))
+                this.configuredStages.add(s);
         }
     }
 
