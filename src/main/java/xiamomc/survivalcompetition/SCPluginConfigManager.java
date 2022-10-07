@@ -3,8 +3,8 @@ package xiamomc.survivalcompetition;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import xiamomc.pluginbase.Configuration.PluginConfigManager;
 import xiamomc.pluginbase.XiaMoJavaPlugin;
-import xiamomc.survivalcompetition.Misc.StageInfo;
-import xiamomc.survivalcompetition.Misc.TeamInfo;
+import xiamomc.survivalcompetition.misc.StageInfo;
+import xiamomc.survivalcompetition.misc.TeamInfo;
 
 public class SCPluginConfigManager extends PluginConfigManager
 {

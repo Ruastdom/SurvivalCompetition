@@ -4,15 +4,10 @@ import org.bukkit.Bukkit;
 import org.slf4j.Logger;
 import xiamomc.pluginbase.Configuration.ConfigNode;
 import xiamomc.pluginbase.Configuration.PluginConfigManager;
-import xiamomc.pluginbase.ScheduleInfo;
 import xiamomc.pluginbase.XiaMoJavaPlugin;
-import xiamomc.survivalcompetition.Command.SCCommandHelper;
-import xiamomc.survivalcompetition.Managers.*;
-import xiamomc.survivalcompetition.Misc.Permissions.PermissionUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
+import xiamomc.survivalcompetition.commands.SCCommandHelper;
+import xiamomc.survivalcompetition.managers.*;
+import xiamomc.survivalcompetition.misc.permission.PermissionUtils;
 
 public final class SurvivalCompetition extends XiaMoJavaPlugin
 {
@@ -26,7 +21,7 @@ public final class SurvivalCompetition extends XiaMoJavaPlugin
     private PluginConfigManager config;
     private Logger logger = this.getSLF4JLogger();
 
-    public static SurvivalCompetition GetInstance()
+    public static SurvivalCompetition getInstance()
     {
         return instance;
     }
@@ -39,9 +34,6 @@ public final class SurvivalCompetition extends XiaMoJavaPlugin
 
     public SurvivalCompetition()
     {
-        if (instance != null)
-            logger.warn("之前似乎已经创建过一个插件实例了...除非你是故意这么做的，不然可能代码又有哪里出bug了！");
-
         instance = this;
         cmdHelper = new SCCommandHelper();
     }
@@ -50,13 +42,9 @@ public final class SurvivalCompetition extends XiaMoJavaPlugin
     public void onEnable()
     {
         // Plugin startup logic
-        logger.info("Enabling SurvivalCompetition...");
-
         super.onEnable();
 
         //region 注册依赖
-
-        processExceptionCount();
 
         dependencyManager.Cache(this);
         dependencyManager.CacheAs(PluginConfigManager.class, config = new SCPluginConfigManager(this));
@@ -83,20 +71,12 @@ public final class SurvivalCompetition extends XiaMoJavaPlugin
             Bukkit.getPluginManager().registerEvents(new EventProcessor(), this);
             Bukkit.getPluginManager().registerEvents(new CareerEventProcessor(), this);
         });
-
-        this.shouldAbortTicking = false;
-
-        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, this::tick, 0, 1);
     }
 
     @Override
     public void onDisable()
     {
         // Plugin shutdown logic
-        logger.info("Disabling SurvivalCompetition");
-
-        //禁止tick
-        this.shouldAbortTicking = true;
 
         //禁用时先结束游戏
         gameManager.endGame();
@@ -112,98 +92,4 @@ public final class SurvivalCompetition extends XiaMoJavaPlugin
         super.onDisable();
     }
 
-    //region tick相关
-
-    private long currentTick = 0;
-
-    private void tick()
-    {
-        currentTick += 1;
-
-        if (shouldAbortTicking) return;
-
-        var schedules = new ArrayList<>(runnables);
-        schedules.forEach(c ->
-        {
-            if (currentTick - c.TickScheduled >= c.Delay)
-            {
-                runnables.remove(c);
-
-                if (c.isCanceled()) return;
-
-                //logger.info("执行：" + c + "，当前TICK：" + currentTick);
-                try
-                {
-                    c.Function.accept(null);
-                }
-                catch (Exception e)
-                {
-                    this.onExceptionCaught(e, c);
-                }
-            }
-        });
-
-        schedules.clear();
-    }
-
-    //region tick异常捕捉与处理
-
-    //一秒内最多能接受多少异常
-    //todo: 之后考虑做进配置里让它可调？
-    @SuppressWarnings("FieldCanBeLocal")
-    private final int exceptionLimit = 5;
-
-    //已经捕获的异常
-    private int exceptionCaught = 0;
-
-    //是否应该中断tick
-    private boolean shouldAbortTicking = false;
-
-    private boolean onExceptionCaught(Exception exception, ScheduleInfo scheduleInfo)
-    {
-        if (exception == null) return false;
-
-        exceptionCaught += 1;
-
-        logger.warn("执行" + scheduleInfo + "时捕获到未处理的异常：");
-        exception.printStackTrace();
-
-        if (exceptionCaught >= exceptionLimit)
-        {
-            logger.error("可接受异常已到达最大限制");
-            this.setEnabled(false);
-        }
-
-        return true;
-    }
-
-    private void processExceptionCount()
-    {
-        exceptionCaught -= 1;
-
-        this.schedule(c -> processExceptionCount(), 5);
-    }
-
-    //endregion tick异常捕捉与处理
-
-    //endregion tick相关
-
-    private final List<ScheduleInfo> runnables = new ArrayList<>();
-
-    public ScheduleInfo schedule(Consumer<?> runnable)
-    {
-        return this.schedule(runnable, 1);
-    }
-
-    public ScheduleInfo schedule(Consumer<?> function, int delay)
-    {
-        var si = new ScheduleInfo(function, delay, currentTick);
-        synchronized (runnables)
-        {
-            //Logger.info("添加：" + si + "，当前TICK：" + currentTick);
-            runnables.add(si);
-        }
-
-        return si;
-    }
 }

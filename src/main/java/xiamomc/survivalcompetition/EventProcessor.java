@@ -13,12 +13,12 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.TabCompleteEvent;
 import xiamomc.pluginbase.Annotations.Resolved;
-import xiamomc.survivalcompetition.Command.SCCommandHelper;
-import xiamomc.survivalcompetition.Managers.ICareerManager;
-import xiamomc.survivalcompetition.Managers.IGameManager;
-import xiamomc.survivalcompetition.Managers.IPlayerListManager;
-import xiamomc.survivalcompetition.Managers.ITeamManager;
-import xiamomc.survivalcompetition.Misc.TeamInfo;
+import xiamomc.survivalcompetition.commands.SCCommandHelper;
+import xiamomc.survivalcompetition.managers.ICareerManager;
+import xiamomc.survivalcompetition.managers.IGameManager;
+import xiamomc.survivalcompetition.managers.IPlayerListManager;
+import xiamomc.survivalcompetition.managers.ITeamManager;
+import xiamomc.survivalcompetition.misc.TeamInfo;
 
 import static org.bukkit.entity.EntityType.ENDER_DRAGON;
 import static org.bukkit.entity.EntityType.PLAYER;
@@ -45,7 +45,7 @@ public class EventProcessor extends SCPluginObject implements Listener
         var career = careerManager.getPlayerCareer(player);
         if (career != null) career.resetFor(player);
 
-        if (game.doesGameStart())
+        if (game.gameRunning())
         {
             var targetOptional = players.getList().stream().findAny();
             targetOptional.ifPresent(target ->
@@ -77,7 +77,7 @@ public class EventProcessor extends SCPluginObject implements Listener
     @EventHandler
     public void PlayerLeaveHandler(PlayerQuitEvent e)
     {
-        if (game.doesGameStart())
+        if (game.gameRunning())
         {
             var player = e.getPlayer();
 
@@ -100,7 +100,7 @@ public class EventProcessor extends SCPluginObject implements Listener
     {
         if (e.getPlayer().getKiller() == null) return;
 
-        if (game.doesGameStart() && e.getPlayer().getKiller().getType() == PLAYER)
+        if (game.gameRunning() && e.getPlayer().getKiller().getType() == PLAYER)
         {
             Player player = e.getPlayer();
             Player killer = player.getKiller();
@@ -132,7 +132,7 @@ public class EventProcessor extends SCPluginObject implements Listener
     @EventHandler
     public void EnderDragonHurtEvent(EntityDamageByEntityEvent e)
     {
-        if (game.doesGameStart() && e.getDamager().getType() == EntityType.PLAYER && e.getEntity().getType() == ENDER_DRAGON)
+        if (game.gameRunning() && e.getDamager().getType() == EntityType.PLAYER && e.getEntity().getType() == ENDER_DRAGON)
         {
             Player damager = (Player) e.getDamager();
             int damage = (int) e.getDamage();
