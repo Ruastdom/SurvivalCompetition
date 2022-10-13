@@ -8,6 +8,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import xiamomc.pluginbase.messages.FormattableMessage;
 
 public abstract class AbstractCareer
 {
@@ -106,9 +107,9 @@ public abstract class AbstractCareer
      */
     public abstract String getInternalName();
 
-    public String getDescription()
+    public FormattableMessage getDescription()
     {
-        return description;
+        return new FormattableMessage(description);
     }
 
     /**

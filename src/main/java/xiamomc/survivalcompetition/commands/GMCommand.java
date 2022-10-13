@@ -1,8 +1,10 @@
 package xiamomc.survivalcompetition.commands;
 
 import xiamomc.pluginbase.Command.ISubCommand;
+import xiamomc.pluginbase.messages.FormattableMessage;
 import xiamomc.survivalcompetition.commands.subcommands.game.ReloadSubCommand;
 import xiamomc.survivalcompetition.commands.subcommands.game.StopCurrentSubCommand;
+import xiamomc.survivalcompetition.messages.CommandStrings;
 
 import java.util.List;
 
@@ -25,10 +27,10 @@ public class GMCommand extends SCSubCommandHandler
         return subCommands;
     }
 
-    private final List<String> notes = List.of("");
+    private final List<FormattableMessage> notes = List.of();
 
     @Override
-    public List<String> getNotes()
+    public List<FormattableMessage> getNotes()
     {
         return notes;
     }
@@ -40,8 +42,8 @@ public class GMCommand extends SCSubCommandHandler
     }
 
     @Override
-    public String getHelpMessage()
+    public FormattableMessage getHelpMessage()
     {
-        return "游戏指令";
+        return CommandStrings.gmCommandHelpString();
     }
 }

@@ -5,8 +5,10 @@ import org.slf4j.Logger;
 import xiamomc.pluginbase.Configuration.ConfigNode;
 import xiamomc.pluginbase.Configuration.PluginConfigManager;
 import xiamomc.pluginbase.XiaMoJavaPlugin;
+import xiamomc.pluginbase.messages.MessageStore;
 import xiamomc.survivalcompetition.commands.SCCommandHelper;
 import xiamomc.survivalcompetition.managers.*;
+import xiamomc.survivalcompetition.messages.SCMessageStore;
 import xiamomc.survivalcompetition.misc.permission.PermissionUtils;
 
 public final class SurvivalCompetition extends XiaMoJavaPlugin
@@ -61,6 +63,7 @@ public final class SurvivalCompetition extends XiaMoJavaPlugin
         dependencyManager.CacheAs(IMultiverseManager.class, multiverseManager = allowDebug
                 ? new DummyMVManager()
                 : new MultiverseManager());
+        dependencyManager.CacheAs(MessageStore.class, new SCMessageStore());
         dependencyManager.Cache(new PermissionUtils());
         dependencyManager.Cache(cmdHelper);
 

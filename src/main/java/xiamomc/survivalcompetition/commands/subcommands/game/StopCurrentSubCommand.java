@@ -5,7 +5,9 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import xiamomc.pluginbase.Annotations.Resolved;
 import xiamomc.pluginbase.Command.ISubCommand;
+import xiamomc.pluginbase.messages.FormattableMessage;
 import xiamomc.survivalcompetition.managers.IGameManager;
+import xiamomc.survivalcompetition.messages.CommandStrings;
 import xiamomc.survivalcompetition.misc.permission.PermissionNode;
 import xiamomc.survivalcompetition.SCPluginObject;
 
@@ -26,9 +28,9 @@ public class StopCurrentSubCommand extends SCPluginObject implements ISubCommand
     }
 
     @Override
-    public String getHelpMessage()
+    public FormattableMessage getHelpMessage()
     {
-        return "停止当前游戏";
+        return CommandStrings.gmStopCommandHelpString();
     }
 
     @Resolved

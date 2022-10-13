@@ -8,10 +8,12 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import xiamomc.pluginbase.Annotations.Resolved;
 import xiamomc.pluginbase.Command.IPluginCommand;
+import xiamomc.pluginbase.messages.FormattableMessage;
 import xiamomc.survivalcompetition.managers.IGameManager;
 import xiamomc.survivalcompetition.managers.IPlayerListManager;
 import xiamomc.survivalcompetition.managers.ITeamManager;
 import xiamomc.survivalcompetition.SCPluginObject;
+import xiamomc.survivalcompetition.messages.CommandStrings;
 
 public class JoinGameCommand extends SCPluginObject implements IPluginCommand
 {
@@ -30,9 +32,9 @@ public class JoinGameCommand extends SCPluginObject implements IPluginCommand
     }
 
     @Override
-    public String getHelpMessage()
+    public FormattableMessage getHelpMessage()
     {
-        return "加入游戏";
+        return CommandStrings.joinGameCommandHelpString();
     }
 
     //endregion

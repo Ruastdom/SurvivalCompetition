@@ -6,6 +6,8 @@ import org.jetbrains.annotations.NotNull;
 import xiamomc.pluginbase.Annotations.Resolved;
 import xiamomc.pluginbase.Command.ISubCommand;
 import xiamomc.pluginbase.Configuration.PluginConfigManager;
+import xiamomc.pluginbase.messages.FormattableMessage;
+import xiamomc.survivalcompetition.messages.CommandStrings;
 import xiamomc.survivalcompetition.misc.permission.PermissionNode;
 import xiamomc.survivalcompetition.SCPluginObject;
 
@@ -26,9 +28,9 @@ public class ReloadSubCommand extends SCPluginObject implements ISubCommand
     }
 
     @Override
-    public String getHelpMessage()
+    public FormattableMessage getHelpMessage()
     {
-        return "重载游戏";
+        return CommandStrings.gmReloadCommandHelpString();
     }
 
     @Resolved

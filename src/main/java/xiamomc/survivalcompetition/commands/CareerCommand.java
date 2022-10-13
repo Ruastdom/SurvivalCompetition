@@ -7,9 +7,11 @@ import org.jetbrains.annotations.NotNull;
 import xiamomc.pluginbase.Annotations.Initializer;
 import xiamomc.pluginbase.Annotations.Resolved;
 import xiamomc.pluginbase.Command.ISubCommand;
+import xiamomc.pluginbase.messages.FormattableMessage;
 import xiamomc.survivalcompetition.commands.subcommands.career.GenericCareerSubCommand;
 import xiamomc.survivalcompetition.managers.ICareerManager;
 import xiamomc.survivalcompetition.managers.IGameManager;
+import xiamomc.survivalcompetition.messages.CommandStrings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,10 +54,10 @@ public class CareerCommand extends SCSubCommandHandler
         return subCommands;
     }
 
-    private final List<String> notes = List.of("");
+    private final List<FormattableMessage> notes = List.of();
 
     @Override
-    public List<String> getNotes()
+    public List<FormattableMessage> getNotes()
     {
         return notes;
     }
@@ -67,8 +69,8 @@ public class CareerCommand extends SCSubCommandHandler
     }
 
     @Override
-    public String getHelpMessage()
+    public FormattableMessage getHelpMessage()
     {
-        return "设定自己的职业";
+        return CommandStrings.careerHelpString();
     }
 }
