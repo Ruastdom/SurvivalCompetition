@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import xiamomc.pluginbase.messages.FormattableMessage;
+import xiamomc.survivalcompetition.SurvivalCompetition;
 
 public abstract class AbstractCareer
 {
@@ -109,7 +110,7 @@ public abstract class AbstractCareer
 
     public FormattableMessage getDescription()
     {
-        return new FormattableMessage(description);
+        return new FormattableMessage(SurvivalCompetition.getInstance(), description);
     }
 
     /**

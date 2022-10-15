@@ -9,6 +9,18 @@ import java.util.List;
 
 public class SCMessageStore extends MessageStore
 {
+    private static SCMessageStore instance;
+
+    public static SCMessageStore getInstance()
+    {
+        return instance;
+    }
+
+    public SCMessageStore()
+    {
+        instance = this;
+    }
+
     private final List<Class<IStrings>> cachedClassList = new ArrayList<>();
 
     private final List<Class<?>> rawClassList = List.of(

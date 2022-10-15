@@ -28,10 +28,15 @@ public final class SurvivalCompetition extends XiaMoJavaPlugin
         return instance;
     }
 
+    public static String getSCNameSpace()
+    {
+        return "survivalcompetition";
+    }
+
     @Override
     public String getNameSpace()
     {
-        return "survivalcompetition";
+        return getSCNameSpace();
     }
 
     public SurvivalCompetition()
