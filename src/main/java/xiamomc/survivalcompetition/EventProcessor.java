@@ -59,9 +59,6 @@ public class EventProcessor extends SCPluginObject implements Listener
                 }, 2); //直接设置游戏模式没有效果
             });
         }
-        else
-        {
-        }
     }
 
     @Resolved
@@ -87,7 +84,7 @@ public class EventProcessor extends SCPluginObject implements Listener
 
                 //如果玩家全部退出，则结束游戏
                 if (players.getList().size() == 0) game.endGame();
-            };
+            }
         }
         else
         {
@@ -140,7 +137,6 @@ public class EventProcessor extends SCPluginObject implements Listener
             TeamInfo playerTeam = teams.getPlayerTeam(damager);
 
             teams.setPoints(playerTeam, teams.getPoints(playerTeam.identifier) + damage);
-
         }
     }
 }
