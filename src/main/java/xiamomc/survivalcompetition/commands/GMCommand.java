@@ -1,7 +1,7 @@
 package xiamomc.survivalcompetition.commands;
 
 import xiamomc.pluginbase.Command.ISubCommand;
-import xiamomc.pluginbase.messages.FormattableMessage;
+import xiamomc.pluginbase.Messages.FormattableMessage;
 import xiamomc.survivalcompetition.commands.subcommands.game.ReloadSubCommand;
 import xiamomc.survivalcompetition.commands.subcommands.game.StopCurrentSubCommand;
 import xiamomc.survivalcompetition.messages.CommandStrings;

@@ -1,6 +1,6 @@
 package xiamomc.survivalcompetition.messages;
 
-import xiamomc.pluginbase.messages.FormattableMessage;
+import xiamomc.pluginbase.Messages.FormattableMessage;
 
 public class CommandStrings extends AbstractSCStrings
 {

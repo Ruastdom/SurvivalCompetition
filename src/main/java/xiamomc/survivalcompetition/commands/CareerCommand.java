@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import xiamomc.pluginbase.Annotations.Initializer;
 import xiamomc.pluginbase.Annotations.Resolved;
 import xiamomc.pluginbase.Command.ISubCommand;
-import xiamomc.pluginbase.messages.FormattableMessage;
+import xiamomc.pluginbase.Messages.FormattableMessage;
 import xiamomc.survivalcompetition.commands.subcommands.career.GenericCareerSubCommand;
 import xiamomc.survivalcompetition.managers.ICareerManager;
 import xiamomc.survivalcompetition.managers.IGameManager;

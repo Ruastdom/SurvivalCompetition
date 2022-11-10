@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import xiamomc.pluginbase.Configuration.ConfigNode;
 import xiamomc.pluginbase.Configuration.PluginConfigManager;
 import xiamomc.pluginbase.XiaMoJavaPlugin;
-import xiamomc.pluginbase.messages.MessageStore;
+import xiamomc.pluginbase.Messages.MessageStore;
 import xiamomc.survivalcompetition.commands.SCCommandHelper;
 import xiamomc.survivalcompetition.managers.*;
 import xiamomc.survivalcompetition.messages.SCMessageStore;
@@ -53,24 +53,24 @@ public final class SurvivalCompetition extends XiaMoJavaPlugin
 
         //region 注册依赖
 
-        dependencyManager.Cache(this);
-        dependencyManager.CacheAs(PluginConfigManager.class, config = new SCPluginConfigManager(this));
+        dependencyManager.cache(this);
+        dependencyManager.cacheAs(PluginConfigManager.class, config = new SCPluginConfigManager(this));
 
-        var allowDebug = config.get(Boolean.class, ConfigNode.create().Append("DevelopmentMode"));
+        var allowDebug = config.get(Boolean.class, ConfigNode.create().append("DevelopmentMode"));
         if (allowDebug == null) allowDebug = false;
 
         if (allowDebug) logger.warn("将启用调试模式");
 
-        dependencyManager.CacheAs(IGameManager.class, gameManager = new GameManager());
-        dependencyManager.CacheAs(ITeamManager.class, teamManager = new TeamManager());
-        dependencyManager.CacheAs(IPlayerListManager.class, playerListManager = new PlayerListManager());
-        dependencyManager.CacheAs(ICareerManager.class, careerManager = new CareerManager());
-        dependencyManager.CacheAs(IMultiverseManager.class, multiverseManager = allowDebug
+        dependencyManager.cacheAs(IGameManager.class, gameManager = new GameManager());
+        dependencyManager.cacheAs(ITeamManager.class, teamManager = new TeamManager());
+        dependencyManager.cacheAs(IPlayerListManager.class, playerListManager = new PlayerListManager());
+        dependencyManager.cacheAs(ICareerManager.class, careerManager = new CareerManager());
+        dependencyManager.cacheAs(IMultiverseManager.class, multiverseManager = allowDebug
                 ? new DummyMVManager()
                 : new MultiverseManager());
-        dependencyManager.CacheAs(MessageStore.class, new SCMessageStore());
-        dependencyManager.Cache(new PermissionUtils());
-        dependencyManager.Cache(cmdHelper);
+        dependencyManager.cacheAs(MessageStore.class, new SCMessageStore());
+        dependencyManager.cache(new PermissionUtils());
+        dependencyManager.cache(cmdHelper);
 
         //endregion
 
@@ -86,15 +86,23 @@ public final class SurvivalCompetition extends XiaMoJavaPlugin
     {
         // Plugin shutdown logic
 
-        //禁用时先结束游戏
-        gameManager.endGame();
-
-        //todo: 添加相关方法到multiverseManager或者gameManager里
-        //卸载当前世界
-        if (gameManager.CurrentWorldBaseName != null)
+        try
         {
-            multiverseManager.deleteWorlds(gameManager.CurrentWorldBaseName);
-            gameManager.CurrentWorldBaseName = null;
+            //禁用时先结束游戏
+            gameManager.endGame();
+
+            //todo: 添加相关方法到multiverseManager或者gameManager里
+            //卸载当前世界
+            if (gameManager.CurrentWorldBaseName != null)
+            {
+                multiverseManager.deleteWorlds(gameManager.CurrentWorldBaseName);
+                gameManager.CurrentWorldBaseName = null;
+            }
+        }
+        catch (Throwable t)
+        {
+            logger.warn("禁用时出现问题：" + t.getMessage());
+            t.getStackTrace();
         }
 
         super.onDisable();

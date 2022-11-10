@@ -1,7 +1,7 @@
 package xiamomc.survivalcompetition.messages;
 
-import xiamomc.pluginbase.messages.IStrings;
-import xiamomc.pluginbase.messages.MessageStore;
+import xiamomc.pluginbase.Messages.IStrings;
+import xiamomc.pluginbase.Messages.MessageStore;
 import xiamomc.survivalcompetition.SurvivalCompetition;
 
 import java.util.ArrayList;

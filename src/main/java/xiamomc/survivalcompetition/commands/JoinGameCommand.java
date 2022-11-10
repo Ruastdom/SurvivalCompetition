@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import xiamomc.pluginbase.Annotations.Resolved;
 import xiamomc.pluginbase.Command.IPluginCommand;
-import xiamomc.pluginbase.messages.FormattableMessage;
+import xiamomc.pluginbase.Messages.FormattableMessage;
 import xiamomc.survivalcompetition.managers.IGameManager;
 import xiamomc.survivalcompetition.managers.IPlayerListManager;
 import xiamomc.survivalcompetition.managers.ITeamManager;

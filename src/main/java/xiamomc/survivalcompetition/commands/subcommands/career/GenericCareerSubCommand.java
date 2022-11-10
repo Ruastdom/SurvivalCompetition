@@ -4,7 +4,7 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import xiamomc.pluginbase.Annotations.Resolved;
 import xiamomc.pluginbase.Command.ISubCommand;
-import xiamomc.pluginbase.messages.FormattableMessage;
+import xiamomc.pluginbase.Messages.FormattableMessage;
 import xiamomc.survivalcompetition.careers.AbstractCareer;
 import xiamomc.survivalcompetition.managers.ICareerManager;
 import xiamomc.survivalcompetition.SCPluginObject;
