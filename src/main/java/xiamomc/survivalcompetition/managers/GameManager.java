@@ -56,7 +56,7 @@ public class GameManager extends SCPluginObject implements IGameManager
             Bukkit.getServer().broadcast(Component.translatable("新的比赛世界已生成，正在传送玩家到新世界......", Colors.Green));
             this.addSchedule(c ->
             {
-                for (var player : players.getList())
+                for (var player : players.getPlayers())
                 {
                     imm.tpToWorld(player, worldName);
                 }
@@ -110,7 +110,7 @@ public class GameManager extends SCPluginObject implements IGameManager
 
         Logger.warn("START");
         noticeGameStarting();
-        players.checkExistence();
+        players.removeAllOffline();
 
         isGameStarted = true;
 
@@ -184,7 +184,7 @@ public class GameManager extends SCPluginObject implements IGameManager
 
     private void switchToStage(StageInfo si)
     {
-        var list = players.getList();
+        var list = players.getPlayers();
         ticksRemaining = si.lasts;
         currentStage = si;
         Logger.info("切换到" + si.name);
@@ -246,7 +246,7 @@ public class GameManager extends SCPluginObject implements IGameManager
 
         this.switchToStage(endingStage);
 
-        for (var player : players.getList())
+        for (var player : players.getPlayers())
         {
             this.addSchedule(c -> imm.tpToWorld(player, imm.getFirstSpawnWorldName()), 200);
         }

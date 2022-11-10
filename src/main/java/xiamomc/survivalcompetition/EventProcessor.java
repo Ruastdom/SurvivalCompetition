@@ -47,7 +47,7 @@ public class EventProcessor extends SCPluginObject implements Listener
 
         if (game.gameRunning())
         {
-            var targetOptional = players.getList().stream().findAny();
+            var targetOptional = players.getPlayers().stream().findAny();
             targetOptional.ifPresent(target ->
             {
                 this.addSchedule(c ->
@@ -83,7 +83,7 @@ public class EventProcessor extends SCPluginObject implements Listener
                 players.remove(player);
 
                 //如果玩家全部退出，则结束游戏
-                if (players.getList().size() == 0) game.endGame();
+                if (players.getPlayers().size() == 0) game.endGame();
             }
         }
         else

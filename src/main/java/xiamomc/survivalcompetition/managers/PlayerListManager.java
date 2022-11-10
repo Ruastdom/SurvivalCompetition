@@ -10,7 +10,7 @@ public class PlayerListManager implements IPlayerListManager
     private static final List<Player> playerList = new ArrayList<>();
 
     @Override
-    public List<Player> getList()
+    public List<Player> getPlayers()
     {
         return playerList;
     }
@@ -38,7 +38,7 @@ public class PlayerListManager implements IPlayerListManager
     }
 
     @Override
-    public boolean checkExistence()
+    public boolean removeAllOffline()
     {
         playerList.removeIf(p -> !p.isOnline());
         return true;
