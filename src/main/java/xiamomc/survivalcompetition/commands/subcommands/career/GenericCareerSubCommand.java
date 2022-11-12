@@ -43,13 +43,13 @@ public class GenericCareerSubCommand extends SCPluginObject implements ISubComma
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull String[] strings)
     {
-        if (!(commandSender instanceof Player))
+        if (!(commandSender instanceof Player player))
         {
             commandSender.sendMessage("Can only apply career to player.");
             return true;
         }
 
-        if (icm.applyCareerFor(commandSender.getName(), career.getIdentifier()))
+        if (icm.applyCareerFor(player, career.getIdentifier()))
             commandSender.sendMessage("您已成功选择该职业");
         else
             commandSender.sendMessage("选择该职业时出现错误，您是否已经有了一个职业？");

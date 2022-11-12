@@ -24,11 +24,19 @@ public interface ICareerManager
     /**
      * 添加某一玩家到职业中
      *
-     * @param playerName   目标玩家名
+     * @param player 目标玩家
      * @param identifier 职业的ID
      * @return 添加过程是否成功
      */
-    boolean applyCareerFor(String playerName, NamespacedKey identifier);
+    boolean applyCareerFor(Player player, NamespacedKey identifier);
+
+    /**
+     * Resets someone's career
+     *
+     * @param player Target player
+     * @return Whether the operation executed successfully
+     */
+    boolean resetCareerFor(Player player);
 
     /**
      * 获取某一玩家的职业

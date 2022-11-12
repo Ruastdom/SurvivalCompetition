@@ -53,11 +53,25 @@ public class CareerManager extends SCPluginObject implements ICareerManager
     }
 
     @Override
-    public boolean applyCareerFor(String playerName, NamespacedKey identifier)
+    public boolean resetCareerFor(Player player)
+    {
+        var career = playerCareers.get(player.getUniqueId());
+
+        if (career != null)
+        {
+            playerCareers.remove(player.getUniqueId());
+            career.resetFor(player);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean applyCareerFor(Player player, NamespacedKey identifier)
     {
         if (!game.allowCareerSelect()) return false;
-
-        var player = Bukkit.getPlayer(playerName);
 
         if (player == null || identifier == null) return false;
 

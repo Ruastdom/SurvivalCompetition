@@ -38,6 +38,12 @@ public class EventProcessor extends SCPluginObject implements Listener
     private BindableList<Player> players;
 
     @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent e)
+    {
+        careerManager.resetCareerFor(e.getPlayer());
+    }
+
+    @EventHandler
     public void PlayerJoinHandler(PlayerJoinEvent e)
     {
         var player = e.getPlayer();
