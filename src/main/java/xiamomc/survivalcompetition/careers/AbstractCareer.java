@@ -3,6 +3,7 @@ package xiamomc.survivalcompetition.careers;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -41,7 +42,8 @@ public abstract class AbstractCareer
     public Component getNameAsComponent()
     {
         return display.toComponent().style(b ->
-                b.hoverEvent(HoverEvent.showText(description.toComponent()))
+                b.decorate(TextDecoration.UNDERLINED)
+                        .hoverEvent(HoverEvent.showText(description.toComponent()))
                         .clickEvent(ClickEvent.runCommand("/setcareer" + " " + getIdentifier()))
         );
     }
