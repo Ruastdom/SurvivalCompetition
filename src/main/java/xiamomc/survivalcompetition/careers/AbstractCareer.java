@@ -6,7 +6,6 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import xiamomc.pluginbase.Messages.FormattableMessage;
 import xiamomc.survivalcompetition.SurvivalCompetition;
 
@@ -46,19 +45,6 @@ public abstract class AbstractCareer
                         .hoverEvent(HoverEvent.showText(description.toComponent()))
                         .clickEvent(ClickEvent.runCommand("/setcareer" + " " + getIdentifier()))
         );
-    }
-
-    /**
-     * 处理事件
-     *
-     * @param player 目标玩家
-     * @param e      事件
-     * @return 处理是否成功
-     * @apiNote 一般来说职业实现不会检查玩家是否拥有此职业，因为在职业管理器中已经有一个玩家 -> 职业的ConcurrentHashMap了
-     */
-    public boolean onEvent(Player player, Event e)
-    {
-        return true;
     }
 
     private static final FormattableMessage fallbackDisplay = new FormattableMessage(SurvivalCompetition.getInstance(), "Dummy");
