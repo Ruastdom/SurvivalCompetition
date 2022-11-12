@@ -4,7 +4,9 @@ import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseNetherPortals.MultiverseNetherPortals;
 import com.onarandombox.multiverseinventories.MultiverseInventories;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.slf4j.Logger;
+import xiamomc.pluginbase.Bindables.BindableList;
 import xiamomc.pluginbase.Configuration.ConfigNode;
 import xiamomc.pluginbase.Configuration.PluginConfigManager;
 import xiamomc.pluginbase.XiaMoJavaPlugin;
@@ -18,7 +20,6 @@ public final class SurvivalCompetition extends XiaMoJavaPlugin
 {
     public static SurvivalCompetition instance;
     private GameManager gameManager;
-    private PlayerListManager playerListManager;
     private CareerManager careerManager;
     private IMultiverseManager multiverseManager;
     private TeamManager teamManager;
@@ -48,6 +49,8 @@ public final class SurvivalCompetition extends XiaMoJavaPlugin
         cmdHelper = new SCCommandHelper();
     }
 
+    private final BindableList<Player> players = new BindableList<>();
+
     @Override
     public void onEnable()
     {
@@ -72,9 +75,10 @@ public final class SurvivalCompetition extends XiaMoJavaPlugin
 
         if (allowDebug) logger.warn("将启用调试模式");
 
+        dependencyManager.cache(players);
+
         dependencyManager.cacheAs(IGameManager.class, gameManager = new GameManager());
         dependencyManager.cacheAs(ITeamManager.class, teamManager = new TeamManager());
-        dependencyManager.cacheAs(IPlayerListManager.class, playerListManager = new PlayerListManager());
         dependencyManager.cacheAs(ICareerManager.class, careerManager = new CareerManager());
         dependencyManager.cacheAs(IMultiverseManager.class, multiverseManager = allowDebug
                 ? new DummyMVManager()

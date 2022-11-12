@@ -13,10 +13,10 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.TabCompleteEvent;
 import xiamomc.pluginbase.Annotations.Resolved;
+import xiamomc.pluginbase.Bindables.BindableList;
 import xiamomc.survivalcompetition.commands.SCCommandHelper;
 import xiamomc.survivalcompetition.managers.ICareerManager;
 import xiamomc.survivalcompetition.managers.IGameManager;
-import xiamomc.survivalcompetition.managers.IPlayerListManager;
 import xiamomc.survivalcompetition.managers.ITeamManager;
 import xiamomc.survivalcompetition.misc.TeamInfo;
 
@@ -29,13 +29,13 @@ public class EventProcessor extends SCPluginObject implements Listener
     private ITeamManager teams;
 
     @Resolved(shouldSolveImmediately = true)
-    private IPlayerListManager players;
-
-    @Resolved(shouldSolveImmediately = true)
     private IGameManager game;
 
     @Resolved(shouldSolveImmediately = true)
     private ICareerManager careerManager;
+
+    @Resolved(shouldSolveImmediately = true)
+    private BindableList<Player> players;
 
     @EventHandler
     public void PlayerJoinHandler(PlayerJoinEvent e)
@@ -47,7 +47,7 @@ public class EventProcessor extends SCPluginObject implements Listener
 
         if (game.gameRunning())
         {
-            var targetOptional = players.getPlayers().stream().findAny();
+            var targetOptional = players.stream().findAny();
             targetOptional.ifPresent(target ->
             {
                 this.addSchedule(c ->
@@ -83,7 +83,7 @@ public class EventProcessor extends SCPluginObject implements Listener
                 players.remove(player);
 
                 //如果玩家全部退出，则结束游戏
-                if (players.getPlayers().size() == 0) game.endGame();
+                if (players.size() == 0) game.endGame();
             }
         }
     }

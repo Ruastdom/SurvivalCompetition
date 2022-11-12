@@ -5,8 +5,10 @@ import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.TitlePart;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
+import org.bukkit.entity.Player;
 import xiamomc.pluginbase.Annotations.Initializer;
 import xiamomc.pluginbase.Annotations.Resolved;
+import xiamomc.pluginbase.Bindables.BindableList;
 import xiamomc.pluginbase.Configuration.ConfigNode;
 import xiamomc.pluginbase.Configuration.PluginConfigManager;
 import xiamomc.survivalcompetition.misc.Colors;
@@ -35,15 +37,15 @@ public class GameManager extends SCPluginObject implements IGameManager
     private ITeamManager itm;
 
     @Resolved
-    private IPlayerListManager players;
-
-    @Resolved
     private ICareerManager icm;
 
     @Resolved
     private IMultiverseManager imm;
 
-    //region From StartingGame
+    @Resolved
+    private BindableList<Player> players;
+
+    //region StartingGame
 
     public boolean generateNewWorld()
     {
@@ -52,7 +54,7 @@ public class GameManager extends SCPluginObject implements IGameManager
         if (imm.createWorlds(worldName))
         {
             Bukkit.getServer().broadcast(Component.translatable("新的比赛世界已生成，正在传送玩家到新世界......", Colors.Green));
-            this.addSchedule(c -> players.getPlayers().forEach(p -> imm.tpToWorld(p, worldName)));
+            this.addSchedule(c -> players.forEach(p -> imm.tpToWorld(p, worldName)));
         }
         else
         {
@@ -101,7 +103,7 @@ public class GameManager extends SCPluginObject implements IGameManager
 
         logger.warn("START");
         noticeGameStarting();
-        players.removeAllOffline();
+        players.removeIf(p -> !p.isOnline());
 
         isGameStarted = true;
 
@@ -174,12 +176,11 @@ public class GameManager extends SCPluginObject implements IGameManager
 
     private void switchToStage(StageInfo si)
     {
-        var list = players.getPlayers();
         ticksRemaining = si.lasts;
         currentStage = si;
         logger.info("切换到" + si.name);
 
-        for (var player : list)
+        for (var player : players)
         {
             player.sendTitlePart(TitlePart.TIMES, Title.Times.times(times[0], times[1], times[2]));
             player.sendTitlePart(TitlePart.SUBTITLE, Component.translatable(si.titleSub));
@@ -188,7 +189,7 @@ public class GameManager extends SCPluginObject implements IGameManager
 
         if (si.refreshTeams)
         {
-            itm.distributeToTeams(list);
+            itm.distributeToTeams(players);
             itm.sendTeammatesMessage();
         }
 
@@ -236,7 +237,7 @@ public class GameManager extends SCPluginObject implements IGameManager
 
         this.switchToStage(endingStage);
 
-        for (var player : players.getPlayers())
+        for (var player : players)
         {
             this.addSchedule(c -> imm.tpToWorld(player, imm.getFirstSpawnWorldName()), 200);
         }

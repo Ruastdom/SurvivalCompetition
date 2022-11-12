@@ -8,11 +8,11 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import xiamomc.pluginbase.Annotations.Initializer;
 import xiamomc.pluginbase.Annotations.Resolved;
+import xiamomc.pluginbase.Bindables.BindableList;
 import xiamomc.pluginbase.Command.IPluginCommand;
 import xiamomc.pluginbase.Messages.FormattableMessage;
 import xiamomc.survivalcompetition.SCPluginObject;
 import xiamomc.survivalcompetition.managers.IGameManager;
-import xiamomc.survivalcompetition.managers.IPlayerListManager;
 import xiamomc.survivalcompetition.messages.CommandStrings;
 
 public class JoinGameCommand extends SCPluginObject implements IPluginCommand
@@ -40,7 +40,7 @@ public class JoinGameCommand extends SCPluginObject implements IPluginCommand
     //endregion
 
     @Resolved
-    private IPlayerListManager manager;
+    private BindableList<Player> players;
 
     @Resolved
     private IGameManager igm;
@@ -59,12 +59,12 @@ public class JoinGameCommand extends SCPluginObject implements IPluginCommand
         {
             countDown = -1;
 
-            if (manager.listAmount() >= 2)
+            if (players.size() >= 2)
                 igm.startGame();
             else
             {
                 Bukkit.getServer().broadcast(Component.translatable("由于人数不足，本次匹配已停止！"));
-                manager.clear();
+                players.clear();
             }
         }
 
@@ -85,11 +85,11 @@ public class JoinGameCommand extends SCPluginObject implements IPluginCommand
             return false;
         }
 
-        if (manager.add(player))
+        if (!players.contains(player) && players.add(player))
         {
             Bukkit.getServer().broadcast(Component.text(sender.getName())
                     .append(Component.translatable("成功加入队列！当前队列等待人数："))
-                    .append(Component.text(manager.listAmount())));
+                    .append(Component.text(players.size())));
 
             //Reset countdown time
             countDown = 101;
@@ -97,7 +97,7 @@ public class JoinGameCommand extends SCPluginObject implements IPluginCommand
         else
         {
             sender.sendMessage(Component.translatable("加入队列失败，您是否已经在队列中？当前等待人数：")
-                    .append(Component.text(manager.listAmount())));
+                    .append(Component.text(players.size())));
         }
         return true;
     }

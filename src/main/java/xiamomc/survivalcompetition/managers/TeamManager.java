@@ -11,8 +11,8 @@ import xiamomc.pluginbase.Annotations.Initializer;
 import xiamomc.pluginbase.Annotations.Resolved;
 import xiamomc.pluginbase.Configuration.ConfigNode;
 import xiamomc.pluginbase.Configuration.PluginConfigManager;
-import xiamomc.survivalcompetition.misc.TeamInfo;
 import xiamomc.survivalcompetition.SCPluginObject;
+import xiamomc.survivalcompetition.misc.TeamInfo;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
