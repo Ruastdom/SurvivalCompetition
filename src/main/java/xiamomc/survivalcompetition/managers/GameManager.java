@@ -51,16 +51,8 @@ public class GameManager extends SCPluginObject implements IGameManager
 
         if (imm.createWorlds(worldName))
         {
-            imm.createSMPWorldGroup(worldName);
-            imm.linkSMPWorlds(worldName);
             Bukkit.getServer().broadcast(Component.translatable("新的比赛世界已生成，正在传送玩家到新世界......", Colors.Green));
-            this.addSchedule(c ->
-            {
-                for (var player : players.getPlayers())
-                {
-                    imm.tpToWorld(player, worldName);
-                }
-            });
+            this.addSchedule(c -> players.getPlayers().forEach(p -> imm.tpToWorld(p, worldName)));
         }
         else
         {

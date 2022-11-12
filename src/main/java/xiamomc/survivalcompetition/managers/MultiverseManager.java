@@ -5,152 +5,177 @@ import com.onarandombox.MultiverseCore.api.MVWorldManager;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import com.onarandombox.MultiverseNetherPortals.MultiverseNetherPortals;
 import com.onarandombox.multiverseinventories.MultiverseInventories;
-import com.onarandombox.multiverseinventories.WorldGroup;
 import com.onarandombox.multiverseinventories.profile.WorldGroupManager;
 import com.onarandombox.multiverseinventories.share.Sharables;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import xiamomc.pluginbase.Annotations.Initializer;
+import xiamomc.pluginbase.Annotations.Resolved;
 import xiamomc.survivalcompetition.SCPluginObject;
+import xiamomc.survivalcompetition.managers.world.PortalOption;
+import xiamomc.survivalcompetition.managers.world.WorldOption;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MultiverseManager extends SCPluginObject implements IMultiverseManager
 {
-    MultiverseCore core;
-    MultiverseNetherPortals netherPortals;
-    MultiverseInventories inventories;
-    WorldGroupManager groupManager ;
-    MVWorldManager worldManager;
+    @Resolved
+    private MultiverseCore core;
+
+    @Resolved
+    private MultiverseNetherPortals portals;
+
+    @Resolved
+    private MultiverseInventories inventories;
+
+    private WorldGroupManager groupManager;
+    private MVWorldManager worldManager;
 
     @Initializer
     private void init()
     {
-        core = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
-        netherPortals = (MultiverseNetherPortals) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-NetherPortals");
-        inventories = (MultiverseInventories) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Inventories");
-
         groupManager = inventories.getGroupManager();
         worldManager = core.getMVWorldManager();
+
+        var ver = plugin.getDescription().getVersion().hashCode();
+        inventoryGroupName = "SC_INV_REV_" + ver;
     }
 
     @Override
     public boolean createWorlds(String worldName)
     {
-        boolean createOverworld = worldManager.addWorld(
-                worldName, // The worldname
-                World.Environment.NORMAL, // The overworld environment type.
-                null, // The world seed. Any seed is fine for me, so we just pass null.
-                WorldType.NORMAL, // Nothing special. If you want something like a flat world, change this.
-                true, // This means we want to structures like villages to generator, Change to false if you don't want this.
-                null // Specifies a custom generator. We are not using any so we just pass null.
-        );
-        boolean createNetherWorld = worldManager.addWorld(
-                worldName + "_nether", // The worldname
-                World.Environment.NETHER, // The overworld environment type.
-                null, // The world seed. Any seed is fine for me, so we just pass null.
-                WorldType.NORMAL, // Nothing special. If you want something like a flat world, change this.
-                true, // This means we want to structures like villages to generator, Change to false if you don't want this.
-                null // Specifies a custom generator. We are not using any so we just pass null.
-        );
-        boolean createEndWorld = worldManager.addWorld(
-                worldName + "_end", // The worldname
-                World.Environment.THE_END, // The overworld environment type.
-                null, // The world seed. Any seed is fine for me, so we just pass null.
-                WorldType.NORMAL, // Nothing special. If you want something like a flat world, change this.
-                true, // This means we want to structures like villages to generator, Change to false if you don't want this.
-                null // Specifies a custom generator. We are not using any so we just pass null.
-        );
+        currentWorlds.clear();
+        currentWorldsAsBukkit.clear();
 
-        var newOverworld = worldManager.getMVWorld(worldName);
-        var newNether = worldManager.getMVWorld(worldName + "_nether");
-        var newEnd = worldManager.getMVWorld(worldName + "_end");
+        var netherName = worldName + "_nether";
+        var theEndName = worldName + "_end";
 
-        if (currentWorldsAsBukkit != null)
+        var targetWorlds = new WorldOption[]
         {
-            currentWorldsAsBukkit.clear();
-            currentWorldsAsBukkit = null;
+            new WorldOption(worldName, null, World.Environment.NORMAL, WorldType.NORMAL, true, null,
+                    PortalOption.options(PortalOption.option(netherName, PortalType.NETHER), PortalOption.option(theEndName, PortalType.ENDER))),
+
+            new WorldOption(netherName, null, World.Environment.NETHER, WorldType.NORMAL, true, null,
+                    PortalOption.options(PortalOption.option(worldName, PortalType.NETHER), PortalOption.option(theEndName, PortalType.ENDER))),
+
+            new WorldOption(theEndName, null, World.Environment.THE_END, WorldType.NORMAL, true, null,
+                    PortalOption.options(PortalOption.option(worldName, PortalType.ENDER), PortalOption.option(netherName, PortalType.NETHER))),
+        };
+
+        var result = generateWorlds(worldName, targetWorlds);
+
+        if (result.success)
+        {
+            result.worlds.forEach(mvw ->
+            {
+                currentWorlds.add(mvw);
+                currentWorldsAsBukkit.add(mvw.getCBWorld());
+            });
         }
-        currentWorlds = Arrays.asList(newOverworld, newNether, newEnd);
 
-        newOverworld.setGameMode(GameMode.SURVIVAL);
-        newNether.setRespawnToWorld(worldName);
-        newNether.setGameMode(GameMode.SURVIVAL);
+        updateInventoryGroup();
 
-        newEnd.setRespawnToWorld(worldName);
-        newEnd.setGameMode(GameMode.SURVIVAL);
-
-        boolean loadOverworld = worldManager.loadWorld(worldName);
-        boolean loadNetherWorld = worldManager.loadWorld(worldName + "_nether");
-        boolean loadEndWorld = worldManager.loadWorld(worldName + "_end");
-        return createOverworld && createNetherWorld && createEndWorld && loadEndWorld && loadNetherWorld && loadOverworld;
+        return result.success;
     }
 
-    private List<MultiverseWorld> currentWorlds;
-    private List<World> currentWorldsAsBukkit;
+    private GenerateResult generateWorlds(String primaryWorldName, WorldOption[] options)
+    {
+        if (options == null || primaryWorldName == null) return new GenerateResult(false, null);
+
+        var worlds = new ObjectArrayList<MultiverseWorld>();
+
+        boolean success = true;
+
+        for (var worldOption : options)
+        {
+            if (!worldOption.isValid())
+                throw new IllegalArgumentException("Invalid option: " + worldOption);
+
+            var worldName = worldOption.name();
+            var worldEnvironment = worldOption.env();
+
+            success = success && worldManager.addWorld(worldName, worldEnvironment, worldOption.seed(),
+                    worldOption.type(), worldOption.spawnStructures(), worldOption.generator(),
+                    true);
+
+            // Is world added successfully?
+            if (success)
+            {
+                var world = worldManager.getMVWorld(worldName);
+                worlds.add(world);
+
+                // Set respawn world and gamemode
+                world.setRespawnToWorld(primaryWorldName);
+                world.setGameMode(GameMode.SURVIVAL);
+
+                // Link worlds by option
+                for (var portalOption : worldOption.portalOptions())
+                    portals.addWorldLink(worldName, portalOption.targetName(), portalOption.portalType());
+            }
+            else
+                logger.error("Error occurred while creating world.");
+        }
+
+        // Are all operations executed successful?
+        if (success)
+            worlds.forEach(w -> worldManager.loadWorld(w.getName()));
+
+        return new GenerateResult(success, worlds);
+    }
+
+    private record GenerateResult(boolean success, List<MultiverseWorld> worlds) { }
+
+    private final List<MultiverseWorld> currentWorlds = new ObjectArrayList<>();
+    private final List<World> currentWorldsAsBukkit = new ObjectArrayList<>();
 
     @Override
-    public List<World> getCurrentWorlds()
-    {
-        //缓存
-        if (currentWorldsAsBukkit == null && currentWorlds != null)
-        {
-            var newList = new ArrayList<World>();
-
-            for (var mvw : currentWorlds)
-                newList.add(mvw.getCBWorld());
-
-            currentWorldsAsBukkit = newList;
-        }
-
-        return currentWorldsAsBukkit;
-    }
+    public List<World> getCurrentWorlds() { return currentWorldsAsBukkit; }
 
     @Override
     public boolean deleteWorlds(String worldName)
     {
-        boolean deleteOverworld = worldManager.deleteWorld(worldName);
-        boolean deleteNetherWorld = worldManager.deleteWorld(worldName + "_nether");
-        boolean deleteEndWorld = worldManager.deleteWorld(worldName + "_end");
-        return deleteOverworld && deleteNetherWorld && deleteEndWorld;
+        AtomicBoolean success = new AtomicBoolean(true);
+        currentWorlds.forEach(mvw -> success.set(success.get() && worldManager.deleteWorld(mvw.getName())));
+
+        return success.get();
     }
 
-    @Override
-    public void createSMPWorldGroup(String worldName)
+    private static String inventoryGroupName = "SC_INV_REV_unknown";
+
+    public void updateInventoryGroup()
     {
-        // Create new group named after the world.
-        // Note this does not add group to Multiverse-Inventories knowledge yet.
-        WorldGroup newGroup = groupManager.newEmptyGroup(worldName);
+        // Get or create WorldGroup
+        var group = groupManager.getGroup(inventoryGroupName);
 
-        // add the 3 usual SMP world dims.
-        newGroup.addWorld(worldName);
-        newGroup.addWorld(worldName + "_nether");
-        newGroup.addWorld(worldName + "_end");
+        if (group == null)
+            group = groupManager.newEmptyGroup(inventoryGroupName);
 
-        // set to shares to all, so player data is consistent in overworld, nether and end.
-        newGroup.getShares().addAll(Sharables.allOf());
+        // Remove all worlds previously set
+        group.removeAllWorlds();
+
+        // Add new worlds
+        for (var mvw : currentWorlds)
+            group.addWorld(mvw.getName());
+
+        // Set to shares to all, so player data is consistent in overworld, nether and end.
+        group.getShares().addAll(Sharables.allOf());
 
         // Finally we add it to Multiverse-Inventories knowledge.
         // This step is important, else your WorldGroup will not work!
-        groupManager.updateGroup(newGroup);
-    }
-
-    @Override
-    public boolean linkSMPWorlds(String worldName)
-    {
-        boolean netherlinkf = netherPortals.addWorldLink(worldName, worldName + "_nether", PortalType.NETHER);
-        boolean netherlinks = netherPortals.addWorldLink(worldName + "_nether", worldName, PortalType.NETHER);
-        boolean endlinkf = netherPortals.addWorldLink(worldName, worldName + "_end", PortalType.ENDER);
-        boolean endlinks = netherPortals.addWorldLink(worldName + "_end", worldName, PortalType.ENDER);
-        return netherlinkf && netherlinks && endlinkf && endlinks;
+        groupManager.updateGroup(group);
     }
 
     @Override
     public void tpToWorld(Player player, String worldName)
     {
-        core.teleportPlayer(player, player, Bukkit.getWorld(worldName).getSpawnLocation());
+        var world = Bukkit.getWorld(worldName);
+
+        if (world != null)
+            core.teleportPlayer(player, player, world.getSpawnLocation());
+        else
+            logger.error("Can't teleport player to non-existing world '" + worldName + "'");
     }
 
     @Override

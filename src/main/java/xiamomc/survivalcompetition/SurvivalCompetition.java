@@ -1,5 +1,8 @@
 package xiamomc.survivalcompetition;
 
+import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseNetherPortals.MultiverseNetherPortals;
+import com.onarandombox.multiverseinventories.MultiverseInventories;
 import org.bukkit.Bukkit;
 import org.slf4j.Logger;
 import xiamomc.pluginbase.Configuration.ConfigNode;
@@ -55,6 +58,14 @@ public final class SurvivalCompetition extends XiaMoJavaPlugin
 
         dependencyManager.cache(this);
         dependencyManager.cacheAs(PluginConfigManager.class, config = new SCPluginConfigManager(this));
+
+        var core = (MultiverseCore) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Core");
+        var portals = (MultiverseNetherPortals) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-NetherPortals");
+        var inventories = (MultiverseInventories) Bukkit.getServer().getPluginManager().getPlugin("Multiverse-Inventories");
+
+        dependencyManager.cache(core);
+        dependencyManager.cache(portals);
+        dependencyManager.cache(inventories);
 
         var allowDebug = config.get(Boolean.class, ConfigNode.create().append("DevelopmentMode"));
         if (allowDebug == null) allowDebug = false;

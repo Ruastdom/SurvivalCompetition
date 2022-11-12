@@ -21,24 +21,12 @@ public class DummyMVManager implements IMultiverseManager
     }
 
     @Override
-    public void createSMPWorldGroup(String worldName)
-    {
-
-    }
-
-    @Override
-    public boolean linkSMPWorlds(String worldName)
-    {
-        return true;
-    }
-
-    @Override
     public void tpToWorld(Player player, String worldName)
     {
 
     }
 
-    private ArrayList<World> emptyWorldList = new ArrayList<>();
+    private final List<World> emptyWorldList = List.of();
 
     @Override
     public List<World> getCurrentWorlds()
