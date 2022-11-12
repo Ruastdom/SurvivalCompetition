@@ -86,10 +86,6 @@ public class EventProcessor extends SCPluginObject implements Listener
                 if (players.getPlayers().size() == 0) game.endGame();
             }
         }
-        else
-        {
-            //ignore for now
-        }
     }
 
     @EventHandler

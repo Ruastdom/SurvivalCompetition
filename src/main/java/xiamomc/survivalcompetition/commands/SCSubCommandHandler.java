@@ -8,6 +8,6 @@ public abstract class SCSubCommandHandler extends SubCommandHandler<SurvivalComp
     @Override
     protected String getPluginNamespace()
     {
-        return SurvivalCompetition.getInstance().getNameSpace();
+        return SurvivalCompetition.getSCNameSpace();
     }
 }

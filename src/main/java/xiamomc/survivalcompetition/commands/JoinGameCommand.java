@@ -6,13 +6,13 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import xiamomc.pluginbase.Annotations.Initializer;
 import xiamomc.pluginbase.Annotations.Resolved;
 import xiamomc.pluginbase.Command.IPluginCommand;
 import xiamomc.pluginbase.Messages.FormattableMessage;
+import xiamomc.survivalcompetition.SCPluginObject;
 import xiamomc.survivalcompetition.managers.IGameManager;
 import xiamomc.survivalcompetition.managers.IPlayerListManager;
-import xiamomc.survivalcompetition.managers.ITeamManager;
-import xiamomc.survivalcompetition.SCPluginObject;
 import xiamomc.survivalcompetition.messages.CommandStrings;
 
 public class JoinGameCommand extends SCPluginObject implements IPluginCommand
@@ -40,21 +40,44 @@ public class JoinGameCommand extends SCPluginObject implements IPluginCommand
     //endregion
 
     @Resolved
-    private ITeamManager itm;
-
-    @Resolved
     private IPlayerListManager manager;
 
     @Resolved
     private IGameManager igm;
 
+    @Initializer
+    private void load()
+    {
+        this.addSchedule(c -> update());
+    }
+
+    private void update()
+    {
+        countDown--;
+
+        if (countDown == 0)
+        {
+            countDown = -1;
+
+            if (manager.listAmount() >= 2)
+                igm.startGame();
+            else
+            {
+                Bukkit.getServer().broadcast(Component.translatable("由于人数不足，本次匹配已停止！"));
+                manager.clear();
+            }
+        }
+
+        this.addSchedule(c -> update());
+    }
+
+    private int countDown;
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args)
     {
         if (!(sender instanceof Player player))
-        {
             return false;
-        }
 
         if (igm.gameRunning())
         {
@@ -62,26 +85,14 @@ public class JoinGameCommand extends SCPluginObject implements IPluginCommand
             return false;
         }
 
-        if (manager.isEmpty())
-        {
-            this.addSchedule(c ->
-            {
-                if (manager.listAmount() >= 2)
-                {
-                    igm.startGame();
-                }
-                else
-                {
-                    Bukkit.getServer().broadcast(Component.translatable("由于人数不足，本次匹配已停止！"));
-                    manager.clear();
-                }
-            }, 100);
-        }
         if (manager.add(player))
         {
             Bukkit.getServer().broadcast(Component.text(sender.getName())
                     .append(Component.translatable("成功加入队列！当前队列等待人数："))
                     .append(Component.text(manager.listAmount())));
+
+            //Reset countdown time
+            countDown = 101;
         }
         else
         {

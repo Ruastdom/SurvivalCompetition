@@ -1,15 +1,15 @@
 package xiamomc.survivalcompetition.managers;
 
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import xiamomc.pluginbase.Annotations.Resolved;
+import xiamomc.survivalcompetition.SCPluginObject;
 import xiamomc.survivalcompetition.careers.AbstractCareer;
 import xiamomc.survivalcompetition.careers.AssassinCareer;
 import xiamomc.survivalcompetition.careers.WarriorCareer;
-import xiamomc.survivalcompetition.SCPluginObject;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -24,11 +24,10 @@ public class CareerManager extends SCPluginObject implements ICareerManager
 
     public CareerManager()
     {
-        careerList = List.of(new AbstractCareer[]
-                {
-                        new AssassinCareer(),
-                        new WarriorCareer()
-                });
+        careerList = List.of(
+                new AssassinCareer(),
+                new WarriorCareer()
+        );
     }
 
     @Override
@@ -40,38 +39,40 @@ public class CareerManager extends SCPluginObject implements ICareerManager
     @Override
     public void clear()
     {
-        for (var uuid : playerCareers.keySet())
+        for (var entry : playerCareers.entrySet())
         {
-            var player = Bukkit.getPlayer(uuid);
+            var uuid = entry.getKey();
+            var player = Bukkit.getPlayer(entry.getKey());
             if (player == null) continue;
 
-            this.getPlayerCareer(player).resetFor(player);
+            var career = entry.getValue();
+            career.resetFor(player);
+
             playerCareers.remove(uuid);
         }
     }
 
     @Override
-    public boolean addToCareer(String playerName, String internalName)
+    public boolean applyCareerFor(String playerName, NamespacedKey identifier)
     {
-        if (!game.DoesAllowCareerSelect()) return false;
+        if (!game.allowCareerSelect()) return false;
 
         var player = Bukkit.getPlayer(playerName);
 
-        if (player == null) return false;
+        if (player == null || identifier == null) return false;
+
+        var career = careerList.stream()
+                .filter(c -> identifier.equals(c.getIdentifier()))
+                .findFirst().orElse(null);
+
+        if (career == null) return false;
 
         var playerUUID = player.getUniqueId();
 
-        var optional = careerList.stream()
-                .filter(c -> Objects.equals(c.getInternalName(), internalName))
-                .findFirst();
-
-        if (optional.isEmpty()) return false;
-
-        var career = optional.get();
         var currentPlayerCareer = playerCareers.get(playerUUID);
 
         //不要重复添加玩家到某一职业，并且在切换职业前先移除现有职业
-        if (currentPlayerCareer == career)
+        if (career.equals(currentPlayerCareer))
         {
             return false;
         }

@@ -1,20 +1,21 @@
 package xiamomc.survivalcompetition.commands.subcommands.career;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import xiamomc.pluginbase.Annotations.Resolved;
 import xiamomc.pluginbase.Command.ISubCommand;
 import xiamomc.pluginbase.Messages.FormattableMessage;
+import xiamomc.survivalcompetition.SCPluginObject;
 import xiamomc.survivalcompetition.careers.AbstractCareer;
 import xiamomc.survivalcompetition.managers.ICareerManager;
-import xiamomc.survivalcompetition.SCPluginObject;
 
 public class GenericCareerSubCommand extends SCPluginObject implements ISubCommand
 {
     @Override
     public String getCommandName()
     {
-        return career.getInternalName();
+        return career.getIdentifier().asString();
     }
 
     @Override
@@ -42,7 +43,13 @@ public class GenericCareerSubCommand extends SCPluginObject implements ISubComma
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull String[] strings)
     {
-        if (icm.addToCareer(commandSender.getName(), getCommandName()))
+        if (!(commandSender instanceof Player))
+        {
+            commandSender.sendMessage("Can only apply career to player.");
+            return true;
+        }
+
+        if (icm.applyCareerFor(commandSender.getName(), career.getIdentifier()))
             commandSender.sendMessage("您已成功选择该职业");
         else
             commandSender.sendMessage("选择该职业时出现错误，您是否已经有了一个职业？");

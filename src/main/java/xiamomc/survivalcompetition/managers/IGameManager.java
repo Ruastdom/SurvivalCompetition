@@ -16,5 +16,5 @@ public interface IGameManager
 
     String getNewWorldName();
 
-    boolean DoesAllowCareerSelect();
+    boolean allowCareerSelect();
 }

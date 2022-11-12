@@ -49,7 +49,7 @@ public class TeamManager extends SCPluginObject implements ITeamManager
 
         //移除所有null值
         //这样和下面搭配可以在Teams节点为'[]'或全是null时重置这段设置
-        if (teams != null) teams.removeIf(o -> o == null);
+        if (teams != null) teams.removeIf(Objects::isNull);
 
         //如果没有队伍，则使用默认配置
         if (teams == null || teams.size() == 0)
@@ -99,12 +99,12 @@ public class TeamManager extends SCPluginObject implements ITeamManager
     {
         if (ti == null) throw new IllegalArgumentException("队伍信息不能是null");
 
-        Logger.info("添加队伍：" + ti.name);
+        logger.info("添加队伍：" + ti.name);
 
         var teamId = ti.identifier;
         if (teamId == null || teamId.isEmpty() || teamId.isBlank() || teamId.equals("NULL"))
         {
-            Logger.error("无效队伍ID：" + ti.identifier + "，将不会添加此队伍");
+            logger.error("无效队伍ID：" + ti.identifier + "，将不会添加此队伍");
             return false;
         }
 
@@ -302,9 +302,10 @@ public class TeamManager extends SCPluginObject implements ITeamManager
         }
         catch (Exception e)
         {
-            Logger.warn("无法获取" + identifier + "的分数：" + e.getMessage());
+            logger.warn("无法获取" + identifier + "的分数：" + e.getMessage());
             e.printStackTrace();
         }
+
         return -1;
     }
 

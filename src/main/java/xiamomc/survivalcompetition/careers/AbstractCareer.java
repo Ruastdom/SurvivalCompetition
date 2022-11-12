@@ -3,9 +3,7 @@ package xiamomc.survivalcompetition.careers;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import xiamomc.pluginbase.Messages.FormattableMessage;
@@ -16,34 +14,12 @@ public abstract class AbstractCareer
     /**
      * 应用职业到玩家
      *
-     * @param playerName 目标玩家名
-     * @return 是否成功
-     */
-    public boolean applyToPlayer(String playerName)
-    {
-        return applyToPlayer(Bukkit.getPlayer(playerName));
-    }
-
-    /**
-     * 应用职业到玩家
-     *
      * @param player 目标玩家
      * @return 是否成功
      */
     public boolean applyToPlayer(Player player)
     {
         return player != null;
-    }
-
-    /**
-     * 移除某一玩家的职业效果
-     *
-     * @param playerName 目标玩家名
-     * @return 是否成功
-     */
-    public boolean resetFor(String playerName)
-    {
-        return resetFor(Bukkit.getPlayer(playerName));
     }
 
     /**
@@ -64,20 +40,9 @@ public abstract class AbstractCareer
      */
     public Component getNameAsComponent()
     {
-        return careerNameAsComponent;
-    }
-
-    /**
-     * 初始化职业
-     */
-    protected void initialize()
-    {
-        careerNameAsComponent = Component.text(displayName).style(b ->
-                b.decorate(TextDecoration.BOLD)
-                        .decorate(TextDecoration.UNDERLINED)
-                        .color(TextColor.color(16755200))
-                        .hoverEvent(HoverEvent.showText(Component.text(description)))
-                        .clickEvent(ClickEvent.runCommand("/setcareer" + " " + getInternalName()))
+        return display.toComponent().style(b ->
+                b.hoverEvent(HoverEvent.showText(description.toComponent()))
+                        .clickEvent(ClickEvent.runCommand("/setcareer" + " " + getIdentifier()))
         );
     }
 
@@ -94,27 +59,35 @@ public abstract class AbstractCareer
         return true;
     }
 
+    private static final FormattableMessage fallbackDisplay = new FormattableMessage(SurvivalCompetition.getInstance(), "Dummy");
+
     /**
      * 职业的显示名
      */
-    protected String displayName = "Dummy";
-
-    private Component careerNameAsComponent;
+    protected FormattableMessage display = fallbackDisplay;
 
     /**
-     * 获取职业的内部名
+     * 获取职业的ID
      *
-     * @return 职业的内部名
+     * @return 职业的ID
      */
-    public abstract String getInternalName();
+    public abstract NamespacedKey getIdentifier();
 
     public FormattableMessage getDescription()
     {
-        return new FormattableMessage(SurvivalCompetition.getInstance(), description);
+        return description;
     }
 
     /**
      * 职业描述
      */
-    protected String description = "虚拟职业";
+    protected FormattableMessage description = fallbackDisplay;
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (!(obj instanceof AbstractCareer career)) return false;
+
+        return career.getIdentifier().equals(this.getIdentifier());
+    }
 }

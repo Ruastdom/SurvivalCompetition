@@ -24,7 +24,7 @@ public class CareerCommand extends SCSubCommandHandler
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args)
     {
-        if (!game.DoesAllowCareerSelect())
+        if (!game.allowCareerSelect())
         {
             sender.sendMessage(Component.translatable("现在还不能选择职业"));
             return true;

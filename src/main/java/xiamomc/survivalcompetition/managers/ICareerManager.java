@@ -1,5 +1,6 @@
 package xiamomc.survivalcompetition.managers;
 
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 import xiamomc.survivalcompetition.careers.AbstractCareer;
@@ -24,10 +25,10 @@ public interface ICareerManager
      * 添加某一玩家到职业中
      *
      * @param playerName   目标玩家名
-     * @param internalName 职业的内部名称
+     * @param identifier 职业的ID
      * @return 添加过程是否成功
      */
-    boolean addToCareer(String playerName, String internalName);
+    boolean applyCareerFor(String playerName, NamespacedKey identifier);
 
     /**
      * 获取某一玩家的职业

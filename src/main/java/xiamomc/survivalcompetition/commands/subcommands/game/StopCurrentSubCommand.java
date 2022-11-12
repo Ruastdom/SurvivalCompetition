@@ -41,7 +41,7 @@ public class StopCurrentSubCommand extends SCPluginObject implements ISubCommand
     {
         if (!game.endGame())
         {
-            Logger.warn("未能停止游戏");
+            logger.warn("未能停止游戏");
             sender.sendMessage(Component.translatable("未能停止游戏。游戏尚未开始？"));
         }
 

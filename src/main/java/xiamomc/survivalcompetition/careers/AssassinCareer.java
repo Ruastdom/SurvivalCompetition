@@ -1,23 +1,26 @@
 package xiamomc.survivalcompetition.careers;
 
+import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
+import xiamomc.pluginbase.Messages.FormattableMessage;
+import xiamomc.survivalcompetition.SurvivalCompetition;
 
 public class AssassinCareer extends AbstractCareer
 {
     public AssassinCareer()
     {
-        displayName = "刺客";
-        description = "使用剑类物品攻击伤害增高 - 移动速度少许加快";
+        var plugin = SurvivalCompetition.getInstance();
 
-        initialize();
+        display = new FormattableMessage(plugin, "刺客");
+        description = new FormattableMessage(plugin, "使用剑类物品攻击伤害增高 - 移动速度少许加快");
     }
 
     @Override
-    public String getInternalName()
+    public NamespacedKey getIdentifier()
     {
-        return "assassin";
+        return new NamespacedKey(SurvivalCompetition.getSCNameSpace(), "assassin");
     }
 
     private final AttributeModifier movementModifier = new AttributeModifier("xiamoModifier", 0.1, AttributeModifier.Operation.ADD_SCALAR);

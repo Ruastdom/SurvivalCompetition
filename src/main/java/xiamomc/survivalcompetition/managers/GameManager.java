@@ -87,7 +87,6 @@ public class GameManager extends SCPluginObject implements IGameManager
 
     private final StageInfo endingStage = new StageInfo("胜出", "游戏结束", "", 200, false, false, false);
 
-    private int stageIndex = -1;
     private StageInfo currentStage = null;
     private int ticksRemaining = -1;
 
@@ -108,13 +107,12 @@ public class GameManager extends SCPluginObject implements IGameManager
     {
         if (isGameStarted) return false;
 
-        Logger.warn("START");
+        logger.warn("START");
         noticeGameStarting();
         players.removeAllOffline();
 
         isGameStarted = true;
 
-        stageIndex = -1;
         ticksRemaining = -1;
         currentStage = null;
 
@@ -156,7 +154,7 @@ public class GameManager extends SCPluginObject implements IGameManager
         {
             var s = (StageInfo) o;
 
-            Logger.info("添加阶段：" + s.name);
+            logger.info("添加阶段：" + s.name);
             if (!configuredStages.contains(s))
                 this.configuredStages.add(s);
         }
@@ -187,7 +185,7 @@ public class GameManager extends SCPluginObject implements IGameManager
         var list = players.getPlayers();
         ticksRemaining = si.lasts;
         currentStage = si;
-        Logger.info("切换到" + si.name);
+        logger.info("切换到" + si.name);
 
         for (var player : list)
         {
@@ -203,7 +201,7 @@ public class GameManager extends SCPluginObject implements IGameManager
         }
 
         if (si.spreadsPlayer)
-            Logger.warn("未实现扩散玩家！");
+            logger.warn("未实现扩散玩家！");
 
         if (si.AllowCareerSelect)
         {
@@ -276,9 +274,9 @@ public class GameManager extends SCPluginObject implements IGameManager
     }
 
     @Override
-    public boolean DoesAllowCareerSelect()
+    public boolean allowCareerSelect()
     {
-        return isGameStarted ? currentStage.AllowCareerSelect : false;
+        return isGameStarted && currentStage.AllowCareerSelect;
     }
 
     //endregion
